@@ -93,17 +93,16 @@ em { font-style: italic; }
 /* faint ghost of the finished signature — so the canvas is never empty and the pen never floats alone */
 .intro-logo-ghost { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .12; z-index: 0; }
 
-/* A real gold pen writes the signature — its lit tip rides the ink's leading edge */
-.intro-pen {
-  position: absolute; bottom: 4%; left: 0; height: 168%; width: auto;
-  transform: translateX(-11%); transform-origin: bottom left;
-  opacity: 0; pointer-events: none; z-index: 3;
-  animation: penMove 1.6s cubic-bezier(.62,0,.36,1) .3s forwards;
+/* A soft gold glow sits at the writing tip as the ink fills in — subtle, never a cut-out */
+.intro-nib {
+  position: absolute; top: 45%; left: 0; width: 30px; height: 30px;
+  margin: -15px 0 0 -15px; border-radius: 50%; z-index: 2;
+  pointer-events: none; opacity: 0; mix-blend-mode: screen;
+  background: radial-gradient(circle, rgba(255,246,220,.9) 0%, rgba(228,196,138,.4) 36%, transparent 70%);
+  animation: nibMove 1.6s cubic-bezier(.62,0,.36,1) .3s forwards;
 }
-@keyframes penMove {
-  0%   { left: 2%;  opacity: 0; }
-  12%  { opacity: 1; }
-  100% { left: 96%; opacity: 1; }
+@keyframes nibMove {
+  0% { left: 2%; opacity: 0; } 10% { opacity: 1; } 86% { opacity: 1; } 100% { left: 100%; opacity: 0; }
 }
 
 /* ---------- Top bar ---------- */
