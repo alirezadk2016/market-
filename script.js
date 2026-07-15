@@ -11,8 +11,8 @@
   function dismissIntro() {
     if (intro) intro.classList.add("done");
   }
-  // Let the signature finish "writing" (~1.8s) + the tagline settle, then lift.
-  setTimeout(dismissIntro, 2450);
+  // Let the signature light up along its strokes (~2.1s) + the tagline settle, then lift.
+  setTimeout(dismissIntro, 2900);
 
   /* ---- Mobile menu ---- */
   const menu = document.getElementById("menu");
