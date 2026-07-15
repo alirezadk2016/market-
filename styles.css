@@ -87,8 +87,24 @@ em { font-style: italic; }
 @keyframes introLine { from{width:0} to{width:120px} }
 
 /* The signature draws itself on, as if being signed by hand */
-.intro-logo { animation: signDraw 1.5s cubic-bezier(.66,0,.34,1) .3s both; }
+.intro-sig { position: relative; display: inline-block; line-height: 0; }
+.intro-logo { animation: signDraw 1.6s cubic-bezier(.62,0,.36,1) .3s both; }
 @keyframes signDraw { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+
+/* A glowing nib rides the leading edge, so it reads as a pen writing */
+.intro-nib {
+  position: absolute; top: 44%; left: 0;
+  width: 32px; height: 32px; margin: -16px 0 0 -16px; border-radius: 50%;
+  pointer-events: none; opacity: 0; mix-blend-mode: screen; z-index: 2;
+  background: radial-gradient(circle, rgba(255,246,220,.98) 0%, rgba(228,196,138,.55) 34%, rgba(228,196,138,0) 70%);
+  animation: nibMove 1.6s cubic-bezier(.62,0,.36,1) .3s forwards;
+}
+@keyframes nibMove {
+  0%   { left: 2%;  opacity: 0; }
+  9%   { opacity: 1; }
+  86%  { opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
 
 /* ---------- Top bar ---------- */
 .topbar {
