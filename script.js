@@ -21,6 +21,7 @@
 
   BAGS.forEach((bag, idx) => {
     const variants = bag.variants || [];
+    let av = 0; // active variant
     const first = variants[0] || {};
     const initial = (bag.name || "M").trim().charAt(0).toUpperCase();
     const num = String(idx + 1).padStart(2, "0");
@@ -28,8 +29,7 @@
     const swatches = variants.length > 1
       ? `<div class="swatches">` + variants.map((v, i) =>
           `<button class="swatch${i === 0 ? " active" : ""}" style="background:${v.hex}"
-                   data-file="${v.file}" data-color="${v.color}"
-                   title="${v.color}" aria-label="${v.color}"></button>`).join("") + `</div>`
+                   data-i="${i}" title="${v.color}" aria-label="${v.color}"></button>`).join("") + `</div>`
       : "";
 
     const card = document.createElement("article");
@@ -45,26 +45,52 @@
         <div class="card-name">${bag.name || ""}</div>
         <div class="card-note"><span class="note-base">${bag.note || ""}</span> · <span class="note-color">${first.color || ""}</span></div>
         ${swatches}
+        <div class="thumbs"></div>
       </div>`;
 
     const img = card.querySelector("img");
     const ph  = card.querySelector(".card-ph");
     const noteColor = card.querySelector(".note-color");
+    const thumbs = card.querySelector(".thumbs");
+
+    function setMain(src) {
+      ph.style.display = "";
+      img.src = src;
+    }
+
+    function renderVariant(i) {
+      av = i;
+      const v = variants[i] || {};
+      const shots = v.shots || [];
+      noteColor.textContent = v.color || "";
+      setMain(shots[0] || "");
+      // thumbnails (only when a colour has more than one shot)
+      thumbs.innerHTML = shots.length > 1
+        ? shots.map((s, k) =>
+            `<button class="thumb${k === 0 ? " active" : ""}" data-src="${s}" aria-label="View ${k + 1}">
+               <img src="${s}" alt="" loading="lazy" /></button>`).join("")
+        : "";
+      thumbs.querySelectorAll(".thumb").forEach((t) => {
+        t.addEventListener("click", () => {
+          thumbs.querySelectorAll(".thumb").forEach((x) => x.classList.remove("active"));
+          t.classList.add("active");
+          setMain(t.dataset.src);
+        });
+      });
+    }
 
     img.addEventListener("load", () => { ph.style.display = "none"; });
-    img.addEventListener("error", () => { img.remove(); });
-    img.src = first.file || "";
+    img.addEventListener("error", () => { ph.style.display = ""; });
 
     card.querySelectorAll(".swatch").forEach((btn) => {
       btn.addEventListener("click", () => {
         card.querySelectorAll(".swatch").forEach((b) => b.classList.remove("active"));
         btn.classList.add("active");
-        ph.style.display = "";
-        img.src = btn.dataset.file;
-        noteColor.textContent = btn.dataset.color;
+        renderVariant(+btn.dataset.i);
       });
     });
 
+    renderVariant(0);
     grid.appendChild(card);
   });
 
