@@ -6,10 +6,11 @@
 
   const grid = document.getElementById("grid");
 
-  BAGS.forEach((bag) => {
+  BAGS.forEach((bag, idx) => {
     const variants = bag.variants || [];
     const first = variants[0] || {};
     const initial = (bag.name || "M").trim().charAt(0).toUpperCase();
+    const num = String(idx + 1).padStart(2, "0");
 
     const swatches = variants.length > 1
       ? `<div class="swatches">` + variants.map((v, i) =>
@@ -21,8 +22,9 @@
     const card = document.createElement("article");
     card.className = "card";
     card.innerHTML = `
-      <span class="card-tag">${bag.tag || ""}</span>
       <div class="card-media">
+        <span class="card-tag">${bag.tag || ""}</span>
+        <span class="card-index">${num}</span>
         <div class="card-ph"><div><span>${initial}</span><small>${bag.note || ""}</small></div></div>
         <img alt="${bag.name || "Handbag"}" loading="lazy" />
       </div>
