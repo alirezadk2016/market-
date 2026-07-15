@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MAISON LUXE — گالری برندینگ کیف</title>
+  <meta name="description" content="نمایش حرفه‌ای و لوکس مجموعه کیف — نسخه نمونه (دمو)" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- نوار بالا -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">M</span>
+      <span class="brand-name">MAISON&nbsp;LUXE</span>
+    </div>
+    <nav class="nav">
+      <a href="#collection">مجموعه</a>
+      <a href="#story">درباره برند</a>
+      <a href="#contact">تماس</a>
+    </nav>
+    <span class="demo-badge">نسخه نمونه</span>
+  </header>
+
+  <!-- هیرو -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <p class="hero-eyebrow">مجموعه‌ی خصوصی ۱۴۰۴</p>
+    <h1 class="hero-title">هنرِ حمل کردن،<br /><em>بازتعریف شده.</em></h1>
+    <p class="hero-sub">هر قطعه، دست‌ساز و بی‌همتا — نمایشی از ظرافت، جنس و اصالت.</p>
+    <a href="#collection" class="hero-cta">مشاهده مجموعه</a>
+    <div class="scroll-hint" aria-hidden="true"></div>
+  </section>
+
+  <!-- گالری چرخشی -->
+  <section class="collection" id="collection">
+    <div class="section-head">
+      <span class="section-kicker">۰۱ — گالری</span>
+      <h2 class="section-title">مجموعه‌ی امضاء</h2>
+    </div>
+
+    <div class="carousel" id="carousel" aria-roledescription="گالری چرخشی">
+      <div class="stage" id="stage"><!-- کارت‌ها با جاوااسکریپت ساخته می‌شوند --></div>
+
+      <button class="nav-btn prev" id="prevBtn" aria-label="قبلی">
+        <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <button class="nav-btn next" id="nextBtn" aria-label="بعدی">
+        <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+
+    <div class="meta-bar">
+      <div class="meta-text">
+        <h3 class="meta-name" id="metaName">—</h3>
+        <p class="meta-line" id="metaLine">—</p>
+      </div>
+      <div class="dots" id="dots"></div>
+    </div>
+  </section>
+
+  <!-- روایت برند -->
+  <section class="story" id="story">
+    <div class="story-grid">
+      <div class="story-copy">
+        <span class="section-kicker">۰۲ — فلسفه</span>
+        <h2 class="section-title">ساخته شده برای ماندگاری</h2>
+        <p>ما به کمیت نمی‌اندیشیم؛ به قطعه‌ای می‌اندیشیم که سال‌ها همراه‌تان بماند. چرمِ دباغی‌شده‌ی گیاهی، دوختِ دست و سگک‌های برنجی — جزئیاتی که فقط با لمس درک می‌شوند.</p>
+        <ul class="story-facts">
+          <li><strong>۱۰۰٪</strong><span>چرم طبیعی</span></li>
+          <li><strong>دست‌دوز</strong><span>در هر مرحله</span></li>
+          <li><strong>محدود</strong><span>هر طرح، تیراژ کم</span></li>
+        </ul>
+      </div>
+      <div class="story-art" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <!-- تماس -->
+  <footer class="footer" id="contact">
+    <div class="footer-brand">
+      <span class="brand-mark">M</span>
+      <span class="brand-name">MAISON&nbsp;LUXE</span>
+    </div>
+    <p class="footer-note">این یک نسخه‌ی نمونه است. متن‌ها، برند و تصاویر قابل تغییرند.</p>
+    <div class="footer-links">
+      <a href="#">اینستاگرام</a>
+      <a href="#">واتس‌اپ</a>
+      <a href="#">ایمیل</a>
+    </div>
+    <span class="footer-copy">© ۱۴۰۴ MAISON LUXE — طراحی نمونه</span>
+  </footer>
+
+  <script src="bags.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
