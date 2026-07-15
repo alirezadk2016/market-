@@ -1,3 +1,6 @@
+node_modules/
 .p-*.png
 .preview-*.png
-node_modules/
+preview.png
+.hero.png
+.coll.png
