@@ -1,24 +1,25 @@
-# MAISON LUXE — گالری برندینگ کیف (نسخه نمونه)
+# MAISON — The Handbag Edit (demo)
 
-یک وب‌سایت تک‌صفحه‌ای، لوکس و راست‌به‌چپ برای نمایش حرفه‌ای مجموعه کیف — **بدون قیمت**، فقط نمایش برندینگ.
+A single-page, English, quiet-luxury showcase for a handbag collection.
+**No prices, no links — just the bags.** Warm nude / ivory palette.
 
-## اجرا
-کافیست `index.html` را در مرورگر باز کنید. هیچ وابستگی یا بیلدی لازم نیست.
+## Run
+Open `index.html` in a browser. No build, no dependencies.
 
-## ساختار
-| فایل | توضیح |
-|------|-------|
-| `index.html` | ساختار صفحه (هیرو، گالری، روایت برند، فوتر) |
-| `styles.css` | استایل لوکس؛ پالت مشکی/طلایی/کرم |
-| `bags.js`    | داده و طرح مدل‌های کیف |
-| `script.js`  | گالری چرخشی سه‌بعدی (coverflow) با اتوپلی، سوایپ و کیبورد |
+## Add the photos
+Put each product image in `images/` using the exact filenames listed in
+[`images/README.md`](images/README.md). Each photo replaces its placeholder
+automatically — no code changes needed.
 
-## شخصی‌سازی
-- **نام برند**: در `index.html` و `styles.css` عبارت `MAISON LUXE` و حرف `M` را عوض کنید.
-- **مدل‌های کیف**: در `bags.js` آرایه‌ی `BAGS` را ویرایش کنید (نام، توضیح، برچسب).
-- **جایگزینی با عکس واقعی**: مقدار `svg` هر مدل را با یک تگ تصویر جایگزین کنید، مثلاً:
-  ```js
-  svg: `<img src="images/bag1.jpg" alt="کیف" class="bag-svg">`
-  ```
+## Files
+| File | Purpose |
+|------|---------|
+| `index.html` | Page structure (hero, gallery, footer) |
+| `styles.css` | Luxury nude palette + layout |
+| `bags.js`    | The 15 bags: filename, name, note, tag (edit freely) |
+| `script.js`  | Builds the grid, reveals on scroll, handles missing photos |
+| `images/`    | Drop product photos here |
 
-> این نسخه‌ی نمونه است تا سبک و حس کلی را ببینید؛ رنگ‌ها، متن‌ها و تصاویر همه قابل تغییرند.
+## Customize
+- **Brand name/logo**: replace `MAISON` and the `M` mark in `index.html` / `styles.css`.
+- **Bag labels**: edit the `BAGS` array in `bags.js`.
