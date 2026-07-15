@@ -10,10 +10,25 @@
   function dismissIntro() {
     if (!intro || intro.classList.contains("done")) return;
     intro.classList.add("done");
-    // play the hero entrance once the curtain lifts
-    heroReveals.forEach((el, i) => setTimeout(() => el.classList.add("in"), 120 + i * 130));
+    // play the hero entrance only once the curtain has fully lifted
+    heroReveals.forEach((el, i) => setTimeout(() => el.classList.add("in"), 560 + i * 120));
   }
-  setTimeout(dismissIntro, 1650);
+  setTimeout(dismissIntro, 1600);
+
+  /* ---- Mobile menu ---- */
+  const menu = document.getElementById("menu");
+  const menuToggle = document.getElementById("menuToggle");
+  if (menu && menuToggle) {
+    const setMenu = (open) => {
+      menu.classList.toggle("open", open);
+      menuToggle.classList.toggle("open", open);
+      menuToggle.setAttribute("aria-expanded", open ? "true" : "false");
+      menu.setAttribute("aria-hidden", open ? "false" : "true");
+      document.body.style.overflow = open ? "hidden" : "";
+    };
+    menuToggle.addEventListener("click", () => setMenu(!menu.classList.contains("open")));
+    menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setMenu(false)));
+  }
 
   /* ---- Top bar scroll state ---- */
   const topbar = document.getElementById("topbar");
