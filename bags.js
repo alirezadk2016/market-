@@ -71,7 +71,7 @@ const BAGS = [
   { name: "Gaudì", note: "Leopard Top-Handle", tag: "Limited", variants: [
       { color: "Leopardo", hex: "#b7965f", shots: ["images/gaudi-leopard.jpeg", "images/gaudi-leopard-2.jpeg", "images/gaudi-leopard-3.jpeg"] },
   ]},
-  { name: "Crossbody Bag", note: "Ring Clasp · brand to confirm", tag: "New", variants: [
-      { color: "Nude", hex: "#d9c3ad", shots: ["images/crossbody-nude.jpeg", "images/crossbody-nude-2.jpeg"] },
+  { name: "Coccinelle", note: "Aurora Crossbody", tag: "New", variants: [
+      { color: "Cipria", hex: "#e2cdbe", shots: ["images/crossbody-nude.jpeg", "images/crossbody-nude-2.jpeg"] },
   ]},
 ];
