@@ -1,27 +1,31 @@
 /* ------------------------------------------------------------------
-   Handbag list — demo
-   Drop the matching photo into  images/<file>  and it appears here.
-   Everything is editable: change name / note freely.
-   (No prices, no links — showcase only.)
+   The MAISON edit — demo
+   Each entry points to one hero photo in  images/ .
+   Names are demo labels (by silhouette + colour) — edit freely.
+   No prices, no links — showcase only.
+   Extra angles / model / interior shots are kept in  images/_unused/ .
 ------------------------------------------------------------------- */
 
 const BAGS = [
-  // ---- zalando.dk (brand identified from the link) ----
-  { file: "images/liu-jo-black.jpg",             name: "Liu Jo",           note: "Nero · Structured handbag",        tag: "Signature" },
-  { file: "images/liu-jo-cream.jpg",             name: "Liu Jo",           note: "Cream · Structured handbag",       tag: "New" },
-  { file: "images/coccinelle-jellyfish.jpg",     name: "Coccinelle",       note: "Jellyfish · Handbag",              tag: "Editorial" },
-  { file: "images/coccinelle-me-lock-black.jpg", name: "Coccinelle Me Lock", note: "Noir · Shoulder bag",            tag: "Icon" },
-  { file: "images/ax-sussy-saddle-sand.jpg",     name: "Armani Exchange",  note: "Sussy Saddle · Sand",              tag: "Shoulder" },
-  { file: "images/ax-black.jpg",                 name: "Armani Exchange",  note: "Black · Handbag",                  tag: "Classic" },
-  { file: "images/ax-shopping-black.jpg",        name: "Armani Exchange",  note: "Shopping · Black tote",            tag: "Everyday" },
+  { file: "images/sella-sand.webp",            name: "Sella",       note: "Saddle · Sand",        tag: "Signature" },
+  { file: "images/sella-nero.webp",            name: "Sella",       note: "Saddle · Nero",        tag: "Icon" },
+  { file: "images/monogramme-nero.webp",       name: "Monogramme",  note: "Top-handle · Nero",    tag: "Signature" },
+  { file: "images/tote-mini-nero.webp",        name: "Tote Mini",   note: "Shopper · Nero",       tag: "Everyday" },
+  { file: "images/bauletto-rosa.webp",         name: "Bauletto",    note: "Shoulder · Rosa",      tag: "New" },
+  { file: "images/bauletto-nero.webp",         name: "Bauletto",    note: "Shoulder · Nero",      tag: "New" },
+  { file: "images/lock-nero.webp",             name: "Lock",        note: "Flap · Nero",          tag: "Icon" },
+  { file: "images/luna-nero.webp",             name: "Luna",        note: "Crossbody · Nero",     tag: "Classic" },
 
-  // ---- zalando-lounge.dk (article codes — rename once photos are in) ----
-  { file: "images/lounge-ZZO3U1B38.jpg", name: "Signature Handbag", note: "Ref. ZZO3U1B38", tag: "Limited" },
-  { file: "images/lounge-6CA51H1G9.jpg", name: "Signature Handbag", note: "Ref. 6CA51H1G9", tag: "Limited" },
-  { file: "images/lounge-ZZO3EWT75.jpg", name: "Signature Handbag", note: "Ref. ZZO3EWT75", tag: "Limited" },
-  { file: "images/lounge-ZZO310C76.jpg", name: "Signature Handbag", note: "Ref. ZZO310C76", tag: "Limited" },
-  { file: "images/lounge-ZZO3U1B44.jpg", name: "Signature Handbag", note: "Ref. ZZO3U1B44", tag: "Limited" },
-  { file: "images/lounge-6CA51H1GC.jpg", name: "Signature Handbag", note: "Ref. 6CA51H1GC", tag: "Limited" },
-  { file: "images/lounge-TO151H212.jpg", name: "Signature Handbag", note: "Ref. TO151H212", tag: "Limited" },
-  { file: "images/lounge-6CA51H1JS.jpg", name: "Signature Handbag", note: "Ref. 6CA51H1JS", tag: "Limited" },
+  { file: "images/heritage-grigio.png",        name: "Heritage",    note: "Satchel · Grigio",     tag: "Heritage" },
+  { file: "images/postino-nero.png",           name: "Postino",     note: "Crossbody · Nero",     tag: "Classic" },
+  { file: "images/baguette-avorio.png",        name: "Baguette",    note: "Shoulder · Avorio",    tag: "Editorial" },
+  { file: "images/baguette-nero.png",          name: "Baguette",    note: "Shoulder · Nero",      tag: "Editorial" },
+
+  { file: "images/arco-avorio.png",            name: "Arco",        note: "Hobo · Avorio",        tag: "Signature" },
+  { file: "images/arco-nero.png",              name: "Arco",        note: "Hobo · Nero",          tag: "Signature" },
+  { file: "images/arco-smeraldo.png",          name: "Arco",        note: "Hobo · Smeraldo",      tag: "Limited" },
+  { file: "images/coccodrillo-nero.png",       name: "Coccodrillo", note: "Croc flap · Nero",     tag: "Limited" },
+  { file: "images/coccodrillo-pistacchio.png", name: "Coccodrillo", note: "Croc flap · Pistacchio", tag: "Limited" },
+  { file: "images/baule-nero.png",             name: "Baule",       note: "Shoulder · Nero",      tag: "New" },
+  { file: "images/baule-avorio.png",           name: "Baule",       note: "Shoulder · Avorio",    tag: "New" },
 ];
