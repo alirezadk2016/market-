@@ -1,9 +1,22 @@
 /* =================================================================
-   Gallery builder + colour switch — MAISON (demo)
+   MAISON — build gallery, colour switch, reveals, intro
 ================================================================= */
 (function () {
   "use strict";
 
+  /* ---- Intro curtain ---- */
+  const intro = document.getElementById("intro");
+  function dismissIntro() { if (intro) intro.classList.add("done"); }
+  window.addEventListener("load", () => setTimeout(dismissIntro, 1700));
+  setTimeout(dismissIntro, 2600); // safety
+
+  /* ---- Top bar scroll state ---- */
+  const topbar = document.getElementById("topbar");
+  const onScroll = () => topbar.classList.toggle("scrolled", window.scrollY > 40);
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  /* ---- Build gallery ---- */
   const grid = document.getElementById("grid");
 
   BAGS.forEach((bag, idx) => {
@@ -42,12 +55,11 @@
     img.addEventListener("error", () => { img.remove(); });
     img.src = first.file || "";
 
-    // colour switch
     card.querySelectorAll(".swatch").forEach((btn) => {
       btn.addEventListener("click", () => {
         card.querySelectorAll(".swatch").forEach((b) => b.classList.remove("active"));
         btn.classList.add("active");
-        ph.style.display = "";           // show placeholder briefly during swap
+        ph.style.display = "";
         img.src = btn.dataset.file;
         noteColor.textContent = btn.dataset.color;
       });
@@ -56,19 +68,20 @@
     grid.appendChild(card);
   });
 
-  // Reveal cards on scroll
-  const cards = document.querySelectorAll(".card");
+  /* ---- Reveal on scroll (cards + .reveal elements) ---- */
+  const targets = document.querySelectorAll(".card, .reveal");
   if ("IntersectionObserver" in window) {
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e, i) => {
         if (e.isIntersecting) {
-          setTimeout(() => e.target.classList.add("in"), (i % 3) * 90);
+          const stagger = e.target.classList.contains("card") ? (i % 3) * 110 : 0;
+          setTimeout(() => e.target.classList.add("in"), stagger);
           io.unobserve(e.target);
         }
       });
-    }, { threshold: 0.15 });
-    cards.forEach((c) => io.observe(c));
+    }, { threshold: 0.14 });
+    targets.forEach((t) => io.observe(t));
   } else {
-    cards.forEach((c) => c.classList.add("in"));
+    targets.forEach((t) => t.classList.add("in"));
   }
 })();

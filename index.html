@@ -3,48 +3,64 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MAISON — The Handbag Edit</title>
-  <meta name="description" content="A curated house of handbags — private edit." />
+  <title>MAISON — The Private Collection</title>
+  <meta name="description" content="A private house of handbags — by appointment, Paris." />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <!-- Intro curtain -->
+  <div class="intro" id="intro">
+    <div class="intro-inner">
+      <span class="intro-word">MAISON</span>
+      <span class="intro-line" aria-hidden="true"></span>
+      <span class="intro-sub">The Private Collection</span>
+    </div>
+  </div>
+
   <!-- Top bar -->
-  <header class="topbar">
-    <span class="topbar-side topbar-side--l">Private Edit</span>
+  <header class="topbar" id="topbar">
+    <span class="topbar-side topbar-side--l">Paris — By Appointment</span>
     <div class="brand">
       <span class="brand-name">MAISON</span>
-      <span class="brand-rule" aria-hidden="true"></span>
-      <span class="brand-est">Est. MCMLIV</span>
     </div>
-    <span class="topbar-side topbar-side--r">Demo</span>
+    <span class="topbar-side topbar-side--r">Est. MCMLIV</span>
   </header>
 
   <!-- Hero -->
   <section class="hero">
-    <p class="hero-eyebrow">The House of Maison — Paris</p>
-    <h1 class="hero-title">The art of<br /><em>carrying well.</em></h1>
-    <div class="hero-rule" aria-hidden="true"></div>
-    <p class="hero-sub">A quiet, private edit of handbags — chosen for line, leather and longevity.</p>
-    <a href="#gallery" class="hero-cta">View the Collection</a>
+    <div class="hero-frame" aria-hidden="true"></div>
+    <div class="hero-vignette" aria-hidden="true"></div>
+    <p class="hero-eyebrow reveal">The House of Maison — Paris</p>
+    <h1 class="hero-title reveal">The art of<br /><em>carrying well.</em></h1>
+    <div class="hero-rule reveal" aria-hidden="true"></div>
+    <p class="hero-sub reveal">A private edit of handbags — chosen for line, leather and the quiet confidence of true craft.</p>
+    <a href="#collection" class="hero-cta reveal">Enter the Collection</a>
+    <span class="hero-scroll reveal" aria-hidden="true">Scroll</span>
   </section>
 
-  <!-- Gallery -->
-  <section class="gallery-section" id="gallery">
-    <div class="section-head">
-      <span class="section-index">I</span>
-      <h2 class="section-title">The Collection</h2>
-      <p class="section-lead">Simply the pieces — no more, no less.</p>
-    </div>
+  <!-- Manifesto -->
+  <section class="manifesto">
+    <span class="rule-g" aria-hidden="true"></span>
+    <p class="reveal">“ Not everything of value announces itself. <em>The finest things simply endure.</em> ”</p>
+    <span class="rule-g" aria-hidden="true"></span>
+  </section>
 
+  <!-- Collection -->
+  <section class="collection" id="collection">
+    <div class="section-head">
+      <span class="section-index reveal">I</span>
+      <h2 class="section-title reveal">The Collection</h2>
+      <p class="section-lead reveal">Nineteen pieces — presented as they are.</p>
+    </div>
     <div class="grid" id="grid"><!-- built by script.js --></div>
   </section>
 
   <!-- Footer -->
   <footer class="footer">
-    <span class="brand-name footer-word">MAISON</span>
+    <span class="footer-word">MAISON</span>
     <div class="footer-rule" aria-hidden="true"></div>
-    <p class="footer-note">A demo preview — names, house and photographs are all editable.</p>
-    <span class="footer-copy">© MCMLIV · MAISON — Private Edit</span>
+    <p class="footer-note">A private demo — the house, names and photographs are all yours to change.</p>
+    <span class="footer-copy">© MCMLIV · Maison — By Appointment, Paris</span>
   </footer>
 
   <script src="bags.js"></script>
