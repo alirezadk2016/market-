@@ -28,6 +28,12 @@
     };
     menuToggle.addEventListener("click", () => setMenu(!menu.classList.contains("open")));
     menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setMenu(false)));
+    // Close menu (and free the locked scroll) if the viewport grows to desktop
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 820 && menu.classList.contains("open")) setMenu(false);
+    });
+    // Escape closes the menu
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") setMenu(false); });
   }
 
   /* ---- Top bar scroll state ---- */
@@ -74,8 +80,16 @@
     const thumbs = card.querySelector(".thumbs");
 
     function setMain(src) {
+      if (!src) { ph.style.display = ""; return; }
+      // Re-selecting the same src fires no "load" event — reflect state directly
+      // so the placeholder can never get stuck over the photo.
+      if (img.getAttribute("src") === src) {
+        ph.style.display = img.complete && img.naturalWidth > 0 ? "none" : "";
+        return;
+      }
       ph.style.display = "";
       img.src = src;
+      if (img.complete && img.naturalWidth > 0) ph.style.display = "none"; // cached
     }
 
     function renderVariant(i) {
