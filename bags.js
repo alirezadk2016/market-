@@ -50,4 +50,26 @@ const BAGS = [
       { color: "Nero", hex: "#1c1c1c", file: "images/baule-nero.png" },
       { color: "Avorio", hex: "#e8dcc7", file: "images/baule-avorio.png" },
   ]},
+
+  { name: "Twinset", note: "Crescent Hobo", tag: "New", variants: [
+      { color: "Nero", hex: "#1c1c1c", file: "images/twinset-nero.jpeg" },
+  ]},
+  { name: "Valentino", note: "Flap Shoulder Bag", tag: "Icon", variants: [
+      { color: "Nero", hex: "#1c1c1c", file: "images/valentino-nero.jpeg" },
+  ]},
+  { name: "Furla", note: "Top-Handle Satchel", tag: "Signature", variants: [
+      { color: "Avorio", hex: "#e8dcc7", file: "images/furla-cream.jpeg" },
+  ]},
+  { name: "Furla", note: "Chain Crossbody", tag: "Editorial", variants: [
+      { color: "Bordeaux", hex: "#7a1f3d", file: "images/furla-burgundy.jpeg" },
+  ]},
+  { name: "Ted Baker", note: "Mini Bowling Bag", tag: "New", variants: [
+      { color: "Avorio", hex: "#e8dcc7", file: "images/tedbaker-cream.jpeg" },
+  ]},
+  { name: "Gaudì", note: "Leopard Top-Handle", tag: "Limited", variants: [
+      { color: "Leopardo", hex: "#b7965f", file: "images/gaudi-leopard.jpeg" },
+  ]},
+  { name: "Crossbody Bag", note: "Ring Clasp · brand to confirm", tag: "New", variants: [
+      { color: "Nude", hex: "#d9c3ad", file: "images/crossbody-nude.jpeg" },
+  ]},
 ];
