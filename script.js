@@ -4,9 +4,11 @@
 (function () {
   "use strict";
 
-  const grid = document.getElementById("grid");
+  const gridA = document.getElementById("grid-a");
+  const gridB = document.getElementById("grid-b");
+  const SPLIT = 9; // first 9 pieces above the mid banner, rest below
 
-  BAGS.forEach((bag) => {
+  BAGS.forEach((bag, i) => {
     const card = document.createElement("article");
     card.className = "card";
 
@@ -31,7 +33,7 @@
     img.addEventListener("error", () => { img.remove(); });
     img.src = bag.file;
 
-    grid.appendChild(card);
+    (i < SPLIT ? gridA : gridB).appendChild(card);
   });
 
   // Reveal cards on scroll
