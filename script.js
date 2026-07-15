@@ -4,16 +4,14 @@
 (function () {
   "use strict";
 
-  /* ---- Intro curtain (fixed timer — never waits on image loading) ---- */
+  /* ---- Intro curtain (fixed timer — never waits on image loading) ----
+     The hero entrance is pure CSS (see .hero .reveal in the stylesheet), so
+     the headline is guaranteed to appear even if this script never runs. */
   const intro = document.getElementById("intro");
-  const heroReveals = [...document.querySelectorAll(".hero .reveal")];
   function dismissIntro() {
-    if (!intro || intro.classList.contains("done")) return;
-    intro.classList.add("done");
-    // play the hero entrance only once the curtain has fully lifted
-    heroReveals.forEach((el, i) => setTimeout(() => el.classList.add("in"), 560 + i * 120));
+    if (intro) intro.classList.add("done");
   }
-  setTimeout(dismissIntro, 1600);
+  setTimeout(dismissIntro, 1300);
 
   /* ---- Mobile menu ---- */
   const menu = document.getElementById("menu");
