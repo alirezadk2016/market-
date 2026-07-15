@@ -4,11 +4,16 @@
 (function () {
   "use strict";
 
-  /* ---- Intro curtain ---- */
+  /* ---- Intro curtain (fixed timer — never waits on image loading) ---- */
   const intro = document.getElementById("intro");
-  function dismissIntro() { if (intro) intro.classList.add("done"); }
-  window.addEventListener("load", () => setTimeout(dismissIntro, 1700));
-  setTimeout(dismissIntro, 2600); // safety
+  const heroReveals = [...document.querySelectorAll(".hero .reveal")];
+  function dismissIntro() {
+    if (!intro || intro.classList.contains("done")) return;
+    intro.classList.add("done");
+    // play the hero entrance once the curtain lifts
+    heroReveals.forEach((el, i) => setTimeout(() => el.classList.add("in"), 120 + i * 130));
+  }
+  setTimeout(dismissIntro, 1650);
 
   /* ---- Top bar scroll state ---- */
   const topbar = document.getElementById("topbar");
@@ -94,8 +99,8 @@
     grid.appendChild(card);
   });
 
-  /* ---- Reveal on scroll (cards + .reveal elements) ---- */
-  const targets = document.querySelectorAll(".card, .reveal");
+  /* ---- Reveal on scroll (cards + .reveal, excluding the hero which the intro handles) ---- */
+  const targets = [...document.querySelectorAll(".card, .reveal")].filter((el) => !el.closest(".hero"));
   if ("IntersectionObserver" in window) {
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e, i) => {

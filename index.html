@@ -4,7 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MAISON — The Private Collection</title>
-  <meta name="description" content="A private house of handbags — by appointment, Paris." />
+  <meta name="description" content="A private house of handbags — a quiet, curated edit. By appointment, Paris." />
+  <meta name="theme-color" content="#0d0c0a" />
+
+  <!-- Favicon (gold monogram) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230d0c0a'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='40' fill='%23c8a86a' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E" />
+
+  <!-- Social share -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="MAISON — The Private Collection" />
+  <meta property="og:description" content="A quiet, curated edit of handbags. By appointment, Paris." />
+  <meta property="og:image" content="images/og.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="MAISON — The Private Collection" />
+  <meta name="twitter:description" content="A quiet, curated edit of handbags. By appointment, Paris." />
+  <meta name="twitter:image" content="images/og.png" />
+
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -19,11 +34,12 @@
 
   <!-- Top bar -->
   <header class="topbar" id="topbar">
-    <span class="topbar-side topbar-side--l">Paris — By Appointment</span>
-    <div class="brand">
-      <span class="brand-name">MAISON</span>
-    </div>
-    <span class="topbar-side topbar-side--r">Est. MCMLIV</span>
+    <a href="#" class="brand"><span class="brand-name">MAISON</span></a>
+    <nav class="nav">
+      <a href="#collection">Collection</a>
+      <a href="#house">The House</a>
+      <a href="#enquire">Enquire</a>
+    </nav>
   </header>
 
   <!-- Hero -->
@@ -34,7 +50,10 @@
     <h1 class="hero-title reveal">The art of<br /><em>carrying well.</em></h1>
     <div class="hero-rule reveal" aria-hidden="true"></div>
     <p class="hero-sub reveal">A private edit of handbags — chosen for line, leather and the quiet confidence of true craft.</p>
-    <a href="#collection" class="hero-cta reveal">Enter the Collection</a>
+    <div class="hero-actions reveal">
+      <a href="#collection" class="btn btn--solid">View the Collection</a>
+      <a href="#enquire" class="btn btn--ghost">Book a Viewing</a>
+    </div>
     <span class="hero-scroll reveal" aria-hidden="true">Scroll</span>
   </section>
 
@@ -53,6 +72,47 @@
       <p class="section-lead reveal">Twenty pieces — each shown from every angle.</p>
     </div>
     <div class="grid" id="grid"><!-- built by script.js --></div>
+  </section>
+
+  <!-- The House -->
+  <section class="house" id="house">
+    <div class="section-head">
+      <span class="section-index reveal">II</span>
+      <h2 class="section-title reveal">The House</h2>
+      <p class="section-lead reveal">Why these, and no others.</p>
+    </div>
+    <div class="pillars">
+      <article class="pillar reveal">
+        <span class="pillar-num">i</span>
+        <h3>Italian Ateliers</h3>
+        <p>Cut, stitched and finished by hand in small family workshops — the way it has always been done.</p>
+      </article>
+      <article class="pillar reveal">
+        <span class="pillar-num">ii</span>
+        <h3>Considered Leather</h3>
+        <p>Full-grain hides chosen not for the season, but for how gracefully they age with you.</p>
+      </article>
+      <article class="pillar reveal">
+        <span class="pillar-num">iii</span>
+        <h3>Numbered &amp; Rare</h3>
+        <p>Held in small numbers. A piece to keep — never a product to move.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- Enquire -->
+  <section class="enquire" id="enquire">
+    <div class="enquire-inner">
+      <span class="section-index reveal">III</span>
+      <h2 class="enquire-title reveal">Seen something?<br /><em>Let us introduce it properly.</em></h2>
+      <p class="enquire-sub reveal">Private viewings and enquiries are welcomed by appointment. Tell us the piece — we will take care of the rest.</p>
+      <div class="enquire-links reveal">
+        <a href="#" class="chip">Instagram</a>
+        <a href="#" class="chip">WhatsApp</a>
+        <a href="#" class="chip">Email</a>
+      </div>
+      <p class="enquire-note reveal">Demo — replace these with your own handles before sharing.</p>
+    </div>
   </section>
 
   <!-- Footer -->
