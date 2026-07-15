@@ -1,19 +1,25 @@
 /* =================================================================
-   Gallery builder + graceful photo placeholders — MAISON (demo)
+   Gallery builder + colour switch — MAISON (demo)
 ================================================================= */
 (function () {
   "use strict";
 
-  const gridA = document.getElementById("grid-a");
-  const gridB = document.getElementById("grid-b");
-  const SPLIT = 9; // first 9 pieces above the mid banner, rest below
+  const grid = document.getElementById("grid");
 
-  BAGS.forEach((bag, i) => {
-    const card = document.createElement("article");
-    card.className = "card";
-
+  BAGS.forEach((bag) => {
+    const variants = bag.variants || [];
+    const first = variants[0] || {};
     const initial = (bag.name || "M").trim().charAt(0).toUpperCase();
 
+    const swatches = variants.length > 1
+      ? `<div class="swatches">` + variants.map((v, i) =>
+          `<button class="swatch${i === 0 ? " active" : ""}" style="background:${v.hex}"
+                   data-file="${v.file}" data-color="${v.color}"
+                   title="${v.color}" aria-label="${v.color}"></button>`).join("") + `</div>`
+      : "";
+
+    const card = document.createElement("article");
+    card.className = "card";
     card.innerHTML = `
       <span class="card-tag">${bag.tag || ""}</span>
       <div class="card-media">
@@ -22,18 +28,30 @@
       </div>
       <div class="card-info">
         <div class="card-name">${bag.name || ""}</div>
-        <div class="card-note">${bag.note || ""}</div>
+        <div class="card-note"><span class="note-base">${bag.note || ""}</span> · <span class="note-color">${first.color || ""}</span></div>
+        ${swatches}
       </div>`;
 
     const img = card.querySelector("img");
     const ph  = card.querySelector(".card-ph");
+    const noteColor = card.querySelector(".note-color");
 
-    // Show the photo only if it actually loads; otherwise keep the placeholder.
     img.addEventListener("load", () => { ph.style.display = "none"; });
     img.addEventListener("error", () => { img.remove(); });
-    img.src = bag.file;
+    img.src = first.file || "";
 
-    (i < SPLIT ? gridA : gridB).appendChild(card);
+    // colour switch
+    card.querySelectorAll(".swatch").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        card.querySelectorAll(".swatch").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        ph.style.display = "";           // show placeholder briefly during swap
+        img.src = btn.dataset.file;
+        noteColor.textContent = btn.dataset.color;
+      });
+    });
+
+    grid.appendChild(card);
   });
 
   // Reveal cards on scroll

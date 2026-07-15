@@ -1,31 +1,53 @@
 /* ------------------------------------------------------------------
    The MAISON edit — demo
-   Each entry points to one hero photo in  images/ .
-   Names are demo labels (by silhouette + colour) — edit freely.
-   No prices, no links — showcase only.
-   Extra angles / model / interior shots are kept in  images/_unused/ .
+   One card per model. If a model has several colours, they are listed
+   as "variants" — the user can switch colour right on the card.
+   Only the photos/colours you provided are used. No prices, no links.
+   Extra angle/interior/model shots stay in  images/_unused/ .
 ------------------------------------------------------------------- */
 
 const BAGS = [
-  { file: "images/sella-sand.webp",            name: "Sella",       note: "Saddle · Sand",        tag: "Signature" },
-  { file: "images/sella-nero.webp",            name: "Sella",       note: "Saddle · Nero",        tag: "Icon" },
-  { file: "images/monogramme-nero.webp",       name: "Monogramme",  note: "Top-handle · Nero",    tag: "Signature" },
-  { file: "images/tote-mini-nero.webp",        name: "Tote Mini",   note: "Shopper · Nero",       tag: "Everyday" },
-  { file: "images/bauletto-rosa.webp",         name: "Bauletto",    note: "Shoulder · Rosa",      tag: "New" },
-  { file: "images/bauletto-nero.webp",         name: "Bauletto",    note: "Shoulder · Nero",      tag: "New" },
-  { file: "images/lock-nero.webp",             name: "Lock",        note: "Flap · Nero",          tag: "Icon" },
-  { file: "images/luna-nero.webp",             name: "Luna",        note: "Crossbody · Nero",     tag: "Classic" },
-
-  { file: "images/heritage-grigio.png",        name: "Heritage",    note: "Satchel · Grigio",     tag: "Heritage" },
-  { file: "images/postino-nero.png",           name: "Postino",     note: "Crossbody · Nero",     tag: "Classic" },
-  { file: "images/baguette-avorio.png",        name: "Baguette",    note: "Shoulder · Avorio",    tag: "Editorial" },
-  { file: "images/baguette-nero.png",          name: "Baguette",    note: "Shoulder · Nero",      tag: "Editorial" },
-
-  { file: "images/arco-avorio.png",            name: "Arco",        note: "Hobo · Avorio",        tag: "Signature" },
-  { file: "images/arco-nero.png",              name: "Arco",        note: "Hobo · Nero",          tag: "Signature" },
-  { file: "images/arco-smeraldo.png",          name: "Arco",        note: "Hobo · Smeraldo",      tag: "Limited" },
-  { file: "images/coccodrillo-nero.png",       name: "Coccodrillo", note: "Croc flap · Nero",     tag: "Limited" },
-  { file: "images/coccodrillo-pistacchio.png", name: "Coccodrillo", note: "Croc flap · Pistacchio", tag: "Limited" },
-  { file: "images/baule-nero.png",             name: "Baule",       note: "Shoulder · Nero",      tag: "New" },
-  { file: "images/baule-avorio.png",           name: "Baule",       note: "Shoulder · Avorio",    tag: "New" },
+  { name: "Sella", note: "Saddle", tag: "Signature", variants: [
+      { color: "Sand", hex: "#c9b291", file: "images/sella-sand.webp" },
+      { color: "Nero", hex: "#1c1c1c", file: "images/sella-nero.webp" },
+  ]},
+  { name: "Monogramme", note: "Top-handle", tag: "Signature", variants: [
+      { color: "Nero", hex: "#1c1c1c", file: "images/monogramme-nero.webp" },
+  ]},
+  { name: "Tote Mini", note: "Shopper", tag: "Everyday", variants: [
+      { color: "Nero", hex: "#1c1c1c", file: "images/tote-mini-nero.webp" },
+  ]},
+  { name: "Bauletto", note: "Shoulder", tag: "New", variants: [
+      { color: "Rosa", hex: "#c98bb0", file: "images/bauletto-rosa.webp" },
+      { color: "Nero", hex: "#1c1c1c", file: "images/bauletto-nero.webp" },
+  ]},
+  { name: "Lock", note: "Flap", tag: "Icon", variants: [
+      { color: "Nero", hex: "#1c1c1c", file: "images/lock-nero.webp" },
+  ]},
+  { name: "Luna", note: "Crossbody", tag: "Classic", variants: [
+      { color: "Nero", hex: "#1c1c1c", file: "images/luna-nero.webp" },
+  ]},
+  { name: "Heritage", note: "Satchel", tag: "Heritage", variants: [
+      { color: "Grigio", hex: "#6f6c66", file: "images/heritage-grigio.png" },
+  ]},
+  { name: "Postino", note: "Crossbody", tag: "Classic", variants: [
+      { color: "Nero", hex: "#1c1c1c", file: "images/postino-nero.png" },
+  ]},
+  { name: "Baguette", note: "Shoulder", tag: "Editorial", variants: [
+      { color: "Avorio", hex: "#e8dcc7", file: "images/baguette-avorio.png" },
+      { color: "Nero", hex: "#1c1c1c", file: "images/baguette-nero.png" },
+  ]},
+  { name: "Arco", note: "Hobo", tag: "Signature", variants: [
+      { color: "Avorio", hex: "#e8dcc7", file: "images/arco-avorio.png" },
+      { color: "Nero", hex: "#1c1c1c", file: "images/arco-nero.png" },
+      { color: "Smeraldo", hex: "#1f5f52", file: "images/arco-smeraldo.png" },
+  ]},
+  { name: "Coccodrillo", note: "Croc flap", tag: "Limited", variants: [
+      { color: "Nero", hex: "#1c1c1c", file: "images/coccodrillo-nero.png" },
+      { color: "Pistacchio", hex: "#bcc38a", file: "images/coccodrillo-pistacchio.png" },
+  ]},
+  { name: "Baule", note: "Shoulder", tag: "New", variants: [
+      { color: "Nero", hex: "#1c1c1c", file: "images/baule-nero.png" },
+      { color: "Avorio", hex: "#e8dcc7", file: "images/baule-avorio.png" },
+  ]},
 ];
