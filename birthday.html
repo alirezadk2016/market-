@@ -199,6 +199,16 @@
 
     @media(prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation:none!important}}
 
+    /* ---- Stage 1 decorative rose ---- */
+    .s1-rose{width:clamp(80px,18vw,108px);height:auto;border-radius:8px;
+      display:block;margin:0 auto 2px;opacity:.88;
+      animation:floaty 5.5s ease-in-out infinite;
+      filter:drop-shadow(0 10px 26px rgba(0,0,0,.5)) drop-shadow(0 0 40px rgba(220,192,138,.18))}
+
+    /* ---- Tap cue birthday balloon ---- */
+    .tap-balloon{font-size:22px;display:block;line-height:1;margin-bottom:4px;
+      animation:floaty 3.4s ease-in-out infinite}
+
     /* ---- Music toggle button ---- */
     #muteBtn{position:fixed;top:36px;right:36px;z-index:10;background:none;border:0;cursor:pointer;
       padding:8px;opacity:0;pointer-events:none;transition:opacity .9s ease;color:var(--gold);line-height:0;
@@ -247,8 +257,9 @@
     <h1>Happy <em>Birthday</em></h1>
     <div class="name">my love</div>
     <div class="rule"></div>
-    <p class="fa-sub">تقدیم به بهترین دنیا</p>
+    <img class="s1-rose" src="images/rose-love.png" alt="" aria-hidden="true" />
     <button class="tap-cue" data-next aria-label="Begin">
+      <span class="tap-balloon" aria-hidden="true">🎈</span>
       <span class="tap-ring"><span class="tap-diamond"></span></span>
       <span class="tap-label">touch to begin</span>
     </button>
@@ -344,7 +355,7 @@
     function show(i){
       stages.forEach(function(s,k){s.classList.toggle('on',k===i)});
       idx=i;
-      if(i>=2) balloons.style.opacity='1';
+      balloons.style.opacity='1';
     }
     document.querySelectorAll('[data-next]').forEach(function(b){
       b.addEventListener('click',function(){
