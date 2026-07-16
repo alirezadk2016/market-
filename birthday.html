@@ -113,10 +113,9 @@
       border:1px solid var(--gold);animation:ring-pulse 2.6s ease-out infinite}
     .tap-ring::after{inset:-12px;border-color:rgba(184,151,92,.35);animation-delay:.8s}
     @keyframes ring-pulse{0%{transform:scale(.85);opacity:0}30%{opacity:1}100%{transform:scale(1.4);opacity:0}}
-    .tap-diamond{width:18px;height:18px;border:1px solid var(--gold2);transform:rotate(45deg);
-      background:transparent;position:relative;z-index:1;
-      box-shadow:0 0 18px rgba(220,192,138,.3);animation:diamond-glow 2.6s ease-in-out infinite}
-    @keyframes diamond-glow{0%,100%{box-shadow:0 0 10px rgba(220,192,138,.2)}50%{box-shadow:0 0 26px rgba(220,192,138,.55)}}
+    .tap-heart{font-size:24px;line-height:1;position:relative;z-index:1;
+      animation:heartbeat 1.6s ease-in-out infinite;transform-origin:center;
+      filter:drop-shadow(0 0 16px rgba(217,100,100,.6))}
     .tap-label{font-size:9.5px;letter-spacing:.36em;text-transform:uppercase;color:var(--gold);
       font-family:var(--sans);animation:pulse 2.4s ease-in-out infinite}
     @keyframes pulse{0%,100%{opacity:.45}50%{opacity:.9}}
@@ -268,7 +267,7 @@
       .s1-rose3d{width:min(26vw,19vh)}
       .tap-cue{margin-top:16px;gap:10px}
       .tap-ring{width:50px;height:50px}
-      .tap-heart{font-size:22px}
+      .tap-heart{font-size:20px}
       .note-title{font-size:clamp(32px,7.4vw,60px)}
       .note-flourish{margin:16px auto 0}
       .note-line{font-size:clamp(16px,3vw,22px);margin-top:12px}
@@ -297,11 +296,6 @@
     @keyframes rose3d{
       0%,100%{transform:rotateY(-13deg) rotateX(2deg) translateY(0)}
       50%{transform:rotateY(13deg) rotateX(-3deg) translateY(-9px)}}
-
-    /* ---- Tap cue beating heart ---- */
-    .tap-heart{font-size:26px;display:block;line-height:1;margin-bottom:4px;
-      animation:heartbeat 1.6s ease-in-out infinite;transform-origin:center;
-      filter:drop-shadow(0 0 14px rgba(217,100,100,.55))}
 
     /* ---- Music toggle button ---- */
     #muteBtn{position:fixed;top:36px;right:36px;z-index:10;background:none;border:0;cursor:pointer;
@@ -353,8 +347,7 @@
     <div class="rule"></div>
     <div class="s1-rose3d" aria-hidden="true"><img src="images/rose-stem.webp" alt="" /></div>
     <button class="tap-cue" data-next aria-label="Begin">
-      <span class="tap-heart" aria-hidden="true">❤️</span>
-      <span class="tap-ring"><span class="tap-diamond"></span></span>
+      <span class="tap-ring"><span class="tap-heart" aria-hidden="true">❤️</span></span>
       <span class="tap-label">touch to begin</span>
     </button>
   </section>
@@ -529,6 +522,8 @@
         playerVars:{autoplay:0,controls:0,loop:1,playlist:'bhoybya39QU',rel:0,iv_load_policy:3,modestbranding:1},
         events:{onReady:function(){
           ytReady=true;
+          // try to start right away (works when the browser allows it)
+          startMusic();
           if(musicPending){ ytPlayer.playVideo(); musicPending=false; showMuteBtn(); }
         }}
       });
@@ -539,6 +534,8 @@
       if(ytReady && ytPlayer){ ytPlayer.playVideo(); showMuteBtn(); }
       else musicPending=true;
     }
+    // if autoplay was blocked, the very first touch anywhere starts the music
+    document.addEventListener('pointerdown',function(){ startMusic(); },{once:true});
     function showMuteBtn(){ muteBtn.classList.add('on'); }
     muteBtn.addEventListener('click',function(){
       if(!ytPlayer) return;
