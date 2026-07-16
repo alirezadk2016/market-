@@ -56,22 +56,4 @@ const BAGS = [
   { name: "Twinset", note: "Crescent Hobo", tag: "New", variants: [
       { color: "Nero", hex: "#1c1c1c", shots: ["images/twinset-nero.jpeg", "images/twinset-nero-2.jpeg"] },
   ]},
-  { name: "Valentino", note: "Flap Shoulder Bag", tag: "Icon", variants: [
-      { color: "Nero", hex: "#1c1c1c", shots: ["images/valentino-nero.jpeg", "images/valentino-nero-2.jpeg"] },
-  ]},
-  { name: "Furla", note: "Top-Handle Satchel", tag: "Signature", variants: [
-      { color: "Avorio", hex: "#e8dcc7", shots: ["images/furla-cream.jpeg", "images/furla-cream-2.jpeg"] },
-  ]},
-  { name: "Furla", note: "Chain Crossbody", tag: "Editorial", variants: [
-      { color: "Bordeaux", hex: "#7a1f3d", shots: ["images/furla-burgundy.jpeg", "images/furla-burgundy-2.jpeg", "images/furla-burgundy-3.jpeg"] },
-  ]},
-  { name: "Ted Baker", note: "Mini Bowling Bag", tag: "New", variants: [
-      { color: "Avorio", hex: "#e8dcc7", shots: ["images/tedbaker-cream.jpeg", "images/tedbaker-cream-2.jpeg"] },
-  ]},
-  { name: "Gaudì", note: "Leopard Top-Handle", tag: "Limited", variants: [
-      { color: "Leopardo", hex: "#b7965f", shots: ["images/gaudi-leopard.jpeg", "images/gaudi-leopard-2.jpeg", "images/gaudi-leopard-3.jpeg"] },
-  ]},
-  { name: "Coccinelle", note: "Aurora Crossbody", tag: "New", variants: [
-      { color: "Cipria", hex: "#e2cdbe", shots: ["images/crossbody-nude.jpeg", "images/crossbody-nude-2.jpeg"] },
-  ]},
 ];
