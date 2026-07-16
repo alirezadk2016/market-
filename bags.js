@@ -24,9 +24,6 @@ const BAGS = [
   { name: "Coccinelle", note: "Me Lock", tag: "Icon", variants: [
       { color: "Noir", hex: "#1c1c1c", shots: ["images/lock-nero.webp", "images/lock-nero-2.webp"] },
   ]},
-  { name: "Liu Jo", note: "Saddle Bag", tag: "Classic", variants: [
-      { color: "Nero", hex: "#1c1c1c", shots: ["images/luna-nero.webp"] },
-  ]},
   { name: "U.S. Polo Assn.", note: "Monogram Satchel", tag: "Heritage", variants: [
       { color: "Grigio", hex: "#6f6c66", shots: ["images/heritage-grigio.png", "images/heritage-grigio-2.png", "images/heritage-grigio-3.png"] },
   ]},
