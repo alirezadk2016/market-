@@ -29,7 +29,7 @@
     html,body{height:100%;background:#0d0c0a}
     body{font-family:var(--sans);font-weight:300;color:var(--ink);overflow:hidden;
       background:radial-gradient(90% 70% at 50% 30%,#171410 0%,var(--bg) 62%)}
-    canvas#fx{position:fixed;inset:0;z-index:0;pointer-events:none}
+    canvas#fx{position:fixed;inset:0;z-index:5;pointer-events:none}
     .frame{position:fixed;inset:20px;border:1px solid var(--line);z-index:1;pointer-events:none}
     @media(max-width:560px){.frame{inset:12px}}
 
@@ -60,50 +60,110 @@
     .btn--solid{background:var(--gold);color:#1b1610}
     .btn--solid:hover{background:var(--gold2)}
 
-    /* ---- Stage 3: rose → gift ---- */
-    .rose-wrap{display:flex;flex-direction:column;align-items:center}
-    .rose-btn{background:none;border:0;cursor:pointer;padding:0;position:relative;filter:drop-shadow(0 0 26px rgba(220,192,138,.35));
-      animation:floaty 4s ease-in-out infinite;transition:transform 1.1s var(--ease),opacity 1s var(--ease)}
-    .rose-btn svg{width:clamp(150px,34vw,220px);height:auto;display:block}
-    .rose-hint{font-family:var(--fa);direction:rtl;color:var(--gold2);font-size:15px;margin-top:26px;
+    /* ---- Stage 3 · part one: the real rose ---- */
+    .rose-wrap{display:flex;flex-direction:column;align-items:center;
+      transition:opacity .8s var(--ease),transform .9s var(--ease)}
+    .rose-btn{background:none;border:0;cursor:pointer;padding:0;position:relative;
+      animation:floaty 5s ease-in-out infinite;
+      transition:transform 1s var(--ease),opacity .9s var(--ease)}
+    .rose-btn img{display:block;width:clamp(230px,60vw,330px);height:auto;border-radius:10px;
+      box-shadow:0 30px 80px rgba(0,0,0,.65),0 0 70px rgba(220,192,138,.14)}
+    /* soft breathing halo behind the card */
+    .rose-halo{position:absolute;inset:-22%;z-index:-1;border-radius:50%;
+      background:radial-gradient(circle,rgba(220,192,138,.24) 0%,rgba(184,151,92,.08) 42%,transparent 68%);
+      animation:halo 5s ease-in-out infinite}
+    @keyframes halo{0%,100%{opacity:.6;transform:scale(.96)}50%{opacity:1;transform:scale(1.04)}}
+    /* light sweep across the card */
+    .rose-btn::after{content:"";position:absolute;inset:0;border-radius:10px;overflow:hidden;pointer-events:none;
+      background:linear-gradient(115deg,transparent 30%,rgba(255,243,214,.14) 46%,rgba(255,243,214,.05) 52%,transparent 62%);
+      background-size:260% 100%;animation:sheen 5.5s ease-in-out infinite}
+    @keyframes sheen{0%,55%{background-position:130% 0}90%,100%{background-position:-70% 0}}
+    .rose-hint{font-family:var(--fa);direction:rtl;color:var(--gold2);font-size:15px;margin-top:30px;
       animation:pulse 2.4s ease-in-out infinite}
     @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
     @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
-    .rose-wrap.bloom .rose-btn{transform:scale(2.1) rotate(8deg);opacity:0;pointer-events:none}
+    .rose-wrap.bloom .rose-btn{transform:scale(1.35);opacity:0;pointer-events:none}
     .rose-wrap.bloom .rose-hint{opacity:0;transition:opacity .4s}
 
+    /* ---- Stage 3 · part two: the gift atelier ---- */
     .gift-reveal{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
-      padding:44px 26px;opacity:0;visibility:hidden;transition:opacity 1s var(--ease),visibility 1s}
+      padding:34px 26px;opacity:0;visibility:hidden;transition:opacity 1.1s var(--ease),visibility 1.1s}
     .gift-reveal.on{opacity:1;visibility:visible}
-    /* 3D turntable — the gift rotates so she sees every angle */
-    .gift{position:relative;margin:22px auto 26px;width:min(250px,56vw);aspect-ratio:4/5;
-      perspective:1200px;opacity:0;transform:scale(.9);transition:opacity 1s var(--ease),transform 1.1s var(--ease)}
-    .gift.on{opacity:1;transform:none}
-    .gift-glow{position:absolute;inset:-18%;border-radius:50%;
-      background:radial-gradient(circle,rgba(220,192,138,.45) 0%,rgba(184,151,92,.14) 38%,transparent 66%)}
-    .turn{position:absolute;inset:0;transform-style:preserve-3d;animation:spin 14s linear infinite}
-    @keyframes spin{from{transform:rotateX(-7deg) rotateY(0)}to{transform:rotateX(-7deg) rotateY(360deg)}}
-    .face{position:absolute;inset:0;margin:0;overflow:hidden;border:1px solid var(--line);
-      background:linear-gradient(168deg,#f5efe4,#e7ddcc);
-      transform:rotateY(calc(var(--i)*90deg)) translateZ(148px);backface-visibility:hidden}
-    .face img{width:100%;height:100%;object-fit:cover;object-position:center 40%}
-    .face::after{content:"";position:absolute;inset:8px;border:1px solid rgba(38,34,27,.1)}
-    .floor{position:absolute;left:8%;right:8%;bottom:-13%;height:11%;border-radius:50%;
-      background:radial-gradient(ellipse at center,rgba(220,192,138,.28),transparent 70%);filter:blur(6px)}
 
-    /* Stage 4 — full-bleed cinematic photo finale */
-    .stage--photo{padding:0}
-    .us{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-      animation:kenburns 18s ease-in-out infinite alternate}
-    @keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.07)}}
-    .us-shade{position:absolute;inset:0;pointer-events:none;
-      background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(0,0,0,.55) 100%)}
-    .gift-cap{margin-top:24px;opacity:0;transition:opacity 1s var(--ease)}
-    .gift-cap.on{opacity:1}
-    .gift-name{font-family:var(--serif);font-weight:500;font-size:clamp(24px,4vw,34px)}
+    .hb-crown{width:34px;height:auto;opacity:0;transform:translateY(8px);
+      transition:opacity .9s var(--ease) .15s,transform .9s var(--ease) .15s;
+      filter:drop-shadow(0 0 12px rgba(220,192,138,.5))}
+    .gift-reveal.on .hb-crown{opacity:1;transform:none}
+    .hb-script{font-family:var(--serif);font-style:italic;font-weight:500;
+      font-size:clamp(34px,7.5vw,58px);line-height:1.05;margin-top:10px;
+      background:linear-gradient(120deg,var(--gold2),#fff3d6 55%,var(--gold));
+      -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+      opacity:0;transform:translateY(10px);transition:opacity 1s var(--ease) .3s,transform 1s var(--ease) .3s}
+    .gift-reveal.on .hb-script{opacity:1;transform:none}
+    .reveal-line{font-family:var(--fa);direction:rtl;font-weight:400;font-size:clamp(15px,2.6vw,19px);
+      color:var(--ink2);margin-top:12px;opacity:0;transition:opacity 1s var(--ease) .55s}
+    .gift-reveal.on .reveal-line{opacity:1}
+
+    /* the vitrine: spotlight + rotating showcase + pedestal */
+    .gift{--w:min(250px,56vw);position:relative;margin:26px auto 30px;width:var(--w);aspect-ratio:3/4;
+      perspective:1300px;opacity:0;transform:translateY(26px) scale(.92);
+      transition:opacity 1.1s var(--ease) .5s,transform 1.2s var(--ease) .5s;touch-action:pan-y}
+    .gift.on{opacity:1;transform:none}
+    .spot{position:absolute;left:50%;top:-46%;width:150%;height:74%;transform:translateX(-50%);pointer-events:none;
+      background:linear-gradient(to bottom,rgba(255,243,214,.15),rgba(255,243,214,.03) 70%,transparent);
+      clip-path:polygon(42% 0,58% 0,100% 100%,0 100%);filter:blur(10px)}
+    .gift-glow{position:absolute;inset:-16%;border-radius:50%;pointer-events:none;
+      background:radial-gradient(circle,rgba(220,192,138,.32) 0%,rgba(184,151,92,.1) 40%,transparent 66%);
+      animation:halo 6s ease-in-out infinite}
+    .turn{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform;cursor:grab}
+    .turn.grabbing{cursor:grabbing}
+    .face{position:absolute;inset:0;margin:0;overflow:hidden;border-radius:12px;
+      border:1px solid rgba(220,192,138,.5);
+      background:linear-gradient(168deg,#f6f3ee,#e9e4da);
+      box-shadow:0 18px 50px rgba(0,0,0,.45);
+      transform:rotateY(calc(var(--i)*90deg)) translateZ(calc(var(--w)/2 + 16px));
+      backface-visibility:hidden}
+    .face img{width:100%;height:100%;object-fit:cover;object-position:center 46%;display:block;transform:scale(1.28)}
+    .face::before{content:"";position:absolute;inset:7px;border:1px solid rgba(38,34,27,.12);border-radius:8px;z-index:2}
+    .face::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+      background:linear-gradient(115deg,transparent 42%,rgba(255,255,255,.22) 50%,transparent 58%)}
+    /* pedestal — a lit jewellery ring under the bag */
+    .pedestal{position:absolute;left:50%;bottom:-19%;width:132%;aspect-ratio:10/2.6;transform:translateX(-50%);pointer-events:none}
+    .pedestal i{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(220,192,138,.55);
+      box-shadow:0 0 24px rgba(220,192,138,.25),inset 0 0 30px rgba(220,192,138,.12)}
+    .pedestal i:nth-child(2){inset:16% 9%;border-color:rgba(220,192,138,.28);box-shadow:none}
+    .pedestal b{position:absolute;inset:6% 2%;border-radius:50%;
+      background:radial-gradient(ellipse at center,rgba(220,192,138,.24),transparent 68%);filter:blur(7px)}
+    .drag-hint{font-family:var(--fa);direction:rtl;color:var(--muted);font-size:12.5px;margin-top:32px;position:relative;z-index:3;
+      opacity:0;transition:opacity 1s var(--ease) 1.4s}
+    .gift-reveal.on .drag-hint{opacity:.85}
+
+    /* twinkling sparks around the vitrine */
+    .spark{position:absolute;color:var(--gold2);pointer-events:none;font-size:14px;
+      left:var(--x);top:var(--y);animation:twinkle 2.8s ease-in-out infinite;animation-delay:var(--d);opacity:0}
+    @keyframes twinkle{0%,100%{opacity:0;transform:scale(.5) rotate(0)}50%{opacity:.9;transform:scale(1.15) rotate(40deg)}}
+
+    .gift-cap{margin-top:20px;opacity:0;transform:translateY(10px);
+      transition:opacity 1s var(--ease),transform 1s var(--ease)}
+    .gift-cap.on{opacity:1;transform:none}
+    .gift-name{font-family:var(--serif);font-weight:500;font-size:clamp(23px,4vw,32px)}
     .gift-sub{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold2);margin-top:8px}
-    .gift-fa{font-family:var(--nastaliq);direction:rtl;color:var(--gold2);font-size:clamp(22px,4.4vw,34px);margin-top:20px}
-    .reveal-line{font-family:var(--fa);direction:rtl;font-weight:400;font-size:clamp(19px,3vw,26px);color:var(--gold2);margin-bottom:28px;min-height:1.2em}
+    .cap-div{display:flex;align-items:center;gap:12px;justify-content:center;margin-top:16px;color:var(--gold)}
+    .cap-div::before,.cap-div::after{content:"";width:44px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));display:block}
+    .cap-div::after{background:linear-gradient(90deg,var(--gold),transparent)}
+    .gift-fa{font-family:var(--nastaliq);direction:rtl;color:var(--gold2);font-size:clamp(21px,4.2vw,32px);margin-top:14px}
+    .gift-cap .btn{margin-top:26px}
+
+    /* ---- Stage 4 — cinematic finale: our photo ---- */
+    .stage--photo{padding:0}
+    .us-bg{position:absolute;inset:-8%;width:116%;height:116%;object-fit:cover;
+      filter:blur(46px) brightness(.5) saturate(1.1)}
+    .us{position:relative;z-index:2;max-width:min(92vw,560px);max-height:88vh;width:auto;height:auto;
+      border-radius:10px;box-shadow:0 40px 110px rgba(0,0,0,.7),0 0 90px rgba(220,192,138,.16);
+      animation:breathe 12s ease-in-out infinite alternate}
+    @keyframes breathe{from{transform:scale(1)}to{transform:scale(1.025)}}
+    .us-shade{position:absolute;inset:0;z-index:3;pointer-events:none;
+      background:radial-gradient(125% 95% at 50% 45%,transparent 58%,rgba(0,0,0,.5) 100%)}
 
     @media(prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation:none!important}}
   </style>
@@ -129,52 +189,47 @@
     <button class="btn" data-next>یه سوپرایز دارم…</button>
   </section>
 
-  <!-- Stage 3 — rose → gift -->
+  <!-- Stage 3 — the rose, then the gift -->
   <section class="stage" data-stage="3">
     <div class="rose-wrap" id="rosewrap">
       <button class="rose-btn" id="rose" aria-label="Open your surprise">
-        <svg viewBox="0 0 140 190">
-          <defs>
-            <linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#fff3d6"/><stop offset=".5" stop-color="#dcc08a"/><stop offset="1" stop-color="#b8975c"/>
-            </linearGradient>
-          </defs>
-          <g fill="none" stroke="url(#rg)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-            <!-- bloom spiral -->
-            <path d="M70 66 c-6 -1 -9 4 -6 8 c3 5 11 3 11 -3 c-1 -9 -12 -11 -18 -4 c-7 8 -3 21 8 23 c14 3 25 -9 21 -23"/>
-            <!-- outer petals -->
-            <path d="M55 60 c-13 -3 -25 7 -23 20 c1 8 6 13 13 15"/>
-            <path d="M90 62 c13 -5 26 4 26 18 c0 8 -5 15 -13 18"/>
-            <path d="M60 92 q10 9 22 0"/>
-            <!-- calyx -->
-            <path d="M58 92 c-3 6 -1 12 4 15 M82 92 c3 6 1 12 -4 15"/>
-            <!-- stem -->
-            <path d="M70 100 q7 40 -2 82"/>
-            <!-- leaves -->
-            <path d="M67 132 c-18 -7 -33 3 -33 3 s11 16 28 11 c9 -3 11 -9 5 -14 Z"/>
-            <path d="M72 156 c18 -7 33 3 33 3 s-11 16 -28 11 c-9 -3 -11 -9 -5 -14 Z"/>
-          </g>
-        </svg>
+        <span class="rose-halo" aria-hidden="true"></span>
+        <img src="images/rose-love.png" alt="For my love — a rose" />
       </button>
-      <p class="rose-hint">روی گلِ رز لمس کن 🌹</p>
+      <p class="rose-hint">روی رز لمس کن 🌹</p>
     </div>
 
     <div class="gift-reveal" id="giftreveal">
-      <p class="reveal-line" id="rline"></p>
+      <svg class="hb-crown" viewBox="0 0 48 30" aria-hidden="true">
+        <path d="M4 24 L2 8 L13 16 L24 3 L35 16 L46 8 L44 24 Z" fill="none" stroke="#dcc08a" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="2" cy="6" r="2" fill="#dcc08a"/><circle cx="24" cy="3" r="2" fill="#fff3d6"/><circle cx="46" cy="6" r="2" fill="#dcc08a"/>
+      </svg>
+      <p class="hb-script">Happy Birthday</p>
+      <p class="reveal-line">برات یه هدیه گرفتم، عشقم…</p>
+
       <div class="gift" id="gift">
-        <div class="gift-glow"></div>
+        <div class="spot" aria-hidden="true"></div>
+        <div class="gift-glow" aria-hidden="true"></div>
         <div class="turn" id="turn">
-          <figure class="face" style="--i:0"><img src="images/monogramme-nero.webp"   alt="Your gift" /></figure>
-          <figure class="face" style="--i:1"><img src="images/monogramme-nero-2.webp" alt="" /></figure>
-          <figure class="face" style="--i:2"><img src="images/monogramme-nero-3.webp" alt="" /></figure>
-          <figure class="face" style="--i:3"><img src="images/monogramme-nero-4.webp" alt="" /></figure>
+          <figure class="face" style="--i:0"><img src="images/gift-front.webp"  alt="Your gift" /></figure>
+          <figure class="face" style="--i:1"><img src="images/gift-detail.webp" alt="" /></figure>
+          <figure class="face" style="--i:2"><img src="images/gift-back.webp"   alt="" /></figure>
+          <figure class="face" style="--i:3"><img src="images/gift-inside.webp" alt="" /></figure>
         </div>
-        <div class="floor" aria-hidden="true"></div>
+        <div class="pedestal" aria-hidden="true"><b></b><i></i><i></i></div>
+        <span class="spark" style="--x:-6%;--y:22%;--d:.2s">✦</span>
+        <span class="spark" style="--x:104%;--y:12%;--d:1.1s">✦</span>
+        <span class="spark" style="--x:108%;--y:64%;--d:2s">✦</span>
+        <span class="spark" style="--x:-10%;--y:70%;--d:1.6s">✦</span>
+        <span class="spark" style="--x:50%;--y:-12%;--d:.7s">✦</span>
       </div>
+      <p class="drag-hint">با انگشتت بچرخونش ✨</p>
+
       <div class="gift-cap" id="gcap">
         <div class="gift-name">Armani Exchange</div>
         <div class="gift-sub">Logo Top-Handle · Nero</div>
-        <p class="gift-fa">این مالِ توئه، عشقم 🤍<br />دوستت دارم، زهرا</p>
+        <div class="cap-div">✦</div>
+        <p class="gift-fa">این مالِ توئه، عشقم 🤍</p>
         <button class="btn" id="morebtn" style="display:none">یه چیزِ دیگه هم هست…</button>
       </div>
     </div>
@@ -182,13 +237,15 @@
 
   <!-- Stage 4 — cinematic finale: our photo -->
   <section class="stage stage--photo" data-stage="4">
-    <img class="us" id="usphoto" src="images/zahra-us.jpg" alt="Us" />
+    <img class="us-bg" src="images/zahra-us.png" alt="" aria-hidden="true" />
+    <img class="us" id="usphoto" src="images/zahra-us.png" alt="Us" />
     <div class="us-shade" aria-hidden="true"></div>
   </section>
 
   <script>
   (function(){
     "use strict";
+    var reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
     var stages=[].slice.call(document.querySelectorAll('.stage')), idx=0;
     function show(i){ stages.forEach(function(s,k){s.classList.toggle('on',k===i)}); idx=i; }
     document.querySelectorAll('[data-next]').forEach(function(b){
@@ -196,38 +253,82 @@
     });
     setTimeout(function(){ show(0); },400);
 
-    // Stage 3: rose click → bloom → gift
+    /* ---- Stage 3: rose → gift ---- */
     var rose=document.getElementById('rose'), wrap=document.getElementById('rosewrap'),
         reveal=document.getElementById('giftreveal'), gift=document.getElementById('gift'),
-        gcap=document.getElementById('gcap'), rline=document.getElementById('rline');
+        gcap=document.getElementById('gcap');
     var opened=false;
     rose.addEventListener('click',function(){
       if(opened) return; opened=true;
-      burst(0.5,0.5,true);                 // petals from the rose
+      burst(0.5,0.5,true);
       wrap.classList.add('bloom');
-      rline.textContent = 'برایت یک هدیه گرفتم…';
-      setTimeout(function(){ wrap.style.display='none'; reveal.classList.add('on'); gift.classList.add('on'); },900);
-      setTimeout(function(){ gcap.classList.add('on'); burst(0.5,0.42,false); },1900);
+      setTimeout(function(){ wrap.style.display='none'; reveal.classList.add('on'); gift.classList.add('on'); },850);
+      setTimeout(function(){ confetti(); },1500);
+      setTimeout(function(){ gcap.classList.add('on'); burst(0.5,0.4,false); },2100);
     });
 
-    // Stage 4: only offer the finale if the couple photo actually exists
+    /* ---- The turntable: slow auto-spin + drag to rotate ---- */
+    var turn=document.getElementById('turn'),
+        faces=[].slice.call(turn.querySelectorAll('.face'));
+    var angle=0, vel=0.22, BASE=0.22, dragging=false, lastX=0, lastT=0;
+    function render(){
+      turn.style.transform='rotateX(-8deg) rotateY('+angle+'deg)';
+      for(var i=0;i<faces.length;i++){
+        var a=((angle+i*90)%360+360)%360, c=Math.cos(a*Math.PI/180);
+        faces[i].style.filter='brightness('+(0.62+0.38*Math.max(0,c)).toFixed(3)+')';
+      }
+    }
+    if(reduced){ render(); }
+    else{
+      (function loop(){
+        if(!dragging){ angle+=vel; vel+=(BASE-vel)*0.02; }
+        render(); requestAnimationFrame(loop);
+      })();
+      gift.addEventListener('pointerdown',function(e){
+        dragging=true; lastX=e.clientX; lastT=performance.now();
+        turn.classList.add('grabbing'); gift.setPointerCapture&&gift.setPointerCapture(e.pointerId);
+      });
+      gift.addEventListener('pointermove',function(e){
+        if(!dragging) return;
+        var now=performance.now(), dx=e.clientX-lastX;
+        angle+=dx*0.45;
+        vel=Math.max(-6,Math.min(6,dx*0.45/Math.max(1,now-lastT)*16));
+        lastX=e.clientX; lastT=now;
+      });
+      function drop(){ dragging=false; turn.classList.remove('grabbing'); }
+      gift.addEventListener('pointerup',drop);
+      gift.addEventListener('pointercancel',drop);
+    }
+
+    /* ---- Stage 4: only offer the finale once the couple photo loads ---- */
     var morebtn=document.getElementById('morebtn'), usphoto=document.getElementById('usphoto');
     function armMore(){ morebtn.style.display='inline-flex'; }
     if(usphoto.complete && usphoto.naturalWidth>0) armMore();
     usphoto.addEventListener('load',armMore);
     usphoto.addEventListener('error',function(){ morebtn.style.display='none'; });
-    morebtn.addEventListener('click',function(){ show(stages.length-1); burst(0.5,0.5,true); });
+    morebtn.addEventListener('click',function(){ show(stages.length-1); burst(0.5,0.5,true); confetti(); });
 
-    /* ---- gold + rose particles ---- */
+    /* ---- gold dust, petal bursts & confetti ---- */
     var cv=document.getElementById('fx'),cx=cv.getContext('2d'),W,H,DPR;
     function size(){DPR=Math.min(2,window.devicePixelRatio||1);W=cv.width=innerWidth*DPR;H=cv.height=innerHeight*DPR;cv.style.width=innerWidth+'px';cv.style.height=innerHeight+'px';}
     size();addEventListener('resize',size);
-    var dust=[],bp=[];
+    var dust=[],bp=[],cf=[];
     for(var i=0;i<64;i++)dust.push(nd());
     function nd(){return{x:Math.random()*W,y:Math.random()*H,r:(Math.random()*1.6+.4)*DPR,s:(Math.random()*.26+.05)*DPR,a:Math.random()*.5+.15,tw:Math.random()*6.28};}
     function burst(fx,fy,rosey){var x0=W*fx,y0=H*fy,n=rosey?110:80;
       for(var i=0;i<n;i++){var an=Math.random()*6.28,sp=(Math.random()*7+2)*DPR;
         bp.push({x:x0,y:y0,vx:Math.cos(an)*sp,vy:Math.sin(an)*sp-2*DPR,r:(Math.random()*2.6+1)*DPR,life:1,rose:rosey&&Math.random()<.5});}}
+    var CCOLS=['220,192,138','255,243,214','184,151,92','217,138,134'];
+    function confetti(){
+      if(reduced) return;
+      for(var i=0;i<120;i++){
+        cf.push({x:Math.random()*W,y:-Math.random()*H*0.25-10*DPR,
+          vx:(Math.random()-.5)*1.4*DPR,vy:(Math.random()*1.8+1.2)*DPR,
+          w:(Math.random()*7+4)*DPR,h:(Math.random()*4+2.4)*DPR,
+          rot:Math.random()*6.28,vr:(Math.random()-.5)*.22,sw:Math.random()*6.28,
+          col:CCOLS[(Math.random()*CCOLS.length)|0],life:1});
+      }
+    }
     function tick(){cx.clearRect(0,0,W,H);
       for(var i=0;i<dust.length;i++){var d=dust[i];d.y-=d.s;d.tw+=.03;d.x+=Math.sin(d.tw)*.15*DPR;
         if(d.y<-5){d.y=H+5;d.x=Math.random()*W;}
@@ -236,6 +337,12 @@
         if(p.life<=0){bp.splice(j,1);continue;}
         var col=p.rose?'217,138,134':(Math.random()<.3?'255,244,214':'220,192,138');
         cx.beginPath();cx.fillStyle='rgba('+col+','+Math.max(0,p.life)+')';cx.arc(p.x,p.y,p.r,0,6.28);cx.fill();}
+      for(var k=cf.length-1;k>=0;k--){var c=cf[k];c.sw+=.05;c.x+=c.vx+Math.sin(c.sw)*.5*DPR;c.y+=c.vy;c.rot+=c.vr;
+        if(c.y>H*0.82)c.life-=.03;
+        if(c.life<=0||c.y>H+20){cf.splice(k,1);continue;}
+        cx.save();cx.translate(c.x,c.y);cx.rotate(c.rot);
+        cx.fillStyle='rgba('+c.col+','+Math.max(0,c.life)+')';
+        cx.fillRect(-c.w/2,-c.h/2,c.w,c.h);cx.restore();}
       requestAnimationFrame(tick);}
     tick();
   })();
