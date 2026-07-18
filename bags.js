@@ -25,32 +25,32 @@ const BAGS = [
       { color: "Noir", hex: "#1c1c1c", shots: ["images/lock-nero.webp", "images/lock-nero-2.webp"] },
   ]},
   { name: "U.S. Polo Assn.", note: "Monogram Satchel", tag: "Heritage", variants: [
-      { color: "Grigio", hex: "#6f6c66", shots: ["images/heritage-grigio.png", "images/heritage-grigio-2.png", "images/heritage-grigio-3.png"] },
+      { color: "Grigio", hex: "#6f6c66", shots: ["images/heritage-grigio.webp", "images/heritage-grigio-2.webp", "images/heritage-grigio-3.webp"] },
   ]},
   { name: "U.S. Polo Assn.", note: "Flap Crossbody", tag: "Classic", variants: [
-      { color: "Nero", hex: "#1c1c1c", shots: ["images/postino-nero.png", "images/postino-nero-2.png", "images/postino-nero-3.png"] },
+      { color: "Nero", hex: "#1c1c1c", shots: ["images/postino-nero.webp", "images/postino-nero-2.webp", "images/postino-nero-3.webp"] },
   ]},
   { name: "U.S. Polo Assn.", note: "Shoulder Baguette", tag: "Editorial", variants: [
-      { color: "Avorio", hex: "#e8dcc7", shots: ["images/baguette-avorio.png", "images/baguette-avorio-2.png", "images/baguette-avorio-3.png"] },
-      { color: "Nero", hex: "#1c1c1c", shots: ["images/baguette-nero.png", "images/baguette-nero-2.png"] },
+      { color: "Avorio", hex: "#e8dcc7", shots: ["images/baguette-avorio.webp", "images/baguette-avorio-2.webp", "images/baguette-avorio-3.webp"] },
+      { color: "Nero", hex: "#1c1c1c", shots: ["images/baguette-nero.webp", "images/baguette-nero-2.webp"] },
   ]},
   { name: "Calvin Klein", note: "Arc Hobo", tag: "Signature", variants: [
-      { color: "Avorio", hex: "#e8dcc7", shots: ["images/arco-avorio.png"] },
-      { color: "Nero", hex: "#1c1c1c", shots: ["images/arco-nero.png"] },
-      { color: "Smeraldo", hex: "#1f5f52", shots: ["images/arco-smeraldo.png"] },
+      { color: "Avorio", hex: "#e8dcc7", shots: ["images/arco-avorio.webp"] },
+      { color: "Nero", hex: "#1c1c1c", shots: ["images/arco-nero.webp"] },
+      { color: "Smeraldo", hex: "#1f5f52", shots: ["images/arco-smeraldo.webp"] },
   ]},
   { name: "Calvin Klein", note: "Croc Shoulder Bag", tag: "Limited", variants: [
-      { color: "Nero", hex: "#1c1c1c", shots: ["images/coccodrillo-nero.png"] },
-      { color: "Pistacchio", hex: "#bcc38a", shots: ["images/coccodrillo-pistacchio.png"] },
+      { color: "Nero", hex: "#1c1c1c", shots: ["images/coccodrillo-nero.webp"] },
+      { color: "Pistacchio", hex: "#bcc38a", shots: ["images/coccodrillo-pistacchio.webp"] },
   ]},
   { name: "Calvin Klein", note: "Shoulder Bag", tag: "New", variants: [
-      { color: "Nero", hex: "#1c1c1c", shots: ["images/baule-nero.png", "images/baule-nero-2.png", "images/baule-nero-3.png"] },
-      { color: "Avorio", hex: "#e8dcc7", shots: ["images/baule-avorio.png", "images/baule-avorio-2.png"] },
+      { color: "Nero", hex: "#1c1c1c", shots: ["images/baule-nero.png", "images/baule-nero-2.png", "images/baule-nero-3.webp"] },
+      { color: "Avorio", hex: "#e8dcc7", shots: ["images/baule-avorio.png", "images/baule-avorio-2.webp"] },
   ]},
   { name: "Tommy Hilfiger", note: "Chain Crossbody", tag: "Icon", variants: [
-      { color: "Nero", hex: "#1c1c1c", shots: ["images/tommy-nero.png", "images/tommy-nero-2.png", "images/tommy-nero-3.png"] },
+      { color: "Nero", hex: "#1c1c1c", shots: ["images/tommy-nero.webp", "images/tommy-nero-2.webp", "images/tommy-nero-3.webp"] },
   ]},
   { name: "Twinset", note: "Crescent Hobo", tag: "New", variants: [
-      { color: "Nero", hex: "#1c1c1c", shots: ["images/twinset-nero.jpeg", "images/twinset-nero-2.jpeg"] },
+      { color: "Nero", hex: "#1c1c1c", shots: ["images/twinset-nero.webp", "images/twinset-nero-2.jpeg"] },
   ]},
 ];

@@ -43,6 +43,14 @@ html { scroll-behavior: smooth; }
 /* keep anchored sections clear of the fixed top bar */
 #collection, #house, #enquire { scroll-margin-top: 88px; }
 
+/* refined details */
+::selection { background: rgba(184,151,92,.35); color: #fff6e6; }
+:focus-visible { outline: 1px solid var(--gold); outline-offset: 3px; }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #0a0908; }
+::-webkit-scrollbar-thumb { background: #2c261c; border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
 body {
   font-family: var(--sans);
   font-weight: 300;
@@ -258,6 +266,55 @@ em { font-style: italic; }
 .hero .hero-actions { animation-delay: 3.6s; }
 .hero .hero-scroll  { animation-delay: 3.7s; }
 @keyframes heroRise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ---------- Hero gold dust ---------- */
+.hero-dust { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+
+/* ---------- Houses strip ---------- */
+.houses { padding: 26px 24px 0; text-align: center; }
+.houses-line {
+  font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--muted);
+  line-height: 2.4;
+}
+.houses-line span { color: var(--gold); margin: 0 .7em; }
+
+/* ---------- Lightbox ---------- */
+.lb {
+  position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center;
+  background: rgba(10,9,8,.9); backdrop-filter: blur(10px);
+  opacity: 0; visibility: hidden; transition: opacity .45s var(--ease), visibility .45s;
+}
+.lb.open { opacity: 1; visibility: visible; }
+.lb-fig { max-width: min(760px, 88vw); max-height: 86vh; margin: 0; text-align: center; }
+.lb-fig img {
+  max-width: 100%; max-height: 72vh; object-fit: contain;
+  border: 1px solid var(--line); background: linear-gradient(168deg,#f5efe4,#e7ddcc);
+  transform: scale(.96); transition: transform .5s var(--ease);
+}
+.lb.open .lb-fig img { transform: none; }
+.lb-cap { margin-top: 18px; }
+.lb-name { display: block; font-family: var(--serif); font-weight: 500; font-size: 24px; color: var(--ink); }
+.lb-sub { display: block; margin-top: 6px; font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--gold-2); }
+.lb-close {
+  position: absolute; top: 22px; right: 28px; z-index: 2;
+  background: none; border: 0; cursor: pointer; color: var(--gold-2);
+  font-family: var(--serif); font-size: 40px; line-height: 1; transition: color .3s, transform .3s;
+}
+.lb-close:hover { color: #fff3d6; transform: rotate(90deg); }
+.lb-arrow {
+  background: none; border: 1px solid var(--line); cursor: pointer; color: var(--gold-2);
+  width: 52px; height: 52px; border-radius: 50%;
+  font-family: var(--serif); font-size: 28px; line-height: 1;
+  margin: 0 clamp(8px, 2.5vw, 30px); flex: 0 0 auto;
+  transition: background .35s var(--ease), color .35s;
+}
+.lb-arrow:hover { background: var(--gold); color: #1b1610; }
+.lb-arrow[disabled] { opacity: .25; pointer-events: none; }
+@media (max-width: 640px) {
+  .lb { flex-direction: column; }
+  .lb-arrow { position: fixed; bottom: 26px; }
+  .lb-prev { left: 22vw; } .lb-next { right: 22vw; }
+}
 
 /* ---------- Manifesto ---------- */
 .manifesto {
