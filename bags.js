@@ -46,6 +46,9 @@ const BAGS = [
       who: "For the woman who is introduced once, and remembered.",
       why: "A structured top-handle is the single most versatile silhouette a collection can start with.",
     },
+    /* Optional per-piece: a trusted retailer we recommend acquiring it from.
+       Add { name, url } to any bag and the recommendation block appears on its page. */
+    retailer: { name: "Zalando", url: "https://www.zalando.dk/armani-exchange-handtasker-black-arc51h0li-q11.html" },
     variants: [
       { color: "Nero", hex: "#1c1c1c", shots: ["images/monogramme-nero.webp", "images/monogramme-nero-2.webp", "images/monogramme-nero-3.webp", "images/monogramme-nero-4.webp"] },
   ]},

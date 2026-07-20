@@ -39,6 +39,30 @@
     .p-specs dt { flex: 0 0 auto; font-size: 9.5px; letter-spacing: .22em; text-transform: uppercase; color: var(--gold-2); padding-top: 2px; }
     .p-specs dd { margin: 0; font-size: 13.5px; color: var(--ink-2); text-align: right; line-height: 1.7; }
 
+    /* A.z Recommendation — trusted retailer */
+    .p-retail {
+      margin-top: 34px; text-align: center; padding: 30px 24px 26px;
+      border: 1px solid var(--gold); position: relative;
+      background: radial-gradient(120% 130% at 50% 0%, rgba(184,151,92,.1), transparent 72%);
+    }
+    .p-retail-kicker {
+      display: inline-block; font-size: 9.5px; letter-spacing: .34em; text-transform: uppercase;
+      color: var(--gold); padding: 0 14px; background: var(--bg);
+      position: relative; top: -40px; margin-bottom: -26px;
+    }
+    .p-retail-copy { font-family: var(--serif); font-size: 16px; line-height: 1.85; color: var(--ink-2); max-width: 400px; margin: 0 auto; }
+    .p-retail-btn {
+      display: inline-flex; align-items: center; gap: 10px; margin-top: 20px;
+      padding: 15px 38px; background: var(--gold); border: 1px solid var(--gold); color: #1b1610;
+      font-size: 11px; letter-spacing: .24em; text-transform: uppercase;
+      transition: background .35s var(--ease), letter-spacing .35s var(--ease);
+    }
+    .p-retail-btn:hover { background: var(--gold-2); letter-spacing: .3em; }
+    .p-retail-arrow { font-size: 13px; }
+    .p-retail-note { margin-top: 16px; font-size: 11px; color: var(--muted); letter-spacing: .06em; }
+    .p-retail-note a { color: var(--gold-2); border-bottom: 1px solid var(--line); transition: color .3s; }
+    .p-retail-note a:hover { color: #fff3d6; }
+
     .p-assure { margin-top: 34px; display: grid; gap: 14px; }
     .assure { border: 1px solid var(--line-2); padding: 18px 20px; }
     .assure h4 { font-size: 10px; letter-spacing: .26em; text-transform: uppercase; color: var(--gold-2); font-weight: 400; }
@@ -138,6 +162,16 @@
 
         <dl class="p-specs" id="pSpecs"></dl>
 
+        <div class="p-retail" id="pRetail" style="display:none">
+          <span class="p-retail-kicker">A.z Recommendation</span>
+          <p class="p-retail-copy">Should you wish to acquire this piece directly, we recommend the trusted retailer below — verified stock, and buyer protection.</p>
+          <a class="p-retail-btn" id="pRetailBtn" href="#" target="_blank" rel="noopener">
+            <span id="pRetailLabel">View at Retailer</span>
+            <span class="p-retail-arrow">↗</span>
+          </a>
+          <p class="p-retail-note">Prefer guidance first? <a href="index.html#enquire">Speak to us</a> before you decide.</p>
+        </div>
+
         <div class="p-assure">
           <div class="assure">
             <h4>Authenticity &amp; Provenance</h4>
@@ -210,6 +244,13 @@
       document.getElementById("pAdvWho").textContent = adv.who || "";
       document.getElementById("pAdvWhy").textContent = adv.why || "";
     } else document.getElementById("pAdvisor").style.display = "none";
+
+    /* trusted-retailer recommendation (only if the bag declares one) */
+    if (bag.retailer && bag.retailer.url) {
+      document.getElementById("pRetail").style.display = "";
+      document.getElementById("pRetailBtn").href = bag.retailer.url;
+      document.getElementById("pRetailLabel").textContent = "View at " + (bag.retailer.name || "Retailer");
+    }
 
     var specs = document.getElementById("pSpecs");
     if (bag.details) for (var k in bag.details) {
