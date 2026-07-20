@@ -171,7 +171,6 @@
           nameEl = document.getElementById("lbName"),
           subEl = document.getElementById("lbSub"),
           specsEl = document.getElementById("lbSpecs"),
-          enquire = document.getElementById("lbEnquire"),
           prev = document.getElementById("lbPrev"),
           next = document.getElementById("lbNext"),
           close = document.getElementById("lbClose");
@@ -220,7 +219,6 @@
       document.body.style.overflow = "";
     }
     close.addEventListener("click", shut);
-    enquire.addEventListener("click", shut); // close, then the anchor scrolls to #enquire
 
     /* The House panel: fill from BRANDS and toggle from the brand name */
     window.fillBrandPanel = function (prefix, brandName, award) {

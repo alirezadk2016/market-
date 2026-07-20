@@ -381,17 +381,12 @@ em { font-style: italic; }
 }
 .lb-specs dd { margin: 0; font-size: 13.5px; color: var(--ink-2); text-align: right; line-height: 1.7; }
 .lb-enquire {
-  display: inline-block; margin-top: 26px; padding: 14px 36px;
-  border: 1px solid var(--gold); color: var(--gold-2);
-  font-size: 10.5px; letter-spacing: .24em; text-transform: uppercase;
-  transition: background .4s var(--ease), color .4s var(--ease);
+  display: inline-block; margin-top: 26px; padding: 15px 44px;
+  background: var(--gold); border: 1px solid var(--gold); color: #1b1610;
+  font-size: 11px; letter-spacing: .24em; text-transform: uppercase;
+  transition: background .4s var(--ease), letter-spacing .4s var(--ease);
 }
-.lb-enquire:hover { background: var(--gold); color: #1b1610; }
-.lb-page {
-  display: block; margin-top: 16px; font-size: 10px; letter-spacing: .22em;
-  text-transform: uppercase; color: var(--muted); transition: color .3s;
-}
-.lb-page:hover { color: var(--gold-2); }
+.lb-enquire:hover { background: var(--gold-2); letter-spacing: .3em; }
 
 /* card detail affordance */
 .card-details {
