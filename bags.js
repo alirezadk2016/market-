@@ -11,6 +11,7 @@
 
 const BAGS = [
   { name: "Armani Exchange", note: "Sussy Saddle", tag: "Signature",
+    story: "Drawn from the equestrian tradition and softened for the city, the Sussy is Armani Exchange's most disciplined silhouette. The saddle curve sits close to the body, the flap falls with a quiet weight, and the whole line reads as intention rather than effort. It is the bag we recommend when someone asks where a considered wardrobe should begin.",
     details: {
       "Material": "Embossed eco-leather, tonal saddle flap",
       "Dimensions": "20 × 16 × 7 cm (W × H × D)",
@@ -30,6 +31,7 @@ const BAGS = [
       { color: "Nero", hex: "#1c1c1c", shots: ["images/sella-nero.webp"] },
   ]},
   { name: "Armani Exchange", note: "Logo Top-Handle", tag: "Icon",
+    story: "A structured frame, a single handle, and a monogram pressed so deep it becomes architecture. This is the piece that taught a generation that a logo can whisper. Carried by the handle it is formal; worn on the strap it relaxes without ever slouching.",
     details: {
       "Material": "All-over embossed logo eco-leather",
       "Dimensions": "24 × 16 × 10 cm (W × H × D)",
@@ -48,6 +50,7 @@ const BAGS = [
       { color: "Nero", hex: "#1c1c1c", shots: ["images/monogramme-nero.webp", "images/monogramme-nero-2.webp", "images/monogramme-nero-3.webp", "images/monogramme-nero-4.webp"] },
   ]},
   { name: "Armani Exchange", note: "Mini Shopping Tote", tag: "Everyday",
+    story: "The house shopper, scaled down to its essence. The pebbled grain hides the week's wear, the twin handles sit perfectly in the crook of the arm, and the proportions photograph beautifully. An everyday piece with none of the ordinariness.",
     details: {
       "Material": "Pebbled eco-leather, embossed lettering",
       "Dimensions": "22 × 18 × 10 cm (W × H × D)",
@@ -66,6 +69,7 @@ const BAGS = [
       { color: "Nero", hex: "#1c1c1c", shots: ["images/tote-mini-nero.webp", "images/tote-mini-nero-2.webp", "images/tote-mini-nero-3.webp"] },
   ]},
   { name: "Coccinelle", note: "Jellyfish", tag: "New",
+    story: "Coccinelle cuts the Jellyfish from true grained calf and lets the leather do the speaking — soft structure, rounded shoulders, hardware kept to a murmur. The rosa is playful in a way Italians do best; the nero is simply correct.",
     details: {
       "Material": "Grained calf leather",
       "Dimensions": "26 × 15 × 10 cm (W × H × D)",
@@ -85,6 +89,7 @@ const BAGS = [
       { color: "Nero", hex: "#1c1c1c", shots: ["images/bauletto-nero.webp", "images/bauletto-nero-2.webp"] },
   ]},
   { name: "Coccinelle", note: "Me Lock", tag: "Icon",
+    story: "The Me Lock is Coccinelle's thesis on permanence: smooth calf, a polished turn-lock, and a flap that closes with the sound of certainty. Pieces like this do not date, because they never belonged to a season in the first place.",
     details: {
       "Material": "Smooth calf leather",
       "Dimensions": "24 × 15 × 7 cm (W × H × D)",
@@ -103,6 +108,7 @@ const BAGS = [
       { color: "Noir", hex: "#1c1c1c", shots: ["images/lock-nero.webp", "images/lock-nero-2.webp"] },
   ]},
   { name: "U.S. Polo Assn.", note: "Monogram Satchel", tag: "Heritage",
+    story: "A monogram woven, not printed — the difference is everything. The satchel stands on its own feet, holds its structure through years of use, and carries the unhurried air of luggage from another era.",
     details: {
       "Material": "Monogram jacquard with grained trim",
       "Dimensions": "27 × 20 × 12 cm (W × H × D)",
@@ -121,6 +127,7 @@ const BAGS = [
       { color: "Grigio", hex: "#6f6c66", shots: ["images/heritage-grigio.webp", "images/heritage-grigio-2.webp", "images/heritage-grigio-3.webp"] },
   ]},
   { name: "U.S. Polo Assn.", note: "Flap Crossbody", tag: "Classic",
+    story: "The crossbody that behaves like a handbag: a clean flap, a considered scale, and a strap that sits exactly where it should. It is the piece our clients report reaching for most — the truest compliment a bag can earn.",
     details: {
       "Material": "Pebbled eco-leather",
       "Dimensions": "23 × 16 × 8 cm (W × H × D)",
@@ -139,6 +146,7 @@ const BAGS = [
       { color: "Nero", hex: "#1c1c1c", shots: ["images/postino-nero.webp", "images/postino-nero-2.webp", "images/postino-nero-3.webp"] },
   ]},
   { name: "U.S. Polo Assn.", note: "Shoulder Baguette", tag: "Editorial",
+    story: "The baguette is the most flattering line in the modern wardrobe, and this one earns its place with a belt detail that gives the softness a spine. Worn high on the shoulder, it finishes an outfit the way jewellery does.",
     details: {
       "Material": "Smooth eco-leather with belt detail",
       "Dimensions": "25 × 14 × 7 cm (W × H × D)",
@@ -158,6 +166,7 @@ const BAGS = [
       { color: "Nero", hex: "#1c1c1c", shots: ["images/baguette-nero.webp", "images/baguette-nero-2.webp"] },
   ]},
   { name: "Calvin Klein", note: "Arc Hobo", tag: "Signature",
+    story: "Calvin Klein at its most architectural: one uninterrupted arc, a matte surface, and a logo so small it must be found. The hobo drapes rather than hangs — the quiet luxury silhouette of this decade, executed with restraint.",
     details: {
       "Material": "Soft grained faux leather (recycled content)",
       "Dimensions": "33 × 24 × 10 cm (W × H × D)",
@@ -178,6 +187,7 @@ const BAGS = [
       { color: "Smeraldo", hex: "#1f5f52", shots: ["images/arco-smeraldo.webp"] },
   ]},
   { name: "Calvin Klein", note: "Croc Shoulder Bag", tag: "Limited",
+    story: "Croc embossing, disciplined to within an inch of its life. Under evening light the relief catches and releases like water. One textured piece belongs in every serious collection; this is the measured way to own it.",
     details: {
       "Material": "Croc-embossed faux leather",
       "Dimensions": "25 × 13 × 8 cm (W × H × D)",
@@ -197,6 +207,7 @@ const BAGS = [
       { color: "Pistacchio", hex: "#bcc38a", shots: ["images/coccodrillo-pistacchio.webp"] },
   ]},
   { name: "Calvin Klein", note: "Shoulder Bag", tag: "New",
+    story: "Matte black on black, soft enough to fold under an arm, finished with tonal lettering you feel before you see. It is the definition of a piece that disappears into a life — which is precisely what expensive things do.",
     details: {
       "Material": "Soft matte faux leather",
       "Dimensions": "28 × 16 × 9 cm (W × H × D)",
@@ -216,6 +227,7 @@ const BAGS = [
       { color: "Avorio", hex: "#e8dcc7", shots: ["images/baule-avorio.png", "images/baule-avorio-2.webp"] },
   ]},
   { name: "Tommy Hilfiger", note: "Chain Crossbody", tag: "Icon",
+    story: "The chain is the jewellery, the flap is the armour. Tommy Hilfiger's most polished small piece in years — scaled for evenings, phone-and-card living, and photographs taken after dark.",
     details: {
       "Material": "Pebbled eco-leather",
       "Dimensions": "22 × 15 × 7 cm (W × H × D)",
@@ -234,6 +246,7 @@ const BAGS = [
       { color: "Nero", hex: "#1c1c1c", shots: ["images/tommy-nero.webp", "images/tommy-nero-2.webp", "images/tommy-nero-3.webp"] },
   ]},
   { name: "Twinset", note: "Crescent Hobo", tag: "New",
+    story: "Twinset cuts the crescent low and soft, so it moves with the body instead of against it. The Oval-T sits like a signet ring — present, never loud. A gentle silhouette having a very serious moment.",
     details: {
       "Material": "Pebbled eco-leather",
       "Dimensions": "32 × 22 × 11 cm (W × H × D)",

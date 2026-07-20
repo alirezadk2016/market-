@@ -120,14 +120,15 @@
       if (window.openLightbox) window.openLightbox({
         name: bag.name || "", sub: (bag.note || "") + (curColor ? " · " + curColor : ""),
         shots: curShots.slice(), idx: curIdx, details: bag.details || null,
-        advisor: bag.advisor || null
+        advisor: bag.advisor || null, pageId: idx
       });
     };
     card.querySelector(".card-media").style.cursor = "zoom-in";
     card.querySelector(".card-media").addEventListener("click", openViewer);
-    const dBtn = document.createElement("button");
-    dBtn.className = "card-details"; dBtn.type = "button"; dBtn.textContent = "View Details";
-    dBtn.addEventListener("click", openViewer);
+    // dedicated page per piece — every bag added to bags.js gets one automatically
+    const dBtn = document.createElement("a");
+    dBtn.className = "card-details"; dBtn.href = "piece.html?id=" + idx;
+    dBtn.textContent = "View The Piece";
     card.querySelector(".card-info").appendChild(dBtn);
 
     img.addEventListener("load", () => { ph.style.display = "none"; });
@@ -197,6 +198,9 @@
         }
       }
       specsEl.style.display = s.details ? "" : "none";
+      // link to the piece's own page
+      const pageLink = document.getElementById("lbPage");
+      if (pageLink) pageLink.href = "piece.html?id=" + (s.pageId || 0);
       // advisor's note
       const adv = document.getElementById("lbAdvisor");
       if (s.advisor) {

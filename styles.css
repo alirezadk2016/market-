@@ -344,6 +344,11 @@ em { font-style: italic; }
   transition: background .4s var(--ease), color .4s var(--ease);
 }
 .lb-enquire:hover { background: var(--gold); color: #1b1610; }
+.lb-page {
+  display: block; margin-top: 16px; font-size: 10px; letter-spacing: .22em;
+  text-transform: uppercase; color: var(--muted); transition: color .3s;
+}
+.lb-page:hover { color: var(--gold-2); }
 
 /* card detail affordance */
 .card-details {

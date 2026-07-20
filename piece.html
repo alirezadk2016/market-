@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A.z — The Piece</title>
+  <meta name="theme-color" content="#0d0c0a" />
+  <style>html,body{margin:0;background:#0d0c0a}</style>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230d0c0a'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-style='italic' font-size='30' fill='%23c8a86a' text-anchor='middle'%3EAZ%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ---------- Piece page ---------- */
+    .piece { max-width: 1180px; margin: 0 auto; padding: 128px clamp(18px, 4.5vw, 48px) 40px; }
+    .crumb { display: inline-block; font-size: 10.5px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); transition: color .3s; }
+    .crumb:hover { color: var(--gold-2); }
+    .piece-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(28px, 4.5vw, 64px); margin-top: 26px; }
+
+    .p-main { position: relative; aspect-ratio: 4/5; border: 1px solid var(--line);
+      background: linear-gradient(168deg,#f5efe4,#e7ddcc); overflow: hidden; }
+    .p-main::after { content: ""; position: absolute; inset: 10px; border: 1px solid rgba(38,34,27,.1); pointer-events: none; }
+    .p-main img { width: 100%; height: 100%; object-fit: cover; object-position: center 40%; transition: opacity .4s var(--ease); }
+    .p-thumbs { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+    .p-thumbs .thumb { width: 58px; height: 68px; }
+
+    .p-index { font-family: var(--serif); font-style: italic; font-size: 17px; color: var(--gold); }
+    .p-name { font-family: var(--serif); font-weight: 500; font-size: clamp(34px, 4.6vw, 52px); line-height: 1.08; margin-top: 10px; }
+    .p-model { font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--gold-2); margin-top: 12px; }
+    .piece-info .swatches { margin-top: 22px; }
+    .p-color-name { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-top: 8px; }
+    .p-story { font-family: var(--serif); font-size: 17.5px; line-height: 1.95; color: var(--ink-2); margin-top: 26px; }
+
+    .p-advisor { margin-top: 34px; text-align: center; padding: 30px 24px 24px; border: 1px solid var(--line);
+      background: radial-gradient(120% 120% at 50% 0%, rgba(184,151,92,.07), transparent 70%); }
+    .p-advisor .lb-adv-kicker { top: -40px; margin-bottom: -26px; }
+
+    .p-specs { margin-top: 34px; border-top: 1px solid var(--line-2); }
+    .p-specs .row { display: flex; gap: 18px; justify-content: space-between; align-items: baseline;
+      padding: 12px 2px; border-bottom: 1px solid var(--line-2); }
+    .p-specs dt { flex: 0 0 auto; font-size: 9.5px; letter-spacing: .22em; text-transform: uppercase; color: var(--gold-2); padding-top: 2px; }
+    .p-specs dd { margin: 0; font-size: 13.5px; color: var(--ink-2); text-align: right; line-height: 1.7; }
+
+    .p-assure { margin-top: 34px; display: grid; gap: 14px; }
+    .assure { border: 1px solid var(--line-2); padding: 18px 20px; }
+    .assure h4 { font-size: 10px; letter-spacing: .26em; text-transform: uppercase; color: var(--gold-2); font-weight: 400; }
+    .assure p { margin-top: 8px; font-size: 13.5px; line-height: 1.8; color: var(--ink-2); }
+
+    .p-cta { margin-top: 32px; display: flex; gap: 14px; flex-wrap: wrap; }
+
+    /* ---------- Reviews ---------- */
+    .reviews { max-width: 760px; margin: 0 auto; padding: clamp(70px, 9vw, 110px) clamp(18px, 4.5vw, 48px) 90px; }
+    .rev-head { text-align: center; margin-bottom: 40px; }
+    .rev-title { font-family: var(--serif); font-weight: 500; font-size: clamp(28px, 4.2vw, 40px); }
+    .rev-avg { margin-top: 12px; font-size: 13px; color: var(--ink-2); }
+    .rev-avg .stars { color: var(--gold-2); letter-spacing: .18em; font-size: 16px; }
+
+    .rev-form { border: 1px solid var(--line); padding: clamp(22px, 3.5vw, 34px); }
+    .rev-form h3 { font-family: var(--serif); font-weight: 500; font-size: 22px; text-align: center; }
+    .star-input { display: flex; justify-content: center; gap: 10px; margin: 18px 0 6px; }
+    .star-input button { background: none; border: 0; cursor: pointer; font-size: 26px; color: #4a4234; transition: color .2s, transform .2s; padding: 2px; }
+    .star-input button:hover { transform: scale(1.15); }
+    .star-input button.lit { color: var(--gold-2); }
+    .rev-form input[type=text], .rev-form textarea {
+      width: 100%; margin-top: 14px; padding: 13px 15px; color: var(--ink);
+      background: rgba(236,228,212,.04); border: 1px solid var(--line-2);
+      font-family: var(--sans); font-weight: 300; font-size: 14px; letter-spacing: .02em;
+      transition: border-color .3s;
+    }
+    .rev-form input:focus, .rev-form textarea:focus { outline: none; border-color: var(--gold); }
+    .rev-form textarea { min-height: 96px; resize: vertical; }
+    .rev-file { margin-top: 14px; }
+    .rev-file input { display: none; }
+    .rev-file label {
+      display: inline-block; cursor: pointer; padding: 11px 22px; border: 1px solid var(--line-2);
+      font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted);
+      transition: color .3s, border-color .3s;
+    }
+    .rev-file label:hover { color: var(--gold-2); border-color: var(--gold); }
+    .rev-previews { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+    .rev-previews img { width: 62px; height: 62px; object-fit: cover; border: 1px solid var(--line); }
+    .rev-submit { margin-top: 20px; width: 100%; cursor: pointer;
+      padding: 15px; background: var(--gold); border: 1px solid var(--gold); color: #1b1610;
+      font-family: var(--sans); font-size: 11px; letter-spacing: .26em; text-transform: uppercase;
+      transition: background .35s; }
+    .rev-submit:hover { background: var(--gold-2); }
+    .rev-note { text-align: center; margin-top: 12px; font-size: 10.5px; color: var(--muted); letter-spacing: .08em; }
+
+    .rev-list { margin-top: 44px; display: grid; gap: 18px; }
+    .rev-item { border: 1px solid var(--line-2); padding: 22px 24px; }
+    .rev-top { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+    .rev-name { font-family: var(--serif); font-weight: 500; font-size: 18px; }
+    .rev-stars { color: var(--gold-2); letter-spacing: .16em; font-size: 13px; }
+    .rev-date { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+    .rev-text { margin-top: 10px; font-size: 14.5px; line-height: 1.9; color: var(--ink-2); }
+    .rev-photos { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+    .rev-photos img { width: 84px; height: 84px; object-fit: cover; border: 1px solid var(--line); cursor: zoom-in; }
+    .rev-empty { text-align: center; color: var(--muted); font-size: 13px; letter-spacing: .06em; padding: 26px 0; }
+
+    @media (max-width: 880px) {
+      .piece { padding-top: 108px; }
+      .piece-grid { grid-template-columns: 1fr; }
+      .p-specs dd { text-align: right; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar scrolled" id="topbar">
+    <a href="index.html" class="brand" aria-label="A.z — home"><img class="brand-logo" src="images/logo.png" alt="A.z" /></a>
+    <nav class="nav">
+      <a href="index.html#collection">Collection</a>
+      <a href="index.html#house">The House</a>
+      <a href="index.html#enquire">Enquire</a>
+    </nav>
+  </header>
+
+  <main class="piece">
+    <a class="crumb" href="index.html#collection">← The Collection</a>
+    <div class="piece-grid">
+      <section class="piece-gallery">
+        <div class="p-main"><img id="pMain" alt="" /></div>
+        <div class="p-thumbs" id="pThumbs"></div>
+      </section>
+
+      <section class="piece-info">
+        <span class="p-index" id="pIndex"></span>
+        <h1 class="p-name" id="pName"></h1>
+        <p class="p-model" id="pModel"></p>
+        <div class="swatches" id="pSwatches"></div>
+        <p class="p-color-name" id="pColor"></p>
+        <p class="p-story" id="pStory"></p>
+
+        <div class="p-advisor" id="pAdvisor">
+          <span class="lb-adv-kicker">The A.z Note</span>
+          <p class="lb-adv-note" id="pAdvNote"></p>
+          <div class="lb-adv-row"><span>Who it's for</span><p id="pAdvWho"></p></div>
+          <div class="lb-adv-row"><span>Why this piece</span><p id="pAdvWhy"></p></div>
+          <img class="lb-adv-sign" src="images/logo.png" alt="A.z" />
+        </div>
+
+        <dl class="p-specs" id="pSpecs"></dl>
+
+        <div class="p-assure">
+          <div class="assure">
+            <h4>Authenticity &amp; Provenance</h4>
+            <p>Every piece is sourced new, inspected by hand, and presented with its original tags and dust bag. A.z stands personally behind each acquisition.</p>
+          </div>
+          <div class="assure">
+            <h4>The A.z Service</h4>
+            <p>Private advisory before you decide, discreet sourcing when you do, and careful hand-over — by appointment, at your pace. You are buying judgement, not just a bag.</p>
+          </div>
+        </div>
+
+        <div class="p-cta">
+          <a class="btn btn--solid" href="index.html#enquire">Enquire About This Piece</a>
+          <a class="btn btn--ghost" href="index.html#collection">View the Collection</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Client impressions -->
+  <section class="reviews">
+    <div class="rev-head">
+      <span class="section-index">✦</span>
+      <h2 class="rev-title">Client Impressions</h2>
+      <p class="rev-avg" id="revAvg"></p>
+    </div>
+
+    <form class="rev-form" id="revForm">
+      <h3>Leave your impression</h3>
+      <div class="star-input" id="starInput" aria-label="Your rating">
+        <button type="button" data-s="1">★</button><button type="button" data-s="2">★</button><button type="button" data-s="3">★</button><button type="button" data-s="4">★</button><button type="button" data-s="5">★</button>
+      </div>
+      <input type="text" id="revName" placeholder="Your name" maxlength="40" />
+      <textarea id="revText" placeholder="How does the piece live with you?" maxlength="900"></textarea>
+      <div class="rev-file">
+        <input type="file" id="revPhotos" accept="image/*" multiple />
+        <label for="revPhotos">Add Photos</label>
+        <div class="rev-previews" id="revPreviews"></div>
+      </div>
+      <button type="submit" class="rev-submit">Share Impression</button>
+      <p class="rev-note">Impressions are kept privately on this device.</p>
+    </form>
+
+    <div class="rev-list" id="revList"></div>
+  </section>
+
+  <footer class="footer">
+    <img class="footer-logo" src="images/logo.png" alt="A.z" />
+    <div class="footer-rule" aria-hidden="true"></div>
+    <span class="footer-copy">© A.z — By Appointment</span>
+  </footer>
+
+  <script src="bags.js"></script>
+  <script>
+  (function () {
+    "use strict";
+    var id = parseInt(new URLSearchParams(location.search).get("id") || "0", 10);
+    if (isNaN(id) || id < 0 || id >= BAGS.length) id = 0;
+    var bag = BAGS[id];
+
+    document.title = "A.z — " + (bag.name || "The Piece") + " " + (bag.note || "");
+    document.getElementById("pIndex").textContent = "No. " + String(id + 1).padStart(2, "0") + (bag.tag ? " — " + bag.tag : "");
+    document.getElementById("pName").textContent = bag.name || "";
+    document.getElementById("pModel").textContent = bag.note || "";
+    document.getElementById("pStory").textContent = bag.story || "";
+
+    var adv = bag.advisor;
+    if (adv) {
+      document.getElementById("pAdvNote").textContent = "“ " + (adv.note || "") + " ”";
+      document.getElementById("pAdvWho").textContent = adv.who || "";
+      document.getElementById("pAdvWhy").textContent = adv.why || "";
+    } else document.getElementById("pAdvisor").style.display = "none";
+
+    var specs = document.getElementById("pSpecs");
+    if (bag.details) for (var k in bag.details) {
+      var row = document.createElement("div"); row.className = "row";
+      var dt = document.createElement("dt"); dt.textContent = k;
+      var dd = document.createElement("dd"); dd.textContent = bag.details[k];
+      row.appendChild(dt); row.appendChild(dd); specs.appendChild(row);
+    }
+
+    /* gallery: variants + shots */
+    var main = document.getElementById("pMain"),
+        thumbs = document.getElementById("pThumbs"),
+        sw = document.getElementById("pSwatches"),
+        colorEl = document.getElementById("pColor");
+    var variants = bag.variants || [];
+    function setMain(src) { main.style.opacity = 0; setTimeout(function(){ main.src = src; main.style.opacity = 1; }, 160); }
+    function renderVariant(i) {
+      var v = variants[i] || {}, shots = v.shots || [];
+      colorEl.textContent = v.color || "";
+      main.src = shots[0] || "";
+      thumbs.innerHTML = "";
+      shots.forEach(function (s, k) {
+        var b = document.createElement("button");
+        b.className = "thumb" + (k === 0 ? " active" : ""); b.type = "button";
+        var im = document.createElement("img"); im.src = s; im.alt = ""; im.loading = "lazy";
+        b.appendChild(im);
+        b.addEventListener("click", function () {
+          thumbs.querySelectorAll(".thumb").forEach(function (x) { x.classList.remove("active"); });
+          b.classList.add("active"); setMain(s);
+        });
+        thumbs.appendChild(b);
+      });
+      sw.querySelectorAll(".swatch").forEach(function (x, k) { x.classList.toggle("active", k === i); });
+    }
+    variants.forEach(function (v, i) {
+      var b = document.createElement("button");
+      b.className = "swatch" + (i === 0 ? " active" : ""); b.type = "button";
+      b.style.background = v.hex; b.title = v.color; b.setAttribute("aria-label", v.color);
+      b.addEventListener("click", function () { renderVariant(i); });
+      sw.appendChild(b);
+    });
+    if (variants.length < 2) sw.style.display = "none";
+    renderVariant(0);
+
+    /* ---------- Client impressions (stored on this device) ---------- */
+    var KEY = "az_reviews_" + id;
+    var list = document.getElementById("revList"), avgEl = document.getElementById("revAvg");
+    function load() { try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { return []; } }
+    function save(a) { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) {} }
+    function starsTxt(n) { return "★★★★★".slice(0, n) + "☆☆☆☆☆".slice(0, 5 - n); }
+    function render() {
+      var a = load();
+      list.innerHTML = "";
+      if (!a.length) {
+        avgEl.innerHTML = "Be the first to share an impression.";
+        var e = document.createElement("p"); e.className = "rev-empty";
+        e.textContent = "No impressions yet — this piece is waiting for its first admirer.";
+        list.appendChild(e); return;
+      }
+      var avg = a.reduce(function (s, r) { return s + r.s; }, 0) / a.length;
+      avgEl.innerHTML = '<span class="stars">' + starsTxt(Math.round(avg)) + "</span> &nbsp;" + avg.toFixed(1) + " · " + a.length + (a.length === 1 ? " impression" : " impressions");
+      a.slice().reverse().forEach(function (r) {
+        var it = document.createElement("article"); it.className = "rev-item";
+        var top = document.createElement("div"); top.className = "rev-top";
+        var nm = document.createElement("span"); nm.className = "rev-name"; nm.textContent = r.n || "A client";
+        var st = document.createElement("span"); st.className = "rev-stars"; st.textContent = starsTxt(r.s);
+        var dt = document.createElement("span"); dt.className = "rev-date"; dt.textContent = r.d || "";
+        top.appendChild(nm); top.appendChild(st); top.appendChild(dt); it.appendChild(top);
+        if (r.t) { var tx = document.createElement("p"); tx.className = "rev-text"; tx.textContent = r.t; it.appendChild(tx); }
+        if (r.ph && r.ph.length) {
+          var pw = document.createElement("div"); pw.className = "rev-photos";
+          r.ph.forEach(function (u) { var im = document.createElement("img"); im.src = u; im.alt = ""; pw.appendChild(im); });
+          it.appendChild(pw);
+        }
+        list.appendChild(it);
+      });
+    }
+    render();
+
+    /* star input */
+    var stars = 0;
+    var sIn = document.getElementById("starInput");
+    sIn.querySelectorAll("button").forEach(function (b) {
+      b.addEventListener("click", function () {
+        stars = +b.dataset.s;
+        sIn.querySelectorAll("button").forEach(function (x) { x.classList.toggle("lit", +x.dataset.s <= stars); });
+      });
+    });
+
+    /* photo previews (compressed so they store safely) */
+    var photos = [];
+    var pv = document.getElementById("revPreviews");
+    document.getElementById("revPhotos").addEventListener("change", function (e) {
+      Array.prototype.slice.call(e.target.files, 0, 3).forEach(function (f) {
+        var r = new FileReader();
+        r.onload = function () {
+          var img = new Image();
+          img.onload = function () {
+            var M = 800, k = Math.min(1, M / Math.max(img.width, img.height));
+            var c = document.createElement("canvas");
+            c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+            c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+            var u = c.toDataURL("image/jpeg", .78);
+            photos.push(u);
+            var im = document.createElement("img"); im.src = u; pv.appendChild(im);
+          };
+          img.src = r.result;
+        };
+        r.readAsDataURL(f);
+      });
+      e.target.value = "";
+    });
+
+    document.getElementById("revForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var t = document.getElementById("revText").value.trim();
+      if (!stars && !t) return;
+      var a = load();
+      a.push({ n: document.getElementById("revName").value.trim(), t: t, s: stars || 5,
+               d: new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }),
+               ph: photos });
+      save(a);
+      photos = []; pv.innerHTML = ""; stars = 0;
+      sIn.querySelectorAll("button").forEach(function (x) { x.classList.remove("lit"); });
+      document.getElementById("revName").value = ""; document.getElementById("revText").value = "";
+      render();
+      list.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  })();
+  </script>
+</body>
+</html>
