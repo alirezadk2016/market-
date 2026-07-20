@@ -293,7 +293,7 @@ em { font-style: italic; }
 .crown-ghost {
   position: absolute; left: 50%; top: 26px; transform: translateX(-50%);
   font-family: var(--serif); font-style: italic; line-height: 1; white-space: nowrap;
-  font-size: clamp(120px, 22vw, 250px); color: rgba(93,31,46,.06); pointer-events: none;
+  font-size: clamp(80px, 13vw, 150px); color: rgba(93,31,46,.05); pointer-events: none;
 }
 .crown-stage { position: relative; width: min(300px, 66vw); aspect-ratio: 4/5; margin: 0 auto; }
 .crown-stage::before {
@@ -531,9 +531,10 @@ em { font-style: italic; }
 .card-ph span { font-family: var(--serif); font-size: 42px; opacity: .5; }
 .card-ph small { display:block; margin-top:6px; font-size: 9.5px; letter-spacing: .22em; text-transform: uppercase; opacity:.7; }
 
-.card-index { position: absolute; inset-block-end: -16px; inset-inline-end: 8px; z-index: 1;
-  font-family: var(--serif); font-style: italic; font-size: 86px; line-height: 1;
-  color: rgba(93,31,46,.09); }
+.card-index { position: absolute; inset-block-end: 12px; inset-inline-end: 16px; z-index: 2;
+  font-family: var(--serif); font-style: italic; font-size: 15px; letter-spacing: .1em;
+  color: rgba(122,44,61,.5); }
+.card-index::before { content: "No. "; }
 .card-tag { position: absolute; inset-block-start: 15px; inset-inline-start: 16px; z-index: 3;
   font-size: 9px; letter-spacing: .26em; color: var(--gold); }
 .card-tag::before { content: "\2726\00a0 "; font-size: 8px; }
