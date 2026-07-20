@@ -139,6 +139,8 @@
     @media (max-width: 880px) {
       .piece { padding-top: 108px; }
       .piece-grid { grid-template-columns: 1fr; }
+      /* single column: the gallery must flow normally, never pin over the text */
+      .piece-gallery { position: static; }
       .p-specs dd { text-align: right; }
     }
   </style>
@@ -394,9 +396,10 @@
     var list = document.getElementById("revList"), avgEl = document.getElementById("revAvg");
     function load() { try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { return []; } }
     function save(a) { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) {} }
+    var cache = load(); // in-memory source of truth — works even if storage is blocked (private mode)
     function starsTxt(n) { return "★★★★★".slice(0, n) + "☆☆☆☆☆".slice(0, 5 - n); }
     function render() {
-      var a = load();
+      var a = cache;
       list.innerHTML = "";
       if (!a.length) {
         avgEl.innerHTML = "Be the first to share an impression.";
@@ -462,11 +465,10 @@
       e.preventDefault();
       var t = document.getElementById("revText").value.trim();
       if (!stars && !t) return;
-      var a = load();
-      a.push({ n: document.getElementById("revName").value.trim(), t: t, s: stars || 5,
+      cache.push({ n: document.getElementById("revName").value.trim(), t: t, s: stars || 5,
                d: new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }),
                ph: photos });
-      save(a);
+      save(cache);
       photos = []; pv.innerHTML = ""; stars = 0;
       sIn.querySelectorAll("button").forEach(function (x) { x.classList.remove("lit"); });
       document.getElementById("revName").value = ""; document.getElementById("revText").value = "";
