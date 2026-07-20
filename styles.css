@@ -305,6 +305,20 @@ em { font-style: italic; }
   background: #fff;
   box-shadow: 0 34px 70px rgba(43,34,38,.16), 0 6px 18px rgba(43,34,38,.08);
 }
+.crown-worn {
+  position: absolute; z-index: 2; margin: 0;
+  inset-inline-end: -76px; inset-block-end: -34px;
+  width: 128px; aspect-ratio: 3/4; padding: 6px; background: #fff;
+  box-shadow: 0 20px 44px rgba(43,34,38,.18), 0 4px 10px rgba(43,34,38,.08);
+}
+.crown-worn img {
+  display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 66%;
+  filter: saturate(.82) contrast(.98) sepia(.12);
+}
+.crown-worn figcaption {
+  position: absolute; inset-block-start: 100%; inset-inline-end: 6px; margin-top: 9px;
+  font-size: 9px; letter-spacing: .3em; text-transform: uppercase; color: var(--muted);
+}
 .crown-cap { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 48px; }
 .crown-cap span { width: 46px; height: 1px; background: var(--line); }
 .crown-kicker { font-size: 10px; letter-spacing: .34em; text-transform: uppercase; color: var(--gold); margin: 0; }
@@ -624,6 +638,9 @@ em { font-style: italic; }
 @media (max-width: 560px) {
   /* declutter: phone shows only the essentials */
   .houses, .hero-scroll, .crown-ghost, .card .thumbs { display: none; }
+  /* keep the worn plate a quiet corner detail on phones */
+  .crown-worn { width: 92px; inset-inline-end: -26px; inset-block-end: -24px; padding: 5px; }
+  .crown-worn figcaption { display: none; }
   /* one immersive piece per screen, with room to breathe */
   .grid { grid-template-columns: 1fr; max-width: 460px; gap: 46px; }
   .collection { padding: 20px 26px 20px; }
