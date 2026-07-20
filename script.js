@@ -128,7 +128,7 @@
     // dedicated page per piece — every bag added to bags.js gets one automatically
     const dBtn = document.createElement("a");
     dBtn.className = "card-details"; dBtn.href = "piece.html?id=" + idx;
-    dBtn.textContent = "View The Piece";
+    dBtn.textContent = "Discover";
     card.querySelector(".card-info").appendChild(dBtn);
 
     img.addEventListener("load", () => { ph.style.display = "none"; });
