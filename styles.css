@@ -278,32 +278,42 @@ em { font-style: italic; }
 }
 .houses-line span { color: var(--gold); margin: 0 .7em; }
 
-/* ---------- The Crown Piece (museum spotlight) ---------- */
-.crown { position: relative; text-align: center; padding: 40px 24px 76px; overflow: hidden; }
-.crown-beam {
-  position: absolute; left: 50%; top: 0; transform: translateX(-50%);
-  width: 620px; height: 500px; pointer-events: none;
-  background: linear-gradient(to bottom, rgba(91,111,142,.34), rgba(91,111,142,.06) 60%, transparent 80%);
-  clip-path: polygon(45% 0, 55% 0, 94% 100%, 6% 100%);
-  filter: blur(5px);
+/* ---------- The Crown Piece (gallery objet) ---------- */
+.crown { position: relative; text-align: center; padding: 90px 24px 96px; overflow: hidden; }
+.crown-ghost {
+  position: absolute; left: 50%; top: 26px; transform: translateX(-50%);
+  font-family: var(--serif); font-style: italic; line-height: 1; white-space: nowrap;
+  font-size: clamp(120px, 22vw, 250px); color: rgba(70,97,138,.06); pointer-events: none;
 }
-.crown-stage { position: relative; width: min(320px, 70vw); aspect-ratio: 4/5; margin: 118px auto 0; }
+.crown-stage { position: relative; width: min(300px, 66vw); aspect-ratio: 4/5; margin: 0 auto; }
 .crown-stage::before {
-  content: ""; position: absolute; inset: -16%;
-  background: radial-gradient(50% 46% at 50% 38%, rgba(91,111,142,.30), transparent 72%);
+  content: ""; position: absolute; inset: 0; transform: translate(20px, 20px);
+  border: 1px solid var(--line); pointer-events: none;
 }
 .crown-img {
   position: relative; width: 100%; height: 100%; object-fit: cover; object-position: center 40%;
-  border: 1px solid var(--gold); box-shadow: 0 44px 90px rgba(35,40,47,.25);
+  background: #fff;
+  box-shadow: 0 34px 70px rgba(35,40,47,.16), 0 6px 18px rgba(35,40,47,.08);
 }
-.crown-kicker { margin-top: 32px; font-size: 10px; letter-spacing: .34em; text-transform: uppercase; color: var(--gold); }
-.crown-title { font-family: var(--serif); font-weight: 500; font-size: clamp(24px, 3.6vw, 36px); margin-top: 10px; }
+.crown-cap { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 48px; }
+.crown-cap span { width: 46px; height: 1px; background: var(--line); }
+.crown-kicker { font-size: 10px; letter-spacing: .34em; text-transform: uppercase; color: var(--gold); margin: 0; }
+.crown-brand { margin-top: 20px; font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); }
+.crown-title {
+  font-family: var(--serif); font-style: italic; font-weight: 500;
+  font-size: clamp(30px, 4.6vw, 46px); color: var(--ink); margin-top: 4px;
+}
 .crown-quote {
   font-family: var(--serif); font-style: italic; color: var(--ink-2);
-  font-size: clamp(16px, 2.4vw, 20px); line-height: 1.9; margin: 14px auto 8px; max-width: 560px;
+  font-size: clamp(15px, 2.2vw, 18px); line-height: 1.9; margin: 16px auto 0; max-width: 520px;
 }
 .crown-quote em { color: var(--gold-2); }
-.crown .btn { margin-top: 18px; }
+.crown-link {
+  display: inline-flex; align-items: center; gap: 12px; margin-top: 26px;
+  font-size: 11px; letter-spacing: .28em; text-transform: uppercase; color: var(--gold-2);
+}
+.crown-link::after { content: "\27F6"; font-size: 15px; transition: transform .35s var(--ease); }
+.crown-link:hover::after { transform: translateX(7px); }
 
 /* ---------- Lightbox ---------- */
 .lb {
@@ -480,17 +490,14 @@ em { font-style: italic; }
 /* framed product plate */
 .card-media {
   position: relative; aspect-ratio: 4 / 5; overflow: hidden;
-  background: linear-gradient(168deg, #f4f6f8 0%, #e0e4e9 100%);
-  border: 1px solid var(--line);
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(35,40,47,.05), 0 16px 36px rgba(35,40,47,.07);
   display: grid; place-items: center;
-  transition: border-color .5s var(--ease), box-shadow .5s var(--ease), transform .6s var(--ease);
-}
-.card-media::after {
-  content: ""; position: absolute; inset: 9px; border: 1px solid rgba(38,34,27,.10); pointer-events: none;
+  transition: box-shadow .5s var(--ease), transform .6s var(--ease);
 }
 .card:hover .card-media {
-  border-color: var(--gold); box-shadow: 0 30px 60px rgba(35,40,47,.16);
-  transform: translateY(-4px);
+  box-shadow: 0 4px 8px rgba(35,40,47,.06), 0 30px 62px rgba(35,40,47,.13);
+  transform: translateY(-5px);
 }
 .card-media img {
   width: 100%; height: 100%; object-fit: contain; padding: 26px 22px 30px;
@@ -503,15 +510,16 @@ em { font-style: italic; }
 .card-ph span { font-family: var(--serif); font-size: 42px; opacity: .5; }
 .card-ph small { display:block; margin-top:6px; font-size: 9.5px; letter-spacing: .22em; text-transform: uppercase; opacity:.7; }
 
-.card-index { position: absolute; inset-block-start: 15px; inset-inline-end: 18px; z-index: 3;
-  font-family: var(--serif); font-style: italic; font-size: 15px; color: #262b33; opacity: .4; }
-.card-tag { position: absolute; inset-block-start: 17px; inset-inline-start: 18px; z-index: 3;
-  font-size: 9px; color: #262b33; opacity: .55; }
+.card-index { position: absolute; inset-block-end: -16px; inset-inline-end: 8px; z-index: 1;
+  font-family: var(--serif); font-style: italic; font-size: 86px; line-height: 1;
+  color: rgba(70,97,138,.09); }
+.card-tag { position: absolute; inset-block-start: 15px; inset-inline-start: 16px; z-index: 3;
+  font-size: 9px; letter-spacing: .26em; color: var(--gold); }
 
 .card-info { padding: 20px 2px 4px; }
-.card-name { font-family: var(--serif); font-weight: 500; font-size: 25px; color: var(--ink); letter-spacing: .01em; }
-.card-note { font-size: 10px; color: var(--gold-2); margin-top: 7px; letter-spacing: .18em; text-transform: uppercase; }
-.note-color { color: var(--muted); }
+.card-name { font-size: 10.5px; font-weight: 400; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); }
+.card-note { font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--ink); margin-top: 7px; }
+.note-color { color: var(--muted); font-size: 17px; }
 
 /* ---------- Colour swatches ---------- */
 .swatches { display: flex; gap: 11px; margin-top: 17px; }
