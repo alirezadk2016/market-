@@ -382,7 +382,7 @@ em { font-style: italic; }
 
 /* ---------- Manifesto ---------- */
 .manifesto {
-  text-align: center; padding: clamp(90px, 14vw, 160px) 24px;
+  text-align: center; padding: clamp(64px, 9vw, 110px) 24px;
   display: flex; flex-direction: column; align-items: center; gap: 34px;
 }
 .manifesto p {
@@ -395,7 +395,7 @@ em { font-style: italic; }
 
 /* ---------- Section head ---------- */
 .collection { padding: 20px clamp(18px, 5vw, 60px) 40px; }
-.section-head { text-align: center; margin: 20px 0 64px; }
+.section-head { text-align: center; margin: 10px 0 52px; }
 .section-index { display: block; font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--gold); margin-bottom: 14px; }
 .section-title { font-family: var(--serif); font-weight: 500; font-size: clamp(38px, 5.6vw, 64px); color: var(--ink); }
 .section-lead { color: var(--gold-2); font-size: 10.5px; margin-top: 18px; }
@@ -470,8 +470,11 @@ em { font-style: italic; }
 .thumb:hover { transform: translateY(-2px); border-color: var(--line); }
 .thumb.active { border-color: var(--gold-2); }
 
+/* a lone final card centres itself instead of leaving the row empty */
+@media (min-width: 941px) { .grid .card:last-child:nth-child(3n+1) { grid-column: 2; } }
+
 /* ---------- The House ---------- */
-.house { padding: clamp(80px, 12vw, 150px) clamp(18px, 5vw, 60px) 40px; }
+.house { padding: clamp(56px, 8vw, 100px) clamp(18px, 5vw, 60px) 30px; }
 .pillars {
   max-width: 1080px; margin: 0 auto;
   display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(30px, 5vw, 70px);
@@ -483,7 +486,7 @@ em { font-style: italic; }
 
 /* ---------- Enquire ---------- */
 .enquire {
-  text-align: center; padding: clamp(90px, 14vw, 170px) 24px;
+  text-align: center; padding: clamp(64px, 9vw, 120px) 24px;
   background: radial-gradient(70% 60% at 50% 40%, #171410 0%, var(--bg) 70%);
   border-block: 1px solid var(--line-2);
 }
@@ -502,7 +505,7 @@ em { font-style: italic; }
 .enquire-note { color: var(--muted); font-size: 10.5px; letter-spacing: .12em; margin-top: 26px; }
 
 /* ---------- Footer ---------- */
-.footer { text-align: center; padding: 120px 22px 70px; margin-top: 0; border-top: 1px solid var(--line-2); }
+.footer { text-align: center; padding: 78px 22px 56px; margin-top: 0; border-top: 1px solid var(--line-2); }
 .footer-word { font-family: var(--serif); font-weight: 500; font-size: 27px; letter-spacing: .36em; padding-inline-start: .36em; color: var(--ink); }
 .footer-rule { width: 60px; height: 1px; background: var(--gold); opacity: .8; margin: 26px auto 26px; }
 .footer-note { color: var(--muted); font-size: 13px; max-width: 400px; margin: 0 auto 22px; }
