@@ -650,11 +650,11 @@ em { font-style: italic; }
   /* keep the worn plate a quiet corner detail on phones */
   .crown-worn { width: 92px; inset-inline-end: -26px; inset-block-end: -24px; padding: 5px; }
   .crown-worn figcaption { display: none; }
-  /* phones: centre the figure with the piece in hand, fading out at the base */
+  /* phones: the full scene — figure and the shelf — dissolving top and bottom */
   .hero::before {
-    background-position: 46% 62%; opacity: .34;
-    -webkit-mask-image: linear-gradient(180deg, #000 76%, transparent 98%);
-    mask-image: linear-gradient(180deg, #000 76%, transparent 98%);
+    background-size: 100% auto; background-position: center top; opacity: .38;
+    /* the full photo as one clean plate inside the frame — no crop, no fade */
+    -webkit-mask-image: none; mask-image: none;
   }
   /* one immersive piece per screen, with room to breathe */
   .grid { grid-template-columns: 1fr; max-width: 460px; gap: 46px; }
