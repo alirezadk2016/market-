@@ -290,15 +290,39 @@ em { font-style: italic; }
   overflow-y: auto; overscroll-behavior: contain; padding: 4px 6px 26px;
   scrollbar-width: thin;
 }
-.lb-fig img {
+.lb-fig #lbImg {
   max-width: 100%; max-height: 56vh; object-fit: contain;
   border: 1px solid var(--line); background: linear-gradient(168deg,#f5efe4,#e7ddcc);
   transform: scale(.96); transition: transform .5s var(--ease);
 }
-.lb.open .lb-fig img { transform: none; }
+.lb.open .lb-fig #lbImg { transform: none; }
 .lb-cap { margin-top: 18px; }
 .lb-name { display: block; font-family: var(--serif); font-weight: 500; font-size: 24px; color: var(--ink); }
 .lb-sub { display: block; margin-top: 6px; font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--gold-2); }
+/* Advisor's note — the house's personal verdict */
+.lb-advisor {
+  max-width: 480px; margin: 28px auto 0; text-align: center;
+  padding: 26px 22px 22px; border: 1px solid var(--line);
+  background: radial-gradient(120% 120% at 50% 0%, rgba(184,151,92,.07), transparent 70%);
+  position: relative;
+}
+.lb-adv-kicker {
+  display: inline-block; font-size: 9.5px; letter-spacing: .34em; text-transform: uppercase;
+  color: var(--gold); padding: 0 14px; background: var(--bg);
+  position: relative; top: -34px; margin-bottom: -22px;
+}
+.lb-adv-note {
+  font-family: var(--serif); font-style: italic; font-weight: 500;
+  font-size: 19px; line-height: 1.75; color: var(--ink);
+}
+.lb-adv-row { margin-top: 16px; }
+.lb-adv-row span {
+  display: block; font-size: 9px; letter-spacing: .26em; text-transform: uppercase;
+  color: var(--gold-2); margin-bottom: 5px;
+}
+.lb-adv-row p { font-family: var(--serif); font-size: 15.5px; line-height: 1.7; color: var(--ink-2); }
+.lb-adv-sign { height: 46px; width: auto; margin-top: 18px; opacity: .9; }
+
 /* product sheet */
 .lb-specs {
   max-width: 480px; margin: 24px auto 0; text-align: left;

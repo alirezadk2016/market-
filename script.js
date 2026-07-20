@@ -119,7 +119,8 @@
     const openViewer = () => {
       if (window.openLightbox) window.openLightbox({
         name: bag.name || "", sub: (bag.note || "") + (curColor ? " · " + curColor : ""),
-        shots: curShots.slice(), idx: curIdx, details: bag.details || null
+        shots: curShots.slice(), idx: curIdx, details: bag.details || null,
+        advisor: bag.advisor || null
       });
     };
     card.querySelector(".card-media").style.cursor = "zoom-in";
@@ -196,6 +197,14 @@
         }
       }
       specsEl.style.display = s.details ? "" : "none";
+      // advisor's note
+      const adv = document.getElementById("lbAdvisor");
+      if (s.advisor) {
+        document.getElementById("lbAdvNote").textContent = "“ " + (s.advisor.note || "") + " ”";
+        document.getElementById("lbAdvWho").textContent = s.advisor.who || "";
+        document.getElementById("lbAdvWhy").textContent = s.advisor.why || "";
+        adv.style.display = "";
+      } else adv.style.display = "none";
       paint();
       lb.classList.add("open"); lb.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";

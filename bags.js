@@ -20,6 +20,11 @@ const BAGS = [
       "Interior": "Lined; one slip pocket",
       "Care": "Store in dust bag, away from rain and direct heat",
     },
+    advisor: {
+      note: "A saddle line this clean is rare at any level. It carries itself quietly — the kind of piece people notice without knowing why.",
+      who: "For the woman whose elegance is a habit, not an occasion.",
+      why: "It dresses down a suit and dresses up denim — one bag, an entire wardrobe answered.",
+    },
     variants: [
       { color: "Sand", hex: "#c9b291", shots: ["images/sella-sand.webp", "images/sella-sand-2.webp"] },
       { color: "Nero", hex: "#1c1c1c", shots: ["images/sella-nero.webp"] },
@@ -34,6 +39,11 @@ const BAGS = [
       "Interior": "Two compartments; centre divider, zip pocket",
       "Care": "Store in dust bag, away from rain and direct heat",
     },
+    advisor: {
+      note: "The embossed monogram reads as texture, not advertisement — confidence in a whisper. Our favourite first Armani piece.",
+      who: "For the woman who is introduced once, and remembered.",
+      why: "A structured top-handle is the single most versatile silhouette a collection can start with.",
+    },
     variants: [
       { color: "Nero", hex: "#1c1c1c", shots: ["images/monogramme-nero.webp", "images/monogramme-nero-2.webp", "images/monogramme-nero-3.webp", "images/monogramme-nero-4.webp"] },
   ]},
@@ -47,6 +57,11 @@ const BAGS = [
       "Interior": "Lined; slip and zip pockets",
       "Care": "Store in dust bag, away from rain and direct heat",
     },
+    advisor: {
+      note: "Small in the hand, serious in intent. The pebbled grain wears beautifully and forgives a busy life.",
+      who: "For the woman whose days move fast and standards never do.",
+      why: "It is the everyday piece you reach for without thinking — which is exactly the point.",
+    },
     variants: [
       { color: "Nero", hex: "#1c1c1c", shots: ["images/tote-mini-nero.webp", "images/tote-mini-nero-2.webp", "images/tote-mini-nero-3.webp"] },
   ]},
@@ -59,6 +74,11 @@ const BAGS = [
       "Hardware": "Light-gold Coccinelle lettering",
       "Interior": "Suede-touch lining; zip pocket",
       "Care": "Leather: keep dry, condition gently, store in dust bag",
+    },
+    advisor: {
+      note: "Real grained calf, softly structured — Coccinelle at its most charming. The rosa is a mood; the nero, a rule.",
+      who: "For the woman who collects moments, not things.",
+      why: "Italian leather at this finish level rarely stays available for long.",
     },
     variants: [
       { color: "Rosa", hex: "#c98bb0", shots: ["images/bauletto-rosa.webp", "images/bauletto-rosa-2.webp"] },
@@ -74,6 +94,11 @@ const BAGS = [
       "Interior": "Lined; card slots and zip pocket",
       "Care": "Leather: keep dry, condition gently, store in dust bag",
     },
+    advisor: {
+      note: "The turn-lock is the whole story: precise, polished, permanent. This is the piece we would keep for a decade.",
+      who: "For the woman who buys once, and buys correctly.",
+      why: "A flap-and-lock in smooth calf is the closest thing fashion has to a safe investment.",
+    },
     variants: [
       { color: "Noir", hex: "#1c1c1c", shots: ["images/lock-nero.webp", "images/lock-nero-2.webp"] },
   ]},
@@ -86,6 +111,11 @@ const BAGS = [
       "Hardware": "Light-gold logo medallion",
       "Interior": "Lined; slip and zip pockets",
       "Care": "Wipe with a soft dry cloth; store in dust bag",
+    },
+    advisor: {
+      note: "Heritage monogram with real structure — it holds its shape and its dignity. Quietly old-money.",
+      who: "For the woman who prefers lineage over logos.",
+      why: "A structured satchel anchors every daytime look — meetings, travel, lunch.",
     },
     variants: [
       { color: "Grigio", hex: "#6f6c66", shots: ["images/heritage-grigio.webp", "images/heritage-grigio-2.webp", "images/heritage-grigio-3.webp"] },
@@ -100,6 +130,11 @@ const BAGS = [
       "Interior": "Lined; rear slip pocket",
       "Care": "Wipe with a soft dry cloth; store in dust bag",
     },
+    advisor: {
+      note: "Hands-free without a hint of casual. The proportions are exactly right — neither trend nor compromise.",
+      who: "For the woman who is always slightly ahead of schedule.",
+      why: "The one bag that moves from morning coffee to evening without being changed.",
+    },
     variants: [
       { color: "Nero", hex: "#1c1c1c", shots: ["images/postino-nero.webp", "images/postino-nero-2.webp", "images/postino-nero-3.webp"] },
   ]},
@@ -112,6 +147,11 @@ const BAGS = [
       "Hardware": "Light-gold buckle",
       "Interior": "Lined; slip pocket",
       "Care": "Wipe with a soft dry cloth; store in dust bag",
+    },
+    advisor: {
+      note: "The baguette is fashion's most flattering line, and this belt detail gives it spine. Avorio is the connoisseur's choice.",
+      who: "For the woman who understands that restraint is the loudest statement.",
+      why: "Shoulder silhouettes define this era — this one will outlast it.",
     },
     variants: [
       { color: "Avorio", hex: "#e8dcc7", shots: ["images/baguette-avorio.webp", "images/baguette-avorio-2.webp", "images/baguette-avorio-3.webp"] },
@@ -126,6 +166,11 @@ const BAGS = [
       "Hardware": "Minimal silver-tone CK lettering",
       "Interior": "Lined; slip and zip pockets",
       "Care": "Wipe with a soft dry cloth; store in dust bag",
+    },
+    advisor: {
+      note: "A perfect arc, no noise. Calvin Klein at its most architectural — the smeraldo is genuinely special.",
+      who: "For the woman whose taste was formed in galleries, not feeds.",
+      why: "Soft-structured hobos are the quiet luxury of this decade; the shape does the talking.",
     },
     variants: [
       { color: "Avorio", hex: "#e8dcc7", shots: ["images/arco-avorio.webp"] },
@@ -142,6 +187,11 @@ const BAGS = [
       "Interior": "Lined; slip pocket",
       "Care": "Wipe with a soft dry cloth; store in dust bag",
     },
+    advisor: {
+      note: "Croc embossing this disciplined reads evening from across a room. The pistacchio is for the brave; the nero, forever.",
+      who: "For the woman who arrives late and forgiven.",
+      why: "One embossed piece belongs in every serious collection — this is the measured way in.",
+    },
     variants: [
       { color: "Nero", hex: "#1c1c1c", shots: ["images/coccodrillo-nero.webp"] },
       { color: "Pistacchio", hex: "#bcc38a", shots: ["images/coccodrillo-pistacchio.webp"] },
@@ -155,6 +205,11 @@ const BAGS = [
       "Hardware": "Tonal black CK lettering",
       "Interior": "Lined; slip pocket",
       "Care": "Wipe with a soft dry cloth; store in dust bag",
+    },
+    advisor: {
+      note: "Matte, soft, entirely without effort. It disappears into an outfit the way expensive things do.",
+      who: "For the woman who owns the room by lowering her voice.",
+      why: "The tonal black-on-black finish is the definition of quiet luxury.",
     },
     variants: [
       { color: "Nero", hex: "#1c1c1c", shots: ["images/baule-nero.png", "images/baule-nero-2.png", "images/baule-nero-3.webp"] },
@@ -170,6 +225,11 @@ const BAGS = [
       "Interior": "Lined; slip pocket",
       "Care": "Wipe with a soft dry cloth; store in dust bag",
     },
+    advisor: {
+      note: "The chain is jewellery, the flap is armour. Tommy's most polished small piece in years.",
+      who: "For the woman whose evenings begin after nine.",
+      why: "A chain crossbody is the correct answer to every dress you own.",
+    },
     variants: [
       { color: "Nero", hex: "#1c1c1c", shots: ["images/tommy-nero.webp", "images/tommy-nero-2.webp", "images/tommy-nero-3.webp"] },
   ]},
@@ -182,6 +242,11 @@ const BAGS = [
       "Hardware": "Oval-T logo, light-gold finish",
       "Interior": "Lined; slip and zip pockets",
       "Care": "Wipe with a soft dry cloth; store in dust bag",
+    },
+    advisor: {
+      note: "The crescent line is soft, feminine, and disarmingly current. Twinset finished it with real discretion.",
+      who: "For the woman in her soft-power era.",
+      why: "It carries a full day and still looks like a considered choice — rare in this shape.",
     },
     variants: [
       { color: "Nero", hex: "#1c1c1c", shots: ["images/twinset-nero.webp", "images/twinset-nero-2.jpeg"] },
