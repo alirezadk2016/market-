@@ -115,14 +115,19 @@
       });
     }
 
-    // open the lightbox on plate click
-    card.querySelector(".card-media").style.cursor = "zoom-in";
-    card.querySelector(".card-media").addEventListener("click", () => {
+    // open the lightbox (plate click or the View Details link)
+    const openViewer = () => {
       if (window.openLightbox) window.openLightbox({
         name: bag.name || "", sub: (bag.note || "") + (curColor ? " · " + curColor : ""),
-        shots: curShots.slice(), idx: curIdx
+        shots: curShots.slice(), idx: curIdx, details: bag.details || null
       });
-    });
+    };
+    card.querySelector(".card-media").style.cursor = "zoom-in";
+    card.querySelector(".card-media").addEventListener("click", openViewer);
+    const dBtn = document.createElement("button");
+    dBtn.className = "card-details"; dBtn.type = "button"; dBtn.textContent = "View Details";
+    dBtn.addEventListener("click", openViewer);
+    card.querySelector(".card-info").appendChild(dBtn);
 
     img.addEventListener("load", () => { ph.style.display = "none"; });
     img.addEventListener("error", () => { ph.style.display = ""; });
@@ -163,6 +168,8 @@
     const img = document.getElementById("lbImg"),
           nameEl = document.getElementById("lbName"),
           subEl = document.getElementById("lbSub"),
+          specsEl = document.getElementById("lbSpecs"),
+          enquire = document.getElementById("lbEnquire"),
           prev = document.getElementById("lbPrev"),
           next = document.getElementById("lbNext"),
           close = document.getElementById("lbClose");
@@ -178,6 +185,17 @@
     window.openLightbox = function (s) {
       shots = s.shots || []; idx = Math.min(s.idx || 0, shots.length - 1);
       nameEl.textContent = s.name; subEl.textContent = s.sub;
+      // product sheet
+      specsEl.innerHTML = "";
+      if (s.details) {
+        for (const k in s.details) {
+          const row = document.createElement("div"); row.className = "row";
+          const dt = document.createElement("dt"); dt.textContent = k;
+          const dd = document.createElement("dd"); dd.textContent = s.details[k];
+          row.appendChild(dt); row.appendChild(dd); specsEl.appendChild(row);
+        }
+      }
+      specsEl.style.display = s.details ? "" : "none";
       paint();
       lb.classList.add("open"); lb.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
@@ -187,6 +205,7 @@
       document.body.style.overflow = "";
     }
     close.addEventListener("click", shut);
+    enquire.addEventListener("click", shut); // close, then the anchor scrolls to #enquire
     lb.addEventListener("click", (e) => { if (e.target === lb) shut(); });
     prev.addEventListener("click", () => { if (idx > 0) { idx--; paint(); } });
     next.addEventListener("click", () => { if (idx < shots.length - 1) { idx++; paint(); } });

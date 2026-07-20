@@ -285,9 +285,13 @@ em { font-style: italic; }
   opacity: 0; visibility: hidden; transition: opacity .45s var(--ease), visibility .45s;
 }
 .lb.open { opacity: 1; visibility: visible; }
-.lb-fig { max-width: min(760px, 88vw); max-height: 86vh; margin: 0; text-align: center; }
+.lb-fig {
+  max-width: min(720px, 88vw); max-height: 88vh; margin: 0; text-align: center;
+  overflow-y: auto; overscroll-behavior: contain; padding: 4px 6px 26px;
+  scrollbar-width: thin;
+}
 .lb-fig img {
-  max-width: 100%; max-height: 72vh; object-fit: contain;
+  max-width: 100%; max-height: 56vh; object-fit: contain;
   border: 1px solid var(--line); background: linear-gradient(168deg,#f5efe4,#e7ddcc);
   transform: scale(.96); transition: transform .5s var(--ease);
 }
@@ -295,6 +299,37 @@ em { font-style: italic; }
 .lb-cap { margin-top: 18px; }
 .lb-name { display: block; font-family: var(--serif); font-weight: 500; font-size: 24px; color: var(--ink); }
 .lb-sub { display: block; margin-top: 6px; font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--gold-2); }
+/* product sheet */
+.lb-specs {
+  max-width: 480px; margin: 24px auto 0; text-align: left;
+  border-top: 1px solid var(--line-2);
+}
+.lb-specs .row {
+  display: flex; gap: 18px; justify-content: space-between; align-items: baseline;
+  padding: 11px 2px; border-bottom: 1px solid var(--line-2);
+}
+.lb-specs dt {
+  flex: 0 0 auto; font-size: 9.5px; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--gold-2); padding-top: 2px;
+}
+.lb-specs dd { margin: 0; font-size: 13.5px; color: var(--ink-2); text-align: right; line-height: 1.7; }
+.lb-enquire {
+  display: inline-block; margin-top: 26px; padding: 14px 36px;
+  border: 1px solid var(--gold); color: var(--gold-2);
+  font-size: 10.5px; letter-spacing: .24em; text-transform: uppercase;
+  transition: background .4s var(--ease), color .4s var(--ease);
+}
+.lb-enquire:hover { background: var(--gold); color: #1b1610; }
+
+/* card detail affordance */
+.card-details {
+  margin-top: 15px; background: none; border: 0; cursor: pointer; padding: 0 0 3px;
+  font-family: inherit; font-size: 9.5px; letter-spacing: .24em; text-transform: uppercase;
+  color: var(--muted); border-bottom: 1px solid var(--line-2);
+  transition: color .35s, border-color .35s;
+}
+.card-details:hover { color: var(--gold-2); border-color: var(--gold); }
+
 .lb-close {
   position: absolute; top: 22px; right: 28px; z-index: 2;
   background: none; border: 0; cursor: pointer; color: var(--gold-2);
