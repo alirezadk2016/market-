@@ -120,7 +120,7 @@
       if (window.openLightbox) window.openLightbox({
         name: bag.name || "", sub: (bag.note || "") + (curColor ? " · " + curColor : ""),
         shots: curShots.slice(), idx: curIdx, details: bag.details || null,
-        advisor: bag.advisor || null, pageId: idx
+        advisor: bag.advisor || null, pageId: idx, award: bag.award || null
       });
     };
     card.querySelector(".card-media").style.cursor = "zoom-in";
@@ -201,6 +201,8 @@
       // link to the piece's own page
       const pageLink = document.getElementById("lbPage");
       if (pageLink) pageLink.href = "piece.html?id=" + (s.pageId || 0);
+      // the House panel (brand story) — closed on each open
+      if (window.fillBrandPanel) window.fillBrandPanel("lb", s.name, s.award);
       // advisor's note
       const adv = document.getElementById("lbAdvisor");
       if (s.advisor) {
@@ -219,6 +221,29 @@
     }
     close.addEventListener("click", shut);
     enquire.addEventListener("click", shut); // close, then the anchor scrolls to #enquire
+
+    /* The House panel: fill from BRANDS and toggle from the brand name */
+    window.fillBrandPanel = function (prefix, brandName, award) {
+      const panel = document.getElementById(prefix + "BrandPanel");
+      const hint = document.getElementById(prefix + "BrandHint");
+      if (!panel) return;
+      const b = (typeof BRANDS !== "undefined") && BRANDS[brandName];
+      panel.classList.remove("open");
+      if (!b) { if (hint) hint.style.display = "none"; return; }
+      if (hint) hint.style.display = "";
+      document.getElementById("bpFounded").textContent = b.founded || "—";
+      document.getElementById("bpOrigin").textContent = b.origin || "—";
+      document.getElementById("bpStanding").textContent = b.standing || "";
+      const ul = document.getElementById("bpFacts"); ul.innerHTML = "";
+      (b.facts || []).forEach(function (f) { const li = document.createElement("li"); li.textContent = f; ul.appendChild(li); });
+      const aw = document.getElementById("bpAward");
+      if (award) { document.getElementById("bpAwardText").textContent = award; aw.style.display = ""; }
+      else aw.style.display = "none";
+    };
+    const brandToggle = () => document.getElementById("lbBrandPanel").classList.toggle("open");
+    nameEl.addEventListener("click", brandToggle);
+    const lbHint = document.getElementById("lbBrandHint");
+    if (lbHint) lbHint.addEventListener("click", brandToggle);
     lb.addEventListener("click", (e) => { if (e.target === lb) shut(); });
     prev.addEventListener("click", () => { if (idx > 0) { idx--; paint(); } });
     next.addEventListener("click", () => { if (idx < shots.length - 1) { idx++; paint(); } });

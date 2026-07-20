@@ -163,8 +163,17 @@
 
       <section class="piece-info">
         <span class="p-index" id="pIndex"></span>
-        <h1 class="p-name" id="pName"></h1>
+        <h1 class="p-name"><span class="brand-name-link" id="pName" title="About the House"></span></h1>
         <p class="p-model" id="pModel"></p>
+        <span class="brand-hint" id="pBrandHint">About the House ›</span>
+        <div class="brand-panel" id="pBrandPanel">
+          <span class="bp-kicker">The House</span>
+          <div class="bp-row"><span>Founded</span><span id="pbFounded"></span></div>
+          <div class="bp-row"><span>Origin</span><span id="pbOrigin"></span></div>
+          <p class="bp-standing" id="pbStanding"></p>
+          <ul class="bp-facts" id="pbFacts"></ul>
+          <div class="bp-award" id="pbAward" style="display:none"><b>Honours — this piece</b><span id="pbAwardText"></span></div>
+        </div>
         <div class="swatches" id="pSwatches"></div>
         <p class="p-color-name" id="pColor"></p>
         <p class="p-story" id="pStory"></p>
@@ -288,6 +297,24 @@
       document.getElementById("pAdvWho").textContent = adv.who || "";
       document.getElementById("pAdvWhy").textContent = adv.why || "";
     } else document.getElementById("pAdvisor").style.display = "none";
+
+    /* The House panel — brand story, opened from the brand name */
+    (function () {
+      var b = (typeof BRANDS !== "undefined") && BRANDS[bag.name];
+      var panel = document.getElementById("pBrandPanel"), hint = document.getElementById("pBrandHint");
+      if (!b) { hint.style.display = "none"; }
+      else {
+        document.getElementById("pbFounded").textContent = b.founded || "—";
+        document.getElementById("pbOrigin").textContent = b.origin || "—";
+        document.getElementById("pbStanding").textContent = b.standing || "";
+        var ul = document.getElementById("pbFacts");
+        (b.facts || []).forEach(function (f) { var li = document.createElement("li"); li.textContent = f; ul.appendChild(li); });
+        if (bag.award) { document.getElementById("pbAwardText").textContent = bag.award; document.getElementById("pbAward").style.display = ""; }
+        var tgl = function () { panel.classList.toggle("open"); };
+        document.getElementById("pName").addEventListener("click", tgl);
+        hint.addEventListener("click", tgl);
+      }
+    })();
 
     /* trusted-retailer recommendation (only if the bag declares one) */
     if (bag.retailer && bag.retailer.url) {

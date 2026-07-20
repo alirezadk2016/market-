@@ -299,6 +299,49 @@ em { font-style: italic; }
 .lb-cap { margin-top: 18px; }
 .lb-name { display: block; font-family: var(--serif); font-weight: 500; font-size: 24px; color: var(--ink); }
 .lb-sub { display: block; margin-top: 6px; font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--gold-2); }
+/* ---------- The House panel (opens from the brand name) ---------- */
+.brand-name-link {
+  cursor: pointer; display: inline-block;
+  border-bottom: 1px dashed var(--line);
+  transition: color .3s, border-color .3s;
+}
+.brand-name-link:hover { color: var(--gold-2); border-color: var(--gold); }
+.brand-hint {
+  display: block; margin-top: 8px; cursor: pointer;
+  font-size: 9px; letter-spacing: .26em; text-transform: uppercase; color: var(--muted);
+  transition: color .3s;
+}
+.brand-hint:hover { color: var(--gold-2); }
+.brand-panel {
+  max-width: 480px; margin: 20px auto 0; text-align: left;
+  border: 1px solid var(--line); padding: 22px 22px 20px;
+  background: radial-gradient(120% 120% at 50% 0%, rgba(184,151,92,.06), transparent 70%);
+  display: none;
+}
+.brand-panel.open { display: block; animation: brandIn .5s var(--ease); }
+@keyframes brandIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.brand-panel .bp-kicker {
+  display: block; text-align: center; font-size: 9.5px; letter-spacing: .32em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 14px;
+}
+.brand-panel .bp-row {
+  display: flex; gap: 16px; justify-content: space-between; align-items: baseline;
+  padding: 9px 2px; border-bottom: 1px solid var(--line-2);
+}
+.brand-panel .bp-row span:first-child { font-size: 9px; letter-spacing: .22em; text-transform: uppercase; color: var(--gold-2); }
+.brand-panel .bp-row span:last-child { font-size: 13px; color: var(--ink-2); text-align: right; line-height: 1.7; }
+.brand-panel .bp-standing { font-family: var(--serif); font-style: italic; font-size: 15px; line-height: 1.8; color: var(--ink); padding: 12px 2px 4px; }
+.brand-panel .bp-facts { list-style: none; padding: 8px 2px 0; margin: 0; }
+.brand-panel .bp-facts li {
+  position: relative; padding: 6px 0 6px 20px; font-size: 13px; line-height: 1.75; color: var(--ink-2);
+}
+.brand-panel .bp-facts li::before { content: "✦"; position: absolute; left: 0; top: 7px; font-size: 9px; color: var(--gold); }
+.brand-panel .bp-award {
+  margin-top: 12px; padding: 12px 14px; border: 1px solid var(--gold);
+  font-size: 12.5px; line-height: 1.7; color: var(--gold-2); text-align: center;
+}
+.brand-panel .bp-award b { display: block; font-size: 9px; letter-spacing: .26em; text-transform: uppercase; margin-bottom: 4px; font-weight: 400; color: var(--gold); }
+
 /* Advisor's note — the house's personal verdict */
 .lb-advisor {
   max-width: 480px; margin: 28px auto 0; text-align: center;

@@ -9,6 +9,74 @@
    render automatically, so add/remove rows freely.
 ------------------------------------------------------------------- */
 
+/* ------------------------------------------------------------------
+   The Houses — shown when a client taps a brand name.
+   Add a bag-level `award: "…"` to any piece that has won something,
+   and it appears inside this panel for that piece only.
+------------------------------------------------------------------- */
+const BRANDS = {
+  "Armani Exchange": {
+    founded: "1991",
+    origin: "Milan · New York",
+    standing: "The metropolitan line of Giorgio Armani S.p.A. — Milanese design direction with a younger, urban attitude.",
+    facts: [
+      "Created by Giorgio Armani himself in 1991.",
+      "Designed under the full Armani house in Milan — among fashion's most honoured names, including the CFDA International Award.",
+      "The A|X monogram is one of the most recognised marks in accessible luxury.",
+    ],
+  },
+  "Coccinelle": {
+    founded: "1978",
+    origin: "Parma, Italy",
+    standing: "An Italian leather-goods maison — true artisan roots, quietly worn by those who know.",
+    facts: [
+      "Founded in 1978 in Parma, the heartland of Italian leather craft.",
+      "Works in genuine Italian leathers with understated, Milanese-leaning design.",
+      "A four-decade favourite of Italian street style.",
+    ],
+  },
+  "U.S. Polo Assn.": {
+    founded: "1890",
+    origin: "United States",
+    standing: "The official brand of the United States Polo Association — genuine sporting heritage, not a costume of it.",
+    facts: [
+      "Rooted in the U.S. Polo Association, founded in 1890.",
+      "One of very few fashion brands born from a real governing sports body.",
+      "Present in more than 190 countries worldwide.",
+    ],
+  },
+  "Calvin Klein": {
+    founded: "1968",
+    origin: "New York",
+    standing: "American minimalism at its purest — one of the most awarded houses in fashion history.",
+    facts: [
+      "Founded in New York in 1968.",
+      "First designer honoured with CFDA awards for both womenswear and menswear in the same year (1993).",
+      "Defined modern minimalism for over half a century.",
+    ],
+  },
+  "Tommy Hilfiger": {
+    founded: "1985",
+    origin: "New York",
+    standing: "Classic American cool — preppy heritage cut with a modern, global edge.",
+    facts: [
+      "Founded in New York in 1985.",
+      "CFDA Menswear Designer of the Year, 1995.",
+      "Part of PVH, one of the world's largest fashion groups.",
+    ],
+  },
+  "Twinset": {
+    founded: "1987",
+    origin: "Carpi, Italy",
+    standing: "Italian femininity — born as a knitwear atelier, refined into a full maison.",
+    facts: [
+      "Founded in Carpi, Italy in 1987.",
+      "Named after the knitted twin-set with which the house began.",
+      "Beloved for soft, feminine Italian design.",
+    ],
+  },
+};
+
 const BAGS = [
   { name: "Armani Exchange", note: "Sussy Saddle", tag: "Signature",
     story: "Drawn from the equestrian tradition and softened for the city, the Sussy is Armani Exchange's most disciplined silhouette. The saddle curve sits close to the body, the flap falls with a quiet weight, and the whole line reads as intention rather than effort. It is the bag we recommend when someone asks where a considered wardrobe should begin.",
