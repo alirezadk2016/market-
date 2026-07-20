@@ -277,7 +277,7 @@
         d.y -= d.s; d.tw += .025; d.x += Math.sin(d.tw) * .14 * DPR;
         if (d.y < -5) { d.y = H + 5; d.x = Math.random() * W; }
         cx.beginPath();
-        cx.fillStyle = "rgba(220,192,138," + d.a * (.6 + .4 * Math.sin(d.tw)) + ")";
+        cx.fillStyle = "rgba(216,222,231," + d.a * (.6 + .4 * Math.sin(d.tw)) + ")";
         cx.arc(d.x, d.y, d.r, 0, 6.28); cx.fill();
       }
       requestAnimationFrame(tick);
