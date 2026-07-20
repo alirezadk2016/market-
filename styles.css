@@ -232,6 +232,15 @@ em { font-style: italic; }
   background:
     radial-gradient(80% 60% at 50% 30%, #f8f3ec 0%, var(--bg) 62%);
 }
+/* A veiled presence on the right — the piece, worn, emerging from the paper */
+.hero::before {
+  content: ""; position: absolute; inset: 22px; z-index: 0; pointer-events: none;
+  background: url("images/hero-worn.webp") right 62% / auto 100% no-repeat;
+  filter: saturate(.72) sepia(.14) contrast(.96);
+  opacity: .42;
+  -webkit-mask-image: linear-gradient(90deg, transparent 56%, #000 88%);
+  mask-image: linear-gradient(90deg, transparent 56%, #000 88%);
+}
 .hero-frame {
   position: absolute; inset: 22px; border: 1px solid var(--line);
   pointer-events: none;
@@ -641,6 +650,8 @@ em { font-style: italic; }
   /* keep the worn plate a quiet corner detail on phones */
   .crown-worn { width: 92px; inset-inline-end: -26px; inset-block-end: -24px; padding: 5px; }
   .crown-worn figcaption { display: none; }
+  /* phones: quieter veil */
+  .hero::before { opacity: .34; }
   /* one immersive piece per screen, with room to breathe */
   .grid { grid-template-columns: 1fr; max-width: 460px; gap: 46px; }
   .collection { padding: 20px 26px 20px; }
