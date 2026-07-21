@@ -654,14 +654,11 @@ em { font-style: italic; }
      and a warm sheen falls on the piece in her hand */
   .hero::before {
     position: relative; inset: auto; z-index: 2;
-    width: 48vw; aspect-ratio: 1023 / 1537; margin: 0 0 30px;
+    width: 70vw; aspect-ratio: 1023 / 1537; margin: -14px 0 10px;
     background: url("images/hero-worn-m.webp") center / cover no-repeat;
-    background-clip: padding-box;
-    border: 5px solid #fff;
-    box-shadow: 0 18px 40px rgba(43,34,38,.18), 0 4px 10px rgba(43,34,38,.08);
-    filter: saturate(.94) contrast(1.06);
-    opacity: 1;
-    -webkit-mask-image: none; mask-image: none;
+    border: 0; box-shadow: none; filter: none; opacity: .96;
+    -webkit-mask-image: radial-gradient(74% 68% at 50% 48%, #000 50%, transparent 97%);
+    mask-image: radial-gradient(74% 68% at 50% 48%, #000 50%, transparent 97%);
   }
   /* one immersive piece per screen, with room to breathe */
   .grid { grid-template-columns: 1fr; max-width: 460px; gap: 46px; }
