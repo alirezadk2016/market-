@@ -652,13 +652,15 @@ em { font-style: italic; }
   .crown-worn figcaption { display: none; }
   /* phones: a small mounted plate above the type — nothing hides behind text,
      and a warm sheen falls on the piece in her hand */
+  /* one clean full-bleed editorial photograph, dissolving into the paper */
+  .hero { padding-top: 96px; justify-content: flex-start; }
   .hero::before {
-    position: relative; inset: auto; z-index: 2;
-    width: 70vw; aspect-ratio: 1023 / 1537; margin: -14px 0 10px;
-    background: url("images/hero-worn-m.webp") center / cover no-repeat;
-    border: 0; box-shadow: none; filter: none; opacity: .96;
-    -webkit-mask-image: radial-gradient(74% 68% at 50% 48%, #000 50%, transparent 97%);
-    mask-image: radial-gradient(74% 68% at 50% 48%, #000 50%, transparent 97%);
+    position: relative; inset: auto; z-index: 2; pointer-events: none;
+    width: calc(100% + 52px); margin: 0 -26px 30px; aspect-ratio: 1023 / 1537;
+    background: url("images/hero-worn-m.webp") center top / cover no-repeat;
+    border: 0; box-shadow: none; filter: none; opacity: 1;
+    -webkit-mask-image: linear-gradient(180deg, #000 72%, transparent 99%);
+    mask-image: linear-gradient(180deg, #000 72%, transparent 99%);
   }
   /* one immersive piece per screen, with room to breathe */
   .grid { grid-template-columns: 1fr; max-width: 460px; gap: 46px; }
