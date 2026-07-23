@@ -292,7 +292,8 @@
     const card = document.getElementById("lookCard");
     const closeBtn = document.getElementById("lookClose");
     const K = document.getElementById("lcKicker"), N = document.getElementById("lcName"),
-          T = document.getElementById("lcNote"), L = document.getElementById("lcLink");
+          T = document.getElementById("lcNote"), L = document.getElementById("lcLink"),
+          IM = document.getElementById("lcImg");
     const REST = {
       kicker: "The Pieces", name: "Three quiet essentials",
       note: "A cap, a timepiece, and the crown piece itself — worn together in the salon. Touch a marker on the scene to step closer to each one."
@@ -303,8 +304,9 @@
         note: "Washed navy cotton, the pony picked out in yellow — the quiet sport of old money. Worn low, it closes the look without asking for attention."
       },
       watch: {
-        kicker: "The Timepiece", name: "Worn Close — Midnight Dial", zoom: 3.1,
-        note: "A dark dial on a matte strap, sitting close on the wrist. Time, kept privately — details on request from your advisor."
+        kicker: "The Timepiece", name: "Swarovski — Era Journey Chrono", zoom: 3.2,
+        note: "Rose-gold case set with crystals around a black chronograph dial, on midnight leather. Swiss made — quiet sparkle, kept close.",
+        img: "images/watch-era.webp"
       },
       bracelets: {
         kicker: "The Wrist", name: "Pearls & Fine Gold", zoom: 3.1,
@@ -321,6 +323,8 @@
       card.classList.add("fade");
       setTimeout(() => {
         K.textContent = p.kicker; N.textContent = p.name; T.textContent = p.note;
+        if (withLink && p.img) { IM.src = p.img; IM.alt = p.name; IM.classList.remove("hidden"); }
+        else IM.classList.add("hidden");
         if (withLink && p.link) { L.href = p.link; L.classList.remove("hidden"); }
         else L.classList.add("hidden");
         card.classList.remove("fade");
