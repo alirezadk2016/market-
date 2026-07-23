@@ -346,12 +346,15 @@
         kicker: "Headwear", name: "Polo Ralph Lauren — Chino Sport Cap", zoom: 2.5,
         note: "Washed navy chino, the pony picked out in yellow — the quiet sport of old money. Worn low, it closes the look without asking for attention.",
         img: "images/cap-navy.webp",
-        link: "piece.html?id=0&c=headwear"
+        link: "piece.html?id=0&c=headwear",
+        cut: "images/vit-hat.webp"
       },
       watch: {
         kicker: "The Timepiece", name: "Swarovski — Era Journey Chrono", zoom: 3.2,
         note: "Rose-gold case set with crystals around a black chronograph dial, on midnight leather. Swiss made — quiet sparkle, kept close.",
-        img: "images/watch-era.webp"
+        img: "images/watch-era.webp",
+        link: "piece.html?id=0&c=watches",
+        cut: "images/vit-watch.webp"
       },
       bracelets: {
         kicker: "The Wrist", name: "Pearls & Fine Gold", zoom: 3.1,
@@ -360,7 +363,8 @@
       bag: {
         kicker: "The Crown Piece", name: "Armani Exchange — Logo Top-Handle", zoom: 2.2,
         note: "Embossed logotype over pebbled black leather, carried by the top handle. The piece this whole look is built around.",
-        link: "piece.html?id=1"
+        link: "piece.html?id=1",
+        cut: "images/bag-cut.webp"
       },
       parfum: {
         kicker: "The Salon", name: "The Parfum Shelf", zoom: 3,
@@ -398,6 +402,7 @@
       stage.classList.toggle("zoomed", zt > 1.05);
       if (zt > 1.02) { stage.style.setProperty("--tx", "0deg"); stage.style.setProperty("--ty", "0deg"); }
     }
+    const holoImg = document.getElementById("holoImg");
     function zoomTo(btn) {
       const p = PIECES[btn.dataset.piece]; if (!p) return;
       const x = parseFloat(btn.style.getPropertyValue("--x"));
@@ -406,11 +411,18 @@
       zt = p.zoom;
       txt = clamp(-(x - 50) * p.zoom, lim);
       tyt = clamp(-(y - 50) * p.zoom, lim);
+      /* pieces with a cut-out spring forward as a floating hologram */
+      stage.classList.remove("holo-on");
+      if (p.cut) {
+        holoImg.src = p.cut; holoImg.alt = p.name;
+        requestAnimationFrame(() => requestAnimationFrame(() => stage.classList.add("holo-on")));
+      }
       zoomState(); setCard(p); kick();
     }
     function stepBack() {
       if (zt <= 1.01) return;
       zt = 1; txt = 0; tyt = 0;
+      stage.classList.remove("holo-on");
       zoomState(); hideCard(); kick();
     }
     /* wheel — free zoom toward the cursor, like walking into the scene */
