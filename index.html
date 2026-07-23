@@ -84,13 +84,13 @@
         <div class="look-photo" id="lookPhoto">
           <img src="images/look.webp" alt="Styled in the salon — every piece in the scene can be explored" />
           <span class="look-shade" aria-hidden="true"></span>
-          <button class="spot" data-piece="cap" style="--x:47.5%; --y:21%" aria-label="View the cap"><i></i></button>
-          <button class="spot" data-piece="watch" style="--x:53.5%; --y:43.5%" aria-label="View the timepiece"><i></i></button>
-          <button class="spot" data-piece="bracelets" style="--x:30%; --y:57.5%" aria-label="View the bracelets"><i></i></button>
-          <button class="spot" data-piece="bag" style="--x:40%; --y:73%" aria-label="View the bag"><i></i></button>
-          <button class="spot spot--salon" data-piece="parfum" style="--x:83%; --y:15%" aria-label="View the parfum shelf"><i></i></button>
-          <button class="spot spot--salon" data-piece="shelf" style="--x:85%; --y:42%" aria-label="View the display shelf"><i></i></button>
-          <button class="spot spot--salon" data-piece="vase" style="--x:10%; --y:56%" aria-label="View the blossom vase"><i></i></button>
+          <button class="spot" data-piece="cap" data-label="The Cap" style="--x:47.5%; --y:21%" aria-label="View the cap"><i></i></button>
+          <button class="spot" data-piece="watch" data-label="The Timepiece" style="--x:53.5%; --y:43.5%" aria-label="View the timepiece"><i></i></button>
+          <button class="spot" data-piece="bracelets" data-label="The Wrist" style="--x:30%; --y:57.5%" aria-label="View the bracelets"><i></i></button>
+          <button class="spot" data-piece="bag" data-label="The Bag" style="--x:40%; --y:73%" aria-label="View the bag"><i></i></button>
+          <button class="spot spot--salon spot--edge-r" data-piece="parfum" data-label="The Parfum" style="--x:83%; --y:15%" aria-label="View the parfum shelf"><i></i></button>
+          <button class="spot spot--salon spot--edge-r" data-piece="shelf" data-label="The Display" style="--x:85%; --y:42%" aria-label="View the display shelf"><i></i></button>
+          <button class="spot spot--salon spot--edge-l" data-piece="vase" data-label="The Blossom" style="--x:10%; --y:56%" aria-label="View the blossom vase"><i></i></button>
         </div>
         <button class="look-close" id="lookClose" aria-label="Step back">×</button>
         <article class="look-card" id="lookCard" aria-live="polite">
@@ -101,9 +101,8 @@
           <a class="lc-link hidden" id="lcLink" href="#">Discover the Piece</a>
         </article>
       </div>
-      <p class="scene-hint reveal">Scroll into the scene · touch a marker</p>
+      <p class="scene-hint reveal"><span class="only-desktop">Scroll into the scene · </span>touch a marker</p>
     </div>
-    <span class="hero-scroll reveal" aria-hidden="true">Scroll</span>
   </section>
 
   <!-- Houses we source -->
@@ -174,6 +173,17 @@
     </div>
   </section>
 
+  <!-- A word from the curator — the personal signature of the house -->
+  <section class="word">
+    <div class="word-inner">
+      <span class="word-kicker reveal">A Word from the Curator</span>
+      <p class="word-text reveal">“ I open every box myself. If a piece does not make me pause,
+        it never reaches you. That is the whole method — <em>taste, patience, and refusal.</em> ”</p>
+      <img class="word-sign reveal" src="images/logo-ink.png" alt="A.z" />
+      <span class="word-role reveal">Founder &amp; Curator</span>
+    </div>
+  </section>
+
   <!-- Enquire -->
   <section class="enquire" id="enquire">
     <div class="enquire-inner">
@@ -183,7 +193,7 @@
       <div class="enquire-links reveal">
         <a href="#" class="chip">WhatsApp</a>
         <a href="#" class="chip">Instagram</a>
-        <a href="#" class="chip">Email</a>
+        <a href="mailto:alirezadk2020@gmail.com?subject=Private%20Enquiry%20%E2%80%94%20A.z" class="chip">Email</a>
       </div>
     </div>
   </section>
@@ -193,7 +203,13 @@
     <img class="footer-logo" src="images/logo-ink.png" alt="A.z" />
     <div class="footer-rule" aria-hidden="true"></div>
     <p class="footer-note">Private luxury advisory — curated pieces, personal guidance, discreet service. By appointment.</p>
-    <span class="footer-copy">© A.z — By Appointment</span>
+    <nav class="footer-nav" aria-label="Collections">
+      <a href="range.html?c=bags">Bags</a><span>·</span>
+      <a href="range.html?c=watches">Timepieces</a><span>·</span>
+      <a href="range.html?c=headwear">Headwear</a><span>·</span>
+      <a href="range.html?c=eyewear">Eyewear</a>
+    </nav>
+    <span class="footer-copy">© A.z — By Appointment · Curated personally, piece by piece</span>
   </footer>
 
   <!-- Lightbox viewer -->
