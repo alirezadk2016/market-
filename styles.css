@@ -745,6 +745,8 @@ p { text-wrap: pretty; }
 .pillar h3 { font-family: var(--serif); font-weight: 500; font-size: 25px; color: var(--ink); margin: 16px 0 12px; }
 .pillar p { color: var(--ink-2); font-size: 14.5px; line-height: 1.85; max-width: 300px; margin: 0 auto; }
 
+.house-cta { text-align: center; margin-top: clamp(40px, 6vw, 60px); }
+
 /* ---------- Enquire — the house closes as it opened: in darkness ---------- */
 .enquire {
   text-align: center; padding: clamp(84px, 11vw, 150px) 24px;
