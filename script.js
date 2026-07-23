@@ -327,10 +327,6 @@
     const K = document.getElementById("lcKicker"), N = document.getElementById("lcName"),
           T = document.getElementById("lcNote"), L = document.getElementById("lcLink"),
           IM = document.getElementById("lcImg");
-    const REST = {
-      kicker: "The Pieces", name: "Three quiet essentials",
-      note: "A cap, a timepiece, and the crown piece itself — worn together in the salon. Touch a marker on the scene to step closer to each one."
-    };
     const PIECES = {
       cap: {
         kicker: "Headwear", name: "Polo Ralph Lauren — Classic Cap", zoom: 2.5,
@@ -349,40 +345,72 @@
         kicker: "The Crown Piece", name: "Armani Exchange — Logo Top-Handle", zoom: 2.2,
         note: "Embossed logotype over pebbled black leather, carried by the top handle. The piece this whole look is built around.",
         link: "piece.html?id=1"
+      },
+      parfum: {
+        kicker: "The Salon", name: "The Parfum Shelf", zoom: 3,
+        note: "A lacquered coffret beside a reed diffuser — the salon is scented before it is seen. Objets of the house, setting the air."
+      },
+      shelf: {
+        kicker: "The Salon", name: "The Display Shelf", zoom: 2.7,
+        note: "A quilted chain bag resting on collectors' volumes. Styling objets of our salon — pieces like these can be sourced on request."
+      },
+      vase: {
+        kicker: "The Salon", name: "Wild Blossom & Stone", zoom: 2.8,
+        note: "Spring branches in glazed stoneware — the quiet company the pieces keep. Nothing in the room raises its voice."
       }
     };
-    let zoomed = false;
-    function setCard(p, withLink) {
-      card.classList.add("fade");
-      setTimeout(() => {
-        K.textContent = p.kicker; N.textContent = p.name; T.textContent = p.note;
-        if (withLink && p.img) { IM.src = p.img; IM.alt = p.name; IM.classList.remove("hidden"); }
-        else IM.classList.add("hidden");
-        if (withLink && p.link) { L.href = p.link; L.classList.remove("hidden"); }
-        else L.classList.add("hidden");
-        card.classList.remove("fade");
-      }, 350);
+    /* one camera: z / tx / ty glide toward targets (marker clicks AND wheel) */
+    let z = 1, tx = 0, ty = 0, zt = 1, txt = 0, tyt = 0, raf = 0;
+    const clamp = (v, l) => Math.max(-l, Math.min(l, v));
+    function loop() {
+      z += (zt - z) * 0.09; tx += (txt - tx) * 0.09; ty += (tyt - ty) * 0.09;
+      photo.style.transform = "translate(" + tx + "%, " + ty + "%) scale(" + z + ")";
+      raf = (Math.abs(zt - z) + Math.abs(txt - tx) + Math.abs(tyt - ty) > 0.004)
+        ? requestAnimationFrame(loop) : 0;
+    }
+    const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
+    function setCard(p) {
+      K.textContent = p.kicker; N.textContent = p.name; T.textContent = p.note;
+      if (p.img) { IM.src = p.img; IM.alt = p.name; IM.classList.remove("hidden"); }
+      else IM.classList.add("hidden");
+      if (p.link) { L.href = p.link; L.classList.remove("hidden"); }
+      else L.classList.add("hidden");
+      card.classList.add("show");
+    }
+    function hideCard() { card.classList.remove("show"); }
+    function zoomState() {
+      stage.classList.toggle("zoomed", zt > 1.05);
+      if (zt > 1.02) { stage.style.setProperty("--tx", "0deg"); stage.style.setProperty("--ty", "0deg"); }
     }
     function zoomTo(btn) {
       const p = PIECES[btn.dataset.piece]; if (!p) return;
-      // centre the piece in the frame: translate after scaling, clamped to the edges
       const x = parseFloat(btn.style.getPropertyValue("--x"));
       const y = parseFloat(btn.style.getPropertyValue("--y"));
-      const s = p.zoom, lim = 50 * s - 50;
-      const tx = Math.max(-lim, Math.min(lim, -(x - 50) * s));
-      const ty = Math.max(-lim, Math.min(lim, -(y - 50) * s));
-      photo.style.transformOrigin = "50% 50%";
-      photo.style.transform = "translate(" + tx + "%, " + ty + "%) scale(" + s + ")";
-      stage.style.setProperty("--tx", "0deg"); stage.style.setProperty("--ty", "0deg");
-      stage.classList.add("zoomed"); zoomed = true;
-      setCard(p, true);
+      const lim = 50 * p.zoom - 50;
+      zt = p.zoom;
+      txt = clamp(-(x - 50) * p.zoom, lim);
+      tyt = clamp(-(y - 50) * p.zoom, lim);
+      zoomState(); setCard(p); kick();
     }
     function stepBack() {
-      if (!zoomed) return;
-      photo.style.transform = "none";
-      stage.classList.remove("zoomed"); zoomed = false;
-      setCard(REST, false);
+      if (zt <= 1.01) return;
+      zt = 1; txt = 0; tyt = 0;
+      zoomState(); hideCard(); kick();
     }
+    /* wheel — free zoom toward the cursor, like walking into the scene */
+    stage.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      const r = stage.getBoundingClientRect();
+      const cx = ((e.clientX - r.left) / r.width) * 100 - 50;
+      const cy = ((e.clientY - r.top) / r.height) * 100 - 50;
+      const c0x = (cx - txt) / zt, c0y = (cy - tyt) / zt;
+      zt = Math.max(1, Math.min(3.4, zt * (e.deltaY < 0 ? 1.15 : 1 / 1.15)));
+      const lim = 50 * zt - 50;
+      txt = clamp(cx - c0x * zt, lim);
+      tyt = clamp(cy - c0y * zt, lim);
+      if (zt <= 1.01) { txt = 0; tyt = 0; hideCard(); }
+      zoomState(); kick();
+    }, { passive: false });
     stage.querySelectorAll(".spot").forEach((b) =>
       b.addEventListener("click", (e) => { e.stopPropagation(); zoomTo(b); }));
     closeBtn.addEventListener("click", (e) => { e.stopPropagation(); stepBack(); });
@@ -391,7 +419,7 @@
     /* gentle 3D tilt at rest — desktop pointers only */
     if (matchMedia("(hover:hover)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
       stage.addEventListener("pointermove", (e) => {
-        if (zoomed) return;
+        if (zt > 1.02) return;
         const r = stage.getBoundingClientRect();
         const nx = (e.clientX - r.left) / r.width - 0.5;
         const ny = (e.clientY - r.top) / r.height - 0.5;
