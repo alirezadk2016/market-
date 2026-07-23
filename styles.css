@@ -346,8 +346,16 @@ em { font-style: italic; }
   background: linear-gradient(180deg, transparent, rgba(72,53,38,.34));
   transition: opacity .5s var(--ease);
 }
-.vit-cap b { font-weight: 400; font-size: 9px; letter-spacing: .26em; text-transform: uppercase; color: #fbf5ec; }
-.vit-cap i { font-family: var(--serif); font-style: italic; font-size: 15px; color: #fff; }
+.vit-cap b { font-weight: 400; font-size: 8.5px; letter-spacing: .24em; text-transform: uppercase; color: rgba(251,245,236,.8); }
+.vit-cap i { font-family: var(--serif); font-style: italic; font-size: 19px; color: #fff; }
+/* collections not yet on display — an appointment, not an absence */
+.vit-soon {
+  position: absolute; inset: 0 0 18%; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 8px; pointer-events: none;
+}
+.vit-soon span { color: rgba(122,44,61,.55); font-size: 12px; }
+.vit-soon em { font-family: var(--serif); font-style: italic; font-size: 19px; color: rgba(74,56,42,.72); }
+.vit-soon b { font-weight: 400; font-size: 8.5px; letter-spacing: .3em; text-transform: uppercase; color: rgba(74,56,42,.5); }
 .vit-niche.zoomed .vit-cap { opacity: 0; }
 /* a fine brass hairline between niches, like the salon's rail */
 .vit-niche::after { content: ""; position: absolute; inset: 6px; border: 1px solid rgba(255,244,224,.16); border-radius: 3px; pointer-events: none; }

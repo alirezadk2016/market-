@@ -287,6 +287,7 @@
   /* ---- The Vitrine — wheel over a piece to draw it closer ---- */
   document.querySelectorAll(".vit-niche").forEach((niche) => {
     const img = niche.querySelector("img");
+    if (!img) return;
     let z = 1, target = 1, raf = 0;
     const loop = () => {
       z += (target - z) * 0.16;
