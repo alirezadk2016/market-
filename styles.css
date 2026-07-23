@@ -236,7 +236,8 @@ em { font-style: italic; }
 /* ---------- Hero — cinematic dark stage ---------- */
 .hero {
   position: relative; min-height: 100vh; min-height: 100svh; overflow: hidden;
-  text-align: center; --mx: 0; --my: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 130px 22px 110px; --mx: 0; --my: 0;
   background:
     radial-gradient(116% 80% at 50% 41%, #35232b 0%, #1e1519 45%, #140f12 76%),
     #140f12;
@@ -254,31 +255,13 @@ em { font-style: italic; }
   pointer-events: none; animation: glowIn 2.6s var(--ease) 2.9s both;
 }
 @keyframes glowIn { from { opacity: 0; } to { opacity: 1; } }
-/* the piece — floats and tilts to the pointer */
-.hero-stage {
-  position: absolute; left: 50%; top: 50%; z-index: 1; pointer-events: none;
-  transform: translate(-50%, -50%) translate(calc(var(--mx) * 26px), calc(var(--my) * 18px)) rotate(calc(var(--mx) * .6deg));
-  transition: transform .6s var(--ease);
-}
-.hero-stage::before {
-  content: ""; position: absolute; left: 50%; bottom: -4%; width: 78%; height: 15%;
-  transform: translateX(-50%); z-index: -1; filter: blur(7px);
-  background: radial-gradient(50% 50% at 50% 50%, rgba(0,0,0,.6), transparent 72%);
-}
-.hero-bag {
-  display: block; width: min(50vh, 78vw); height: auto;
-  filter: drop-shadow(0 40px 40px rgba(0,0,0,.55));
-  animation: bagIn 1.9s var(--ease) 3s both, bagFloat 7.5s ease-in-out 5s infinite;
-}
-@keyframes bagIn { from { opacity: 0; transform: translateY(26px) scale(.94); } to { opacity: 1; transform: none; } }
-@keyframes bagFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-/* top & bottom scrims keep the type legible over the stage */
+/* soft edges around the typographic stage */
 .hero-vignette {
   position: absolute; inset: 0; z-index: 3; pointer-events: none;
-  background: linear-gradient(180deg, rgba(15,11,13,.74) 0%, transparent 27%, transparent 58%, rgba(15,11,13,.72) 86%);
+  background: radial-gradient(120% 92% at 50% 46%, transparent 52%, rgba(15,11,13,.5) 100%);
 }
-.hero-top { position: absolute; left: 0; right: 0; top: clamp(112px, 15vh, 184px); z-index: 5; padding: 0 22px; }
-.hero-bottom { position: absolute; left: 0; right: 0; bottom: clamp(76px, 11vh, 118px); z-index: 5; padding: 0 22px;
+.hero-top { position: relative; z-index: 5; padding: 0 22px; }
+.hero-bottom { position: relative; z-index: 5; padding: 0 22px; margin-top: 36px;
   display: flex; flex-direction: column; align-items: center; }
 .hero-eyebrow { color: #c9a879; font-size: 11.5px; margin-bottom: 24px; }
 .hero-title {
@@ -324,42 +307,39 @@ em { font-style: italic; }
 }
 .houses-line span { color: var(--gold); margin: 0 .7em; }
 
-/* ---------- The Crown Piece (gallery objet) ---------- */
-.crown { position: relative; text-align: center; padding: 90px 24px 96px; overflow: hidden; }
-.crown-ghost {
-  position: absolute; left: 50%; top: 26px; transform: translateX(-50%);
-  font-family: var(--serif); font-style: italic; line-height: 1; white-space: nowrap;
-  font-size: clamp(80px, 13vw, 150px); color: rgba(93,31,46,.05); pointer-events: none;
+/* ---------- The Vitrine — lit niches, real pieces, wheel-zoom ---------- */
+.vitrine { padding: 96px 24px 40px; }
+.vit-wall { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(14px, 2.2vw, 26px); max-width: 1060px; margin: 0 auto; }
+.vit-niche {
+  position: relative; display: block; aspect-ratio: 10 / 16; overflow: hidden; border-radius: 5px;
+  background:
+    radial-gradient(130% 55% at 50% -4%, rgba(255,216,166,.55), transparent 58%),
+    radial-gradient(150% 42% at 50% 106%, rgba(255,206,150,.42), transparent 62%),
+    linear-gradient(180deg, #dccfbc, #cdbda7 55%, #bfae94);
+  box-shadow:
+    inset 0 3px 16px rgba(72,53,38,.28), inset 0 -5px 18px rgba(72,53,38,.18),
+    0 20px 46px rgba(43,34,38,.16), 0 4px 12px rgba(43,34,38,.08);
 }
-.crown-stage { position: relative; width: min(300px, 66vw); aspect-ratio: 4/5; margin: 0 auto; }
-.crown-stage::before {
-  content: ""; position: absolute; inset: 0; transform: translate(20px, 20px);
-  border: 1px solid var(--line); pointer-events: none;
+.vit-niche img {
+  position: absolute; left: 50%; bottom: 13%; width: 72%; height: 58%; object-fit: contain;
+  transform: translateX(-50%) scale(var(--z, 1));
+  transform-origin: var(--ox, 50%) var(--oy, 60%);
+  filter: drop-shadow(0 16px 20px rgba(60,40,25,.45));
+  will-change: transform; transition: filter .5s var(--ease);
 }
-.crown-img {
-  position: relative; width: 100%; height: 100%; object-fit: cover; object-position: center 40%;
-  background: #fff;
-  box-shadow: 0 34px 70px rgba(43,34,38,.16), 0 6px 18px rgba(43,34,38,.08);
+/* the piece brightens under the light as it comes forward */
+.vit-niche.zoomed img { filter: drop-shadow(0 22px 26px rgba(60,40,25,.5)) brightness(1.05); }
+.vit-cap {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 14px 10px 12px;
+  display: flex; flex-direction: column; gap: 2px; text-align: center; pointer-events: none;
+  background: linear-gradient(180deg, transparent, rgba(72,53,38,.34));
+  transition: opacity .5s var(--ease);
 }
-.crown-cap { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 48px; }
-.crown-cap span { width: 46px; height: 1px; background: var(--line); }
-.crown-kicker { font-size: 10px; letter-spacing: .34em; text-transform: uppercase; color: var(--gold); margin: 0; }
-.crown-brand { margin-top: 20px; font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); }
-.crown-title {
-  font-family: var(--serif); font-style: italic; font-weight: 500;
-  font-size: clamp(30px, 4.6vw, 46px); color: var(--ink); margin-top: 4px;
-}
-.crown-quote {
-  font-family: var(--serif); font-style: italic; color: var(--ink-2);
-  font-size: clamp(15px, 2.2vw, 18px); line-height: 1.9; margin: 16px auto 0; max-width: 520px;
-}
-.crown-quote em { color: var(--gold-2); }
-.crown-link {
-  display: inline-flex; align-items: center; gap: 12px; margin-top: 26px;
-  font-size: 11px; letter-spacing: .28em; text-transform: uppercase; color: var(--gold-2);
-}
-.crown-link::after { content: "\27F6"; font-size: 15px; transition: transform .35s var(--ease); }
-.crown-link:hover::after { transform: translateX(7px); }
+.vit-cap b { font-weight: 400; font-size: 9px; letter-spacing: .26em; text-transform: uppercase; color: #fbf5ec; }
+.vit-cap i { font-family: var(--serif); font-style: italic; font-size: 15px; color: #fff; }
+.vit-niche.zoomed .vit-cap { opacity: 0; }
+/* a fine brass hairline between niches, like the salon's rail */
+.vit-niche::after { content: ""; position: absolute; inset: 6px; border: 1px solid rgba(255,244,224,.16); border-radius: 3px; pointer-events: none; }
 
 /* ---------- The Look — interactive scene (tap a piece, step closer) ---------- */
 .look { padding: 30px 24px 116px; }
@@ -731,11 +711,12 @@ em { font-style: italic; }
 }
 @media (max-width: 560px) {
   /* declutter: phone shows only the essentials */
-  .houses, .hero-scroll, .crown-ghost, .card .thumbs { display: none; }
+  .houses, .hero-scroll, .card .thumbs, .only-desktop { display: none; }
   /* phones: bring the piece up a touch and tighten the copy bands */
-  .hero-bag { width: min(44vh, 76vw); }
-  .hero-top { top: clamp(102px, 13vh, 148px); }
-  .hero-bottom { bottom: clamp(46px, 8vh, 86px); }
+  .hero { padding: 116px 22px 96px; }
+  /* the vitrine folds to a 2×2 wall on phones */
+  .vitrine { padding-top: 72px; }
+  .vit-wall { grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 430px; }
   /* one immersive piece per screen, with room to breathe */
   .grid { grid-template-columns: 1fr; max-width: 460px; gap: 46px; }
   .collection { padding: 20px 26px 20px; }

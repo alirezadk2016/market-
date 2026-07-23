@@ -284,6 +284,39 @@
     })();
   })();
 
+  /* ---- The Vitrine — wheel over a piece to draw it closer ---- */
+  document.querySelectorAll(".vit-niche").forEach((niche) => {
+    const img = niche.querySelector("img");
+    let z = 1, target = 1, raf = 0;
+    const loop = () => {
+      z += (target - z) * 0.16;
+      img.style.setProperty("--z", z.toFixed(3));
+      img.style.transform = "translateX(-50%) scale(" + z.toFixed(3) + ")";
+      if (Math.abs(target - z) > 0.002) raf = requestAnimationFrame(loop);
+      else raf = 0;
+    };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
+    niche.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      target = Math.max(1, Math.min(2.7, target + (e.deltaY < 0 ? 0.22 : -0.22)));
+      niche.classList.toggle("zoomed", target > 1.06);
+      kick();
+    }, { passive: false });
+    /* the zoom leans toward wherever the pointer rested before it began
+       (img sits centred at 72% width, 29%–87% height of the niche) */
+    niche.addEventListener("pointermove", (e) => {
+      if (target > 1.01) return;
+      const r = niche.getBoundingClientRect();
+      const nx = (e.clientX - r.left) / r.width, ny = (e.clientY - r.top) / r.height;
+      const ox = Math.max(0, Math.min(100, (nx - 0.14) / 0.72 * 100));
+      const oy = Math.max(0, Math.min(100, (ny - 0.29) / 0.58 * 100));
+      img.style.transformOrigin = ox.toFixed(1) + "% " + oy.toFixed(1) + "%";
+    });
+    niche.addEventListener("mouseleave", () => {
+      target = 1; niche.classList.remove("zoomed"); kick();
+    });
+  });
+
   /* ---- The Look — cinematic zoom into each worn piece ---- */
   (function () {
     const stage = document.getElementById("lookStage");
