@@ -15,6 +15,16 @@
    and it appears inside this panel for that piece only.
 ------------------------------------------------------------------- */
 const BRANDS = {
+  "Polo Ralph Lauren": {
+    founded: "1967",
+    origin: "New York",
+    standing: "The house that wrote the grammar of American old money — Ralph Lauren's world of polo lawns, ivy quads and quiet privilege.",
+    facts: [
+      "Founded by Ralph Lauren in 1967, beginning with a line of ties.",
+      "The polo player emblem arrived in 1972 and became one of fashion's most recognised marks.",
+      "Ralph Lauren holds the CFDA Lifetime Achievement Award among many honours.",
+    ],
+  },
   "Swarovski": {
     founded: "1895",
     origin: "Wattens, Austria",
@@ -368,13 +378,33 @@ const WATCHES = [
       { color: "Rose Gold · Black", hex: "#1c1c1c", shots: ["images/watch-era.webp"] },
   ]},
 ];
-const HATS = [];
+const HATS = [
+  { name: "Polo Ralph Lauren", note: "Chino Sport Cap", tag: "Heritage",
+    story: "The cap that made understatement a uniform. Six panels of washed cotton chino, the pony picked out in a single thread of yellow, and a low, softened brim that asks for nothing. Worn by everyone from senators to skateboarders for four decades — and somehow always looking like it belongs.",
+    details: {
+      "Material": "Washed cotton chino twill",
+      "Crown": "Six-panel, embroidered eyelets",
+      "Logo": "Signature embroidered pony; POLO at the back",
+      "Strap": "Adjustable cotton strap, metal slider",
+      "Fit": "One size",
+      "Care": "Spot clean; reshape and air-dry",
+    },
+    advisor: {
+      note: "A cap is the easiest thing to get wrong and the cheapest thing to get right. This is the one we hand people first.",
+      who: "For weekends in the city, courtside mornings, and anyone easing into the old-money wardrobe from the top down.",
+      why: "The washed navy pairs with every neutral in this collection — and the yellow pony quietly matches our gold.",
+    },
+    retailer: { name: "Shopbop", url: "https://www.shopbop.com/chino-sport-cap-polo-ralph/vp/v=1/1524454563.htm" },
+    variants: [
+      { color: "Navy · Yellow Pony", hex: "#22304d", shots: ["images/cap-navy.webp", "images/cap-navy-2.webp", "images/cap-navy-3.webp"] },
+  ]},
+];
 const EYEWEAR = [];
 
 /* collection registry — range.html and piece.html read this */
 const RANGES = {
   bags:     { title: "The Bags",       lead: "Thirteen curated pieces — ask, and we advise.", items: BAGS },
   watches:  { title: "The Timepieces", lead: "Kept close, wound privately.",                  items: WATCHES },
-  headwear: { title: "The Headwear",   lead: "Arriving to the salon.",                        items: HATS },
+  headwear: { title: "The Headwear",   lead: "Worn low, chosen well.",                        items: HATS },
   eyewear:  { title: "The Eyewear",    lead: "Arriving to the salon.",                        items: EYEWEAR },
 };

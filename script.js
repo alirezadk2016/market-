@@ -343,8 +343,10 @@
           IM = document.getElementById("lcImg");
     const PIECES = {
       cap: {
-        kicker: "Headwear", name: "Polo Ralph Lauren — Classic Cap", zoom: 2.5,
-        note: "Washed navy cotton, the pony picked out in yellow — the quiet sport of old money. Worn low, it closes the look without asking for attention."
+        kicker: "Headwear", name: "Polo Ralph Lauren — Chino Sport Cap", zoom: 2.5,
+        note: "Washed navy chino, the pony picked out in yellow — the quiet sport of old money. Worn low, it closes the look without asking for attention.",
+        img: "images/cap-navy.webp",
+        link: "piece.html?id=0&c=headwear"
       },
       watch: {
         kicker: "The Timepiece", name: "Swarovski — Era Journey Chrono", zoom: 3.2,
