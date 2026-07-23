@@ -832,7 +832,7 @@ p { text-wrap: pretty; }
     -webkit-overflow-scrolling: touch; scrollbar-width: none;
   }
   .grid::-webkit-scrollbar { display: none; }
-  .grid > .card { flex: 0 0 82%; scroll-snap-align: center; opacity: 1; transform: none; }
+  .grid > .card { flex: 0 0 100%; scroll-snap-align: center; opacity: 1; transform: none; }
   .collection .grid { margin-inline: -26px; padding: 6px 26px 12px; scroll-padding-inline: 26px; }
   .range .grid { padding: 6px 2px 12px; }
   .swipe-hint { display: block; }
