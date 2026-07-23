@@ -403,6 +403,7 @@
       if (zt > 1.02) { stage.style.setProperty("--tx", "0deg"); stage.style.setProperty("--ty", "0deg"); }
     }
     const holoImg = document.getElementById("holoImg");
+    const holoRefl = document.getElementById("holoRefl");
     function zoomTo(btn) {
       const p = PIECES[btn.dataset.piece]; if (!p) return;
       const x = parseFloat(btn.style.getPropertyValue("--x"));
@@ -414,7 +415,7 @@
       /* pieces with a cut-out spring forward as a floating hologram */
       stage.classList.remove("holo-on");
       if (p.cut) {
-        holoImg.src = p.cut; holoImg.alt = p.name;
+        holoImg.src = p.cut; holoImg.alt = p.name; holoRefl.src = p.cut;
         requestAnimationFrame(() => requestAnimationFrame(() => stage.classList.add("holo-on")));
       }
       zoomState(); setCard(p); kick();
