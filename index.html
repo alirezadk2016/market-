@@ -97,16 +97,39 @@
     <span class="crown-ghost" aria-hidden="true">No. 02</span>
     <div class="crown-stage reveal">
       <img class="crown-img" src="images/monogramme-nero.webp" alt="Armani Exchange — Logo Top-Handle" loading="lazy" />
-      <figure class="crown-worn">
-        <img src="images/crown-worn.webp" alt="The Logo Top-Handle, worn" loading="lazy" />
-        <figcaption>Worn</figcaption>
-      </figure>
     </div>
     <div class="crown-cap reveal"><span></span><p class="crown-kicker">The Crown Piece</p><span></span></div>
     <p class="crown-brand reveal">Armani Exchange</p>
     <h2 class="crown-title reveal">Logo Top-Handle</h2>
     <p class="crown-quote reveal">“ Not everything of value announces itself. <em>The finest things simply endure.</em> ”</p>
     <a class="crown-link reveal" href="piece.html?id=1">Discover</a>
+  </section>
+
+  <!-- The Look — interactive scene: select a piece, step closer -->
+  <section class="look" id="look">
+    <div class="look-head">
+      <p class="look-kicker reveal">The Look</p>
+      <h2 class="look-title reveal">One scene. <em>Every piece, considered.</em></h2>
+      <p class="look-lead reveal">Select a marker to step closer</p>
+    </div>
+    <div class="look-wrap reveal">
+      <div class="look-stage" id="lookStage">
+        <div class="look-photo" id="lookPhoto">
+          <img src="images/look.webp" alt="Styled in the salon — cap, timepiece and the Armani Exchange top-handle" loading="lazy" />
+          <span class="look-shade" aria-hidden="true"></span>
+          <button class="spot" data-piece="cap" style="--x:48%; --y:21%" aria-label="View the cap"><i></i></button>
+          <button class="spot" data-piece="bracelets" style="--x:33%; --y:57.5%" aria-label="View the bracelets"><i></i></button>
+          <button class="spot" data-piece="bag" style="--x:42%; --y:74.5%" aria-label="View the bag"><i></i></button>
+        </div>
+        <button class="look-close" id="lookClose" aria-label="Step back">×</button>
+      </div>
+      <aside class="look-card" id="lookCard" aria-live="polite">
+        <span class="lc-kicker" id="lcKicker">The Pieces</span>
+        <h3 class="lc-name" id="lcName">Three quiet essentials</h3>
+        <p class="lc-note" id="lcNote">A cap, a timepiece, and the crown piece itself — worn together in the salon. Touch a marker on the scene to step closer to each one.</p>
+        <a class="lc-link hidden" id="lcLink" href="#">Discover the Piece</a>
+      </aside>
+    </div>
   </section>
 
   <!-- Collection -->

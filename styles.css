@@ -341,20 +341,6 @@ em { font-style: italic; }
   background: #fff;
   box-shadow: 0 34px 70px rgba(43,34,38,.16), 0 6px 18px rgba(43,34,38,.08);
 }
-.crown-worn {
-  position: absolute; z-index: 2; margin: 0;
-  inset-inline-end: -76px; inset-block-end: -34px;
-  width: 128px; aspect-ratio: 3/4; padding: 6px; background: #fff;
-  box-shadow: 0 20px 44px rgba(43,34,38,.18), 0 4px 10px rgba(43,34,38,.08);
-}
-.crown-worn img {
-  display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 66%;
-  filter: saturate(.82) contrast(.98) sepia(.12);
-}
-.crown-worn figcaption {
-  position: absolute; inset-block-start: 100%; inset-inline-end: 6px; margin-top: 9px;
-  font-size: 9px; letter-spacing: .3em; text-transform: uppercase; color: var(--muted);
-}
 .crown-cap { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 48px; }
 .crown-cap span { width: 46px; height: 1px; background: var(--line); }
 .crown-kicker { font-size: 10px; letter-spacing: .34em; text-transform: uppercase; color: var(--gold); margin: 0; }
@@ -374,6 +360,74 @@ em { font-style: italic; }
 }
 .crown-link::after { content: "\27F6"; font-size: 15px; transition: transform .35s var(--ease); }
 .crown-link:hover::after { transform: translateX(7px); }
+
+/* ---------- The Look — interactive scene (tap a piece, step closer) ---------- */
+.look { padding: 30px 24px 116px; }
+.look-head { text-align: center; margin-bottom: 50px; }
+.look-kicker { font-size: 10px; letter-spacing: .34em; text-transform: uppercase; color: var(--gold); }
+.look-title { font-family: var(--serif); font-weight: 500; font-size: clamp(30px, 4.6vw, 46px); color: var(--ink); margin-top: 14px; }
+.look-title em { font-style: italic; color: var(--gold-2); }
+.look-lead { margin-top: 14px; font-size: 10.5px; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); }
+.look-wrap { display: flex; align-items: center; justify-content: center; gap: clamp(30px, 5vw, 70px); max-width: 1040px; margin: 0 auto; }
+.look-stage {
+  position: relative; width: min(440px, 88vw); aspect-ratio: 1023 / 1537; overflow: hidden;
+  background: #e7ded4; flex: none;
+  box-shadow: 0 36px 84px rgba(43,34,38,.22), 0 6px 18px rgba(43,34,38,.1);
+  transform: perspective(1100px) rotateX(var(--tx, 0deg)) rotateY(var(--ty, 0deg));
+  transition: transform .7s var(--ease);
+}
+.look-photo {
+  position: absolute; inset: 0; transform-origin: 50% 50%; will-change: transform;
+  transition: transform 1.6s cubic-bezier(.19, 1, .22, 1);
+}
+.look-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.look-shade {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 1.2s var(--ease);
+  background: radial-gradient(88% 68% at 50% 46%, transparent 52%, rgba(18,11,14,.34) 100%);
+}
+.look-stage.zoomed .look-shade { opacity: 1; }
+/* markers — a white point in a slow gold breath */
+.spot { position: absolute; left: var(--x); top: var(--y); width: 44px; height: 44px; margin: -22px; padding: 0; border: 0; background: none; cursor: pointer; z-index: 3; transition: opacity .5s var(--ease); }
+.spot i { position: absolute; inset: 0; display: block; }
+.spot i::before {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 9px; height: 9px; margin: -4.5px;
+  border-radius: 50%; background: #fff;
+  box-shadow: 0 0 0 1px rgba(201,168,121,.9), 0 2px 10px rgba(0,0,0,.45);
+  transition: background .35s var(--ease);
+}
+.spot i::after {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 36px; height: 36px; margin: -18px;
+  border-radius: 50%; border: 1px solid rgba(255,255,255,.9);
+  animation: spotPulse 2.8s var(--ease) infinite;
+}
+.spot:nth-of-type(2) i::after { animation-delay: .9s; }
+.spot:nth-of-type(3) i::after { animation-delay: 1.8s; }
+@keyframes spotPulse { 0% { transform: scale(.5); opacity: .95; } 75% { transform: scale(1.18); opacity: 0; } 100% { transform: scale(1.18); opacity: 0; } }
+.spot:hover i::before { background: #c9a879; }
+.look-stage.zoomed .spot { opacity: 0; pointer-events: none; }
+.look-close {
+  position: absolute; top: 14px; inset-inline-end: 14px; z-index: 4; width: 42px; height: 42px;
+  border: 1px solid rgba(255,255,255,.55); border-radius: 50%;
+  background: rgba(18,11,14,.38); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  color: #fff; font-size: 21px; line-height: 1; cursor: pointer;
+  opacity: 0; pointer-events: none; transition: opacity .6s var(--ease);
+}
+.look-stage.zoomed .look-close { opacity: 1; pointer-events: auto; }
+/* the piece card beside the scene */
+.look-card { width: 300px; transition: opacity .7s var(--ease), transform .7s var(--ease); }
+.look-card.fade { opacity: 0; transform: translateY(16px); }
+.lc-kicker { font-size: 10px; letter-spacing: .32em; text-transform: uppercase; color: var(--gold); }
+.lc-name { font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 27px; line-height: 1.3; color: var(--ink); margin-top: 12px; }
+.lc-note { margin-top: 14px; font-size: 14.5px; line-height: 1.95; color: var(--ink-2); }
+.lc-link { display: inline-flex; align-items: center; gap: 10px; margin-top: 22px; font-size: 10.5px; letter-spacing: .26em; text-transform: uppercase; color: var(--gold-2); }
+.lc-link::after { content: "\27F6"; font-size: 14px; transition: transform .35s var(--ease); }
+.lc-link:hover::after { transform: translateX(6px); }
+.lc-link.hidden { display: none; }
+@media (max-width: 880px) {
+  .look-wrap { flex-direction: column; gap: 34px; }
+  .look-card { width: min(430px, 88vw); text-align: center; }
+  .look { padding-bottom: 96px; }
+}
 
 /* ---------- Lightbox ---------- */
 .lb {
@@ -674,9 +728,6 @@ em { font-style: italic; }
 @media (max-width: 560px) {
   /* declutter: phone shows only the essentials */
   .houses, .hero-scroll, .crown-ghost, .card .thumbs { display: none; }
-  /* keep the worn plate a quiet corner detail on phones */
-  .crown-worn { width: 92px; inset-inline-end: -26px; inset-block-end: -24px; padding: 5px; }
-  .crown-worn figcaption { display: none; }
   /* phones: bring the piece up a touch and tighten the copy bands */
   .hero-bag { width: min(44vh, 76vw); }
   .hero-top { top: clamp(102px, 13vh, 148px); }

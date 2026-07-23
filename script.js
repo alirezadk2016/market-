@@ -284,6 +284,89 @@
     })();
   })();
 
+  /* ---- The Look — cinematic zoom into each worn piece ---- */
+  (function () {
+    const stage = document.getElementById("lookStage");
+    if (!stage) return;
+    const photo = document.getElementById("lookPhoto");
+    const card = document.getElementById("lookCard");
+    const closeBtn = document.getElementById("lookClose");
+    const K = document.getElementById("lcKicker"), N = document.getElementById("lcName"),
+          T = document.getElementById("lcNote"), L = document.getElementById("lcLink");
+    const REST = {
+      kicker: "The Pieces", name: "Three quiet essentials",
+      note: "A cap, a timepiece, and the crown piece itself — worn together in the salon. Touch a marker on the scene to step closer to each one."
+    };
+    const PIECES = {
+      cap: {
+        kicker: "Headwear", name: "Polo Ralph Lauren — Classic Cap", zoom: 2.5,
+        note: "Washed navy cotton, the pony picked out in yellow — the quiet sport of old money. Worn low, it closes the look without asking for attention."
+      },
+      watch: {
+        kicker: "The Timepiece", name: "Worn Close — Midnight Dial", zoom: 3.1,
+        note: "A dark dial on a matte strap, sitting close on the wrist. Time, kept privately — details on request from your advisor."
+      },
+      bracelets: {
+        kicker: "The Wrist", name: "Pearls & Fine Gold", zoom: 3.1,
+        note: "A string of pearls beside a whisper of gold — nothing loud, everything considered. The kind of detail noticed only by those who know."
+      },
+      bag: {
+        kicker: "The Crown Piece", name: "Armani Exchange — Logo Top-Handle", zoom: 2.2,
+        note: "Embossed logotype over pebbled black leather, carried by the top handle. The piece this whole look is built around.",
+        link: "piece.html?id=1"
+      }
+    };
+    let zoomed = false;
+    function setCard(p, withLink) {
+      card.classList.add("fade");
+      setTimeout(() => {
+        K.textContent = p.kicker; N.textContent = p.name; T.textContent = p.note;
+        if (withLink && p.link) { L.href = p.link; L.classList.remove("hidden"); }
+        else L.classList.add("hidden");
+        card.classList.remove("fade");
+      }, 350);
+    }
+    function zoomTo(btn) {
+      const p = PIECES[btn.dataset.piece]; if (!p) return;
+      // centre the piece in the frame: translate after scaling, clamped to the edges
+      const x = parseFloat(btn.style.getPropertyValue("--x"));
+      const y = parseFloat(btn.style.getPropertyValue("--y"));
+      const s = p.zoom, lim = 50 * s - 50;
+      const tx = Math.max(-lim, Math.min(lim, -(x - 50) * s));
+      const ty = Math.max(-lim, Math.min(lim, -(y - 50) * s));
+      photo.style.transformOrigin = "50% 50%";
+      photo.style.transform = "translate(" + tx + "%, " + ty + "%) scale(" + s + ")";
+      stage.style.setProperty("--tx", "0deg"); stage.style.setProperty("--ty", "0deg");
+      stage.classList.add("zoomed"); zoomed = true;
+      setCard(p, true);
+    }
+    function stepBack() {
+      if (!zoomed) return;
+      photo.style.transform = "none";
+      stage.classList.remove("zoomed"); zoomed = false;
+      setCard(REST, false);
+    }
+    stage.querySelectorAll(".spot").forEach((b) =>
+      b.addEventListener("click", (e) => { e.stopPropagation(); zoomTo(b); }));
+    closeBtn.addEventListener("click", (e) => { e.stopPropagation(); stepBack(); });
+    stage.addEventListener("click", stepBack);
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") stepBack(); });
+    /* gentle 3D tilt at rest — desktop pointers only */
+    if (matchMedia("(hover:hover)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      stage.addEventListener("pointermove", (e) => {
+        if (zoomed) return;
+        const r = stage.getBoundingClientRect();
+        const nx = (e.clientX - r.left) / r.width - 0.5;
+        const ny = (e.clientY - r.top) / r.height - 0.5;
+        stage.style.setProperty("--ty", (nx * 5).toFixed(2) + "deg");
+        stage.style.setProperty("--tx", (-ny * 4).toFixed(2) + "deg");
+      });
+      stage.addEventListener("pointerleave", () => {
+        stage.style.setProperty("--tx", "0deg"); stage.style.setProperty("--ty", "0deg");
+      });
+    }
+  })();
+
   /* ---- Hero parallax — the piece tilts to the pointer / device ---- */
   (function () {
     const hero = document.getElementById("hero");
