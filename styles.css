@@ -285,6 +285,9 @@ p { text-wrap: pretty; }
   transform: translate(-50%,-50%); color: #c9a879; font-size: 12px; line-height: 1; }
 .hero-sub { max-width: 430px; margin: 0; color: rgba(240,232,220,.66); font-size: 15.5px; line-height: 1.9; }
 .hero-actions { margin-top: 36px; display: flex; gap: 16px; flex-wrap: wrap; justify-content: flex-start; }
+.hero-sign { margin-top: 22px; font-family: var(--serif); font-style: italic; font-size: 14.5px; color: rgba(240,232,220,.45); }
+.hero-sign em { color: #c9a879; }
+
 /* the scene — the salon photograph, explorable */
 .hero-scene { position: relative; z-index: 5; }
 .hero .hero-scene { animation-delay: 3.4s; }
@@ -805,11 +808,15 @@ p { text-wrap: pretty; }
 @media (max-width: 560px) {
   /* declutter: phone shows only the essentials */
   .houses, .hero-scroll, .card .thumbs, .only-desktop { display: none; }
-  /* phones: only the essentials above the scene — the photograph leads */
-  .hero { padding: 94px 22px 70px; gap: 22px; }
+  /* phones: cover order — signature, one line, the photograph, then the invitation */
+  .hero { padding: 94px 22px 64px; gap: 20px; }
   .hero-sub, .hero-eyebrow { display: none; }
-  .hero-rule { margin: 14px auto 0; }
-  .hero-actions { margin-top: 20px; margin-inline: auto; }
+  .hero-copy { display: contents; }
+  .hero-title { order: 1; position: relative; z-index: 5; }
+  .hero-rule { order: 2; position: relative; z-index: 5; margin: 0 auto; }
+  .hero-scene { order: 3; }
+  .hero-actions { order: 4; position: relative; z-index: 5; margin-top: 6px; margin-inline: auto; }
+  .hero-sign { order: 5; position: relative; z-index: 5; margin-top: 0; text-align: center; }
   .hero-scene .look-stage { width: min(78vw, 330px); }
   /* finer marker points on small screens */
   .spot i::before { width: 7px; height: 7px; margin: -3.5px; }
