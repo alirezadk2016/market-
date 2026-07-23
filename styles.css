@@ -188,6 +188,16 @@ p { text-wrap: pretty; }
 }
 .brand-name { font-family: var(--serif); font-weight: 500; font-size: 21px; letter-spacing: .36em; padding-inline-start: .36em; color: var(--ink); text-transform: none; }
 
+/* the headline lives in the top bar on phones — between the mark and the menu */
+.topbar-title {
+  display: none; position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%); white-space: nowrap; pointer-events: none;
+  font-family: var(--serif); font-size: 15.5px; color: #f0e8dc;
+  transition: opacity .45s var(--ease);
+}
+.topbar-title em { font-style: italic; color: #c9a879; }
+.topbar.scrolled .topbar-title { opacity: 0; }
+
 /* Signature logo — gold over the dark hero, ink once scrolled onto cream */
 .brand { position: relative; display: inline-block; line-height: 0; }
 .brand-logo { display: block; height: 48px; width: auto; transition: height .5s var(--ease), opacity .5s var(--ease); }
@@ -808,11 +818,11 @@ p { text-wrap: pretty; }
 @media (max-width: 560px) {
   /* declutter: phone shows only the essentials */
   .houses, .hero-scroll, .card .thumbs, .only-desktop { display: none; }
-  /* phones: cover order — signature, one line, the photograph, then the invitation */
-  .hero { padding: 94px 22px 64px; gap: 20px; }
-  .hero-sub, .hero-eyebrow { display: none; }
+  /* phones: the headline moves into the top bar — the photograph opens the page */
+  .topbar-title { display: block; }
+  .hero { padding: 90px 22px 64px; gap: 20px; }
+  .hero-sub, .hero-eyebrow, .hero-title { display: none; }
   .hero-copy { display: contents; }
-  .hero-title { order: 1; position: relative; z-index: 5; }
   .hero-rule { order: 2; position: relative; z-index: 5; margin: 0 auto; }
   .hero-scene { order: 3; }
   .hero-actions { order: 4; position: relative; z-index: 5; margin-top: 6px; margin-inline: auto; }
