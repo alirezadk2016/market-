@@ -404,6 +404,31 @@
     }
     const holoImg = document.getElementById("holoImg");
     const holoRefl = document.getElementById("holoRefl");
+    /* the reveal never opens on a stale image: it waits for the new piece
+       to finish loading, and a token cancels any reveal that was overtaken */
+    let holoToken = 0;
+    function showHolo(p) {
+      const token = ++holoToken;
+      const arm = () => {
+        if (token !== holoToken) return;
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          if (token === holoToken) stage.classList.add("holo-on");
+        }));
+      };
+      holoImg.onload = () => { holoImg.onload = null; arm(); };
+      holoImg.alt = p.name; holoRefl.src = p.cut;
+      if (holoImg.getAttribute("src") !== p.cut) holoImg.src = p.cut;
+      if (holoImg.complete && holoImg.naturalWidth) { holoImg.onload = null; arm(); }
+    }
+    function dropHolo() {
+      const token = ++holoToken;
+      stage.classList.remove("holo-on");
+      setTimeout(() => {
+        if (token === holoToken && !stage.classList.contains("holo-on")) {
+          holoImg.removeAttribute("src"); holoRefl.removeAttribute("src");
+        }
+      }, 560);
+    }
     function zoomTo(btn) {
       const p = PIECES[btn.dataset.piece]; if (!p) return;
       const x = parseFloat(btn.style.getPropertyValue("--x"));
@@ -413,17 +438,14 @@
       txt = clamp(-(x - 50) * p.zoom, lim);
       tyt = clamp(-(y - 50) * p.zoom, lim);
       /* pieces with a cut-out spring forward as a floating hologram */
-      stage.classList.remove("holo-on");
-      if (p.cut) {
-        holoImg.src = p.cut; holoImg.alt = p.name; holoRefl.src = p.cut;
-        requestAnimationFrame(() => requestAnimationFrame(() => stage.classList.add("holo-on")));
-      }
+      if (p.cut) { stage.classList.remove("holo-on"); showHolo(p); }
+      else dropHolo();
       zoomState(); setCard(p); kick();
     }
     function stepBack() {
       if (zt <= 1.01) return;
       zt = 1; txt = 0; tyt = 0;
-      stage.classList.remove("holo-on");
+      dropHolo();
       zoomState(); hideCard(); kick();
     }
     /* wheel — free zoom toward the cursor, like walking into the scene */
