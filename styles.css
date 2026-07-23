@@ -278,10 +278,11 @@ p { text-wrap: pretty; }
 }
 .hero-title em { color: #c9a879; }
 .hero-rule { position: relative; width: 160px; height: 1px; margin: 28px 0 26px;
-  background: linear-gradient(90deg, transparent, rgba(201,168,121,.5) 30%, rgba(201,168,121,.5) 70%, transparent); }
+  background: linear-gradient(90deg,
+    transparent 0, rgba(201,168,121,.5) 26%, rgba(201,168,121,.5) 40%, transparent 44%,
+    transparent 56%, rgba(201,168,121,.5) 60%, rgba(201,168,121,.5) 74%, transparent 100%); }
 .hero-rule::after { content: "\2726"; position: absolute; left: 50%; top: 50%;
-  transform: translate(-50%,-50%); padding: 0 12px; background: #191115;
-  color: #c9a879; font-size: 12px; line-height: 1; }
+  transform: translate(-50%,-50%); color: #c9a879; font-size: 12px; line-height: 1; }
 .hero-sub { max-width: 430px; margin: 0; color: rgba(240,232,220,.66); font-size: 15.5px; line-height: 1.9; }
 .hero-actions { margin-top: 36px; display: flex; gap: 16px; flex-wrap: wrap; justify-content: flex-start; }
 /* the scene — the salon photograph, explorable */
@@ -807,6 +808,11 @@ p { text-wrap: pretty; }
   .hero-rule { margin: 20px auto 0; }
   .hero-actions { margin-top: 26px; margin-inline: auto; }
   .hero-scene .look-stage { width: min(78vw, 330px); }
+  /* finer marker points on small screens */
+  .spot i::before { width: 7px; height: 7px; margin: -3.5px; }
+  .spot i::after { width: 28px; height: 28px; margin: -14px; }
+  .spot--salon i::before { width: 5.5px; height: 5.5px; margin: -2.75px; }
+  .spot--salon i::after { width: 22px; height: 22px; margin: -11px; }
   /* the vitrine folds to a 2×2 wall on phones */
   .vitrine { padding-top: 72px; }
   .vit-wall { grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 430px; }
