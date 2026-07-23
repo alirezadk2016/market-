@@ -347,14 +347,14 @@
         note: "Washed navy chino, the pony picked out in yellow — the quiet sport of old money. Worn low, it closes the look without asking for attention.",
         img: "images/cap-navy.webp",
         link: "piece.html?id=0&c=headwear",
-        cut: "images/vit-hat.webp"
+        cut: "images/holo-hat.webp"
       },
       watch: {
         kicker: "The Timepiece", name: "Swarovski — Era Journey Chrono", zoom: 3.2,
         note: "Rose-gold case set with crystals around a black chronograph dial, on midnight leather. Swiss made — quiet sparkle, kept close.",
         img: "images/watch-era.webp",
         link: "piece.html?id=0&c=watches",
-        cut: "images/vit-watch.webp"
+        cut: "images/holo-watch.webp"
       },
       bracelets: {
         kicker: "The Wrist", name: "Pearls & Fine Gold", zoom: 3.1,
@@ -364,7 +364,7 @@
         kicker: "The Crown Piece", name: "Armani Exchange — Logo Top-Handle", zoom: 2.2,
         note: "Embossed logotype over pebbled black leather, carried by the top handle. The piece this whole look is built around.",
         link: "piece.html?id=1",
-        cut: "images/bag-cut.webp"
+        cut: "images/holo-bag.webp"
       },
       parfum: {
         kicker: "The Salon", name: "The Parfum Shelf", zoom: 3,

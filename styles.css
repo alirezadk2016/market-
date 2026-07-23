@@ -506,17 +506,20 @@ p { text-wrap: pretty; }
   mask-image: linear-gradient(180deg, rgba(0,0,0,.65), transparent 52%);
 }
 .look-stage.holo-on .holo-body {
-  animation: holoIn 1.2s cubic-bezier(.19,1,.22,1) both,
-             holoFloat 6.5s ease-in-out 1.2s infinite;
+  animation: holoIn 1.35s cubic-bezier(.19,1,.22,1) both,
+             holoFloat 8.5s ease-in-out 1.35s infinite;
 }
 /* a focus pull, not a spin — the piece resolves out of the depth */
 @keyframes holoIn {
-  0% { opacity: 0; transform: translateY(30px) scale(.88); filter: blur(12px); }
+  0% { opacity: 0; transform: translateY(26px) scale(.9); filter: blur(14px); }
   100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
 }
+/* it drifts the way a hung piece breathes — never a metronome */
 @keyframes holoFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  28% { transform: translateY(-7px) rotate(.5deg); }
+  58% { transform: translateY(-2px) rotate(-.35deg); }
+  80% { transform: translateY(-5px) rotate(.15deg); }
 }
 /* a soft pool of light gathering beneath */
 .holo-glow {
