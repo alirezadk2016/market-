@@ -845,7 +845,8 @@ p { text-wrap: pretty; }
   .card-info { padding: 22px 6px 4px; text-align: center; }
   .swatches, .thumbs { justify-content: center; }
 
-  .hero-title { font-size: clamp(34px, 11vw, 52px); }
+  /* one quiet line on phones */
+  .hero-title { font-size: clamp(20px, 6.8vw, 27px); white-space: nowrap; letter-spacing: .01em; }
   .hero-actions { flex-direction: column; gap: 10px; width: 100%; max-width: 250px; }
   .btn { width: 100%; text-align: center; padding: 14px; }
   .hero .btn { padding: 12px 16px; font-size: 10px; letter-spacing: .2em; }
