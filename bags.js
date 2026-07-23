@@ -15,6 +15,16 @@
    and it appears inside this panel for that piece only.
 ------------------------------------------------------------------- */
 const BRANDS = {
+  "Swarovski": {
+    founded: "1895",
+    origin: "Wattens, Austria",
+    standing: "The world's master of precision-cut crystal — an Austrian family house whose name has meant brilliance for five generations.",
+    facts: [
+      "Founded by Daniel Swarovski, inventor of the electric crystal-cutting machine.",
+      "Its crystals have dressed haute couture, cinema and royalty for over a century.",
+      "Swarovski timepieces are Swiss made, with crystals set by hand.",
+    ],
+  },
   "Armani Exchange": {
     founded: "1991",
     origin: "Milan · New York",
@@ -336,3 +346,35 @@ const BAGS = [
       { color: "Nero", hex: "#1c1c1c", shots: ["images/twinset-nero.webp", "images/twinset-nero-2.jpeg"] },
   ]},
 ];
+
+/* ---------- The other collections ---------- */
+const WATCHES = [
+  { name: "Swarovski", note: "Era Journey Chrono", tag: "Timepiece",
+    story: "A chronograph that treats sparkle as a private matter. The rose-gold case is set stone by stone with clear crystals, framing a black dial with three quiet sub-dials — all of it worn low on croc-embossed midnight leather. It reads as jewellery first and instrument second, which is exactly the point.",
+    details: {
+      "Movement": "Swiss quartz chronograph",
+      "Case": "Rose-gold tone, hand-set clear crystals",
+      "Dial": "Black, three sub-dials, crystal-ringed counter",
+      "Strap": "Black croc-embossed leather",
+      "Water resistance": "5 ATM",
+      "Origin": "Swiss made",
+    },
+    advisor: {
+      note: "Most sparkle shouts. This one keeps its voice down — black dial, warm gold, crystal only where light should sit.",
+      who: "For the woman who wears one good watch, not five loud ones — evening dinners, signatures, small ceremonies.",
+      why: "It pairs with the black pieces of the collection effortlessly, and the rose-gold lifts every neutral you own.",
+    },
+    variants: [
+      { color: "Rose Gold · Black", hex: "#1c1c1c", shots: ["images/watch-era.webp"] },
+  ]},
+];
+const HATS = [];
+const EYEWEAR = [];
+
+/* collection registry — range.html and piece.html read this */
+const RANGES = {
+  bags:     { title: "The Bags",       lead: "Thirteen curated pieces — ask, and we advise.", items: BAGS },
+  watches:  { title: "The Timepieces", lead: "Kept close, wound privately.",                  items: WATCHES },
+  headwear: { title: "The Headwear",   lead: "Arriving to the salon.",                        items: HATS },
+  eyewear:  { title: "The Eyewear",    lead: "Arriving to the salon.",                        items: EYEWEAR },
+};

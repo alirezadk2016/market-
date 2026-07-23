@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A.z — The Collections</title>
+  <meta name="theme-color" content="#f5efe8" />
+  <style>html,body{margin:0;background:#f5efe8}</style>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23f5efe8'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-style='italic' font-size='30' fill='%237a2c3d' text-anchor='middle'%3EAZ%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ---------- Collection page ---------- */
+    .range { max-width: 1180px; margin: 0 auto; padding: 128px clamp(18px, 4.5vw, 48px) 90px; }
+    .range-head { text-align: center; margin-bottom: 8px; }
+    .range-kicker { font-size: 10px; letter-spacing: .34em; text-transform: uppercase; color: var(--gold); }
+    .range-title { font-family: var(--serif); font-weight: 500; font-size: clamp(38px, 5.5vw, 62px); color: var(--ink); margin-top: 14px; }
+    .range-lead { margin-top: 12px; font-size: 10.5px; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); }
+    .range .grid { margin-top: 48px; }
+    /* cut-out objects (watches, hats…) sit whole in the frame, never cropped */
+    .grid--objects .card-media img { object-fit: contain; padding: 14% 12%; }
+    /* an empty collection is an appointment, not an absence */
+    .range-soon { text-align: center; padding: 72px 24px 30px; }
+    .range-soon span { display: block; color: var(--gold); font-size: 14px; }
+    .range-soon em { display: block; font-family: var(--serif); font-style: italic; font-size: clamp(24px, 3.6vw, 32px); color: var(--ink-2); margin-top: 16px; }
+    .range-soon p { max-width: 430px; margin: 18px auto 0; font-size: 14px; line-height: 1.95; color: var(--ink-2); }
+    .range-soon .btn { margin-top: 30px; }
+    .range-nav { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 34px; }
+    .range-nav a { padding: 11px 22px; border: 1px solid var(--line-2); font-size: 10px; letter-spacing: .24em; text-transform: uppercase; color: var(--ink-2); transition: color .3s, border-color .3s; }
+    .range-nav a:hover { color: var(--gold-2); border-color: var(--gold); }
+    .range-nav a.on { color: var(--gold-2); border-color: var(--gold); }
+    @media (max-width: 880px) { .range { padding-top: 108px; } }
+  </style>
+</head>
+<body>
+  <header class="topbar scrolled" id="topbar">
+    <a href="index.html" class="brand" aria-label="A.z — home"><img class="brand-logo" src="images/logo-ink.png" alt="A.z" /></a>
+    <nav class="nav">
+      <a href="index.html#collection">Collection</a>
+      <a href="index.html#house">The House</a>
+      <a href="index.html#enquire">Enquire</a>
+    </nav>
+  </header>
+
+  <main class="range">
+    <div class="range-head">
+      <p class="range-kicker">The Vitrine</p>
+      <h1 class="range-title" id="rTitle"></h1>
+      <p class="range-lead" id="rLead"></p>
+      <nav class="range-nav" id="rNav" aria-label="Collections"></nav>
+    </div>
+    <div class="grid" id="rGrid"></div>
+    <div class="range-soon" id="rSoon" style="display:none">
+      <span>✦</span>
+      <em>Private viewing — on request</em>
+      <p>This collection is arriving to the salon. Speak to an advisor and we will open it for you first, piece by piece, before it is shown to anyone else.</p>
+      <a class="btn btn--solid" href="index.html#enquire">Speak to an Advisor</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <img class="footer-logo" src="images/logo-ink.png" alt="A.z" />
+    <div class="footer-rule" aria-hidden="true"></div>
+    <span class="footer-copy">© A.z — By Appointment</span>
+  </footer>
+
+  <script src="bags.js"></script>
+  <script>
+  (function () {
+    "use strict";
+    var qs = new URLSearchParams(location.search);
+    var col = qs.get("c") || "bags";
+    if (!RANGES[col]) col = "bags";
+    var range = RANGES[col];
+
+    document.title = "A.z — " + range.title;
+    document.getElementById("rTitle").textContent = range.title;
+    document.getElementById("rLead").textContent = range.lead;
+
+    /* collection switcher */
+    var nav = document.getElementById("rNav");
+    Object.keys(RANGES).forEach(function (k) {
+      var a = document.createElement("a");
+      a.href = "range.html?c=" + k;
+      a.textContent = RANGES[k].title.replace("The ", "");
+      if (k === col) a.className = "on";
+      nav.appendChild(a);
+    });
+
+    var items = range.items || [];
+    if (!items.length) {
+      document.getElementById("rSoon").style.display = "";
+      return;
+    }
+
+    var grid = document.getElementById("rGrid");
+    if (col !== "bags") grid.classList.add("grid--objects");
+    items.forEach(function (it, idx) {
+      var first = (it.variants || [])[0] || {};
+      var shot = (first.shots || [])[0] || "";
+      var num = String(idx + 1).padStart(2, "0");
+      var a = document.createElement("a");
+      a.className = "card in";
+      a.style.transitionDelay = (idx % 3) * 90 + "ms";
+      a.href = "piece.html?id=" + idx + (col === "bags" ? "" : "&c=" + col);
+      a.innerHTML =
+        '<div class="card-media">' +
+          '<span class="card-tag">' + (it.tag || "") + '</span>' +
+          '<span class="card-index">' + num + '</span>' +
+          '<img alt="' + (it.name || "") + '" loading="lazy" src="' + shot + '" />' +
+        '</div>' +
+        '<div class="card-info">' +
+          '<div class="card-name">' + (it.name || "") + '</div>' +
+          '<div class="card-note"><span class="note-base">' + (it.note || "") + '</span>' +
+            (first.color ? ' · <span class="note-color">' + first.color + '</span>' : "") + '</div>' +
+        '</div>';
+      grid.appendChild(a);
+    });
+  })();
+  </script>
+</body>
+</html>

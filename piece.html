@@ -283,9 +283,23 @@
   <script>
   (function () {
     "use strict";
-    var id = parseInt(new URLSearchParams(location.search).get("id") || "0", 10);
-    if (isNaN(id) || id < 0 || id >= BAGS.length) id = 0;
-    var bag = BAGS[id];
+    var qs = new URLSearchParams(location.search);
+    var col = qs.get("c") || "bags";
+    if (typeof RANGES === "undefined" || !RANGES[col] || !RANGES[col].items.length) col = "bags";
+    var SRC = (typeof RANGES !== "undefined") ? RANGES[col].items : BAGS;
+    var id = parseInt(qs.get("id") || "0", 10);
+    if (isNaN(id) || id < 0 || id >= SRC.length) id = 0;
+    var bag = SRC[id];
+
+    /* breadcrumb points back to this piece's own collection */
+    if (col !== "bags") {
+      var crumb = document.querySelector(".crumb");
+      crumb.href = "range.html?c=" + col;
+      crumb.textContent = "← " + RANGES[col].title;
+      /* cut-out objects show whole, never cropped */
+      document.getElementById("pMain").style.objectFit = "contain";
+      document.getElementById("pMain").style.padding = "10%";
+    }
 
     document.title = "A.z — " + (bag.name || "The Piece") + " " + (bag.note || "");
     document.getElementById("pIndex").textContent = "No. " + String(id + 1).padStart(2, "0") + (bag.tag ? " — " + bag.tag : "");
@@ -392,7 +406,7 @@
     })();
 
     /* ---------- Client impressions (stored on this device) ---------- */
-    var KEY = "az_reviews_" + id;
+    var KEY = "az_reviews_" + (col === "bags" ? "" : col + "_") + id;
     var list = document.getElementById("revList"), avgEl = document.getElementById("revAvg");
     function load() { try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { return []; } }
     function save(a) { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) {} }
