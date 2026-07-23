@@ -277,10 +277,38 @@
         d.y -= d.s; d.tw += .025; d.x += Math.sin(d.tw) * .14 * DPR;
         if (d.y < -5) { d.y = H + 5; d.x = Math.random() * W; }
         cx.beginPath();
-        cx.fillStyle = "rgba(122,44,61," + d.a * (.6 + .4 * Math.sin(d.tw)) + ")";
+        cx.fillStyle = "rgba(206,174,126," + d.a * (.6 + .4 * Math.sin(d.tw)) + ")";
         cx.arc(d.x, d.y, d.r, 0, 6.28); cx.fill();
       }
       requestAnimationFrame(tick);
     })();
+  })();
+
+  /* ---- Hero parallax — the piece tilts to the pointer / device ---- */
+  (function () {
+    const hero = document.getElementById("hero");
+    if (!hero || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
+    const loop = () => {
+      cx += (tx - cx) * 0.06; cy += (ty - cy) * 0.06;
+      hero.style.setProperty("--mx", cx.toFixed(3));
+      hero.style.setProperty("--my", cy.toFixed(3));
+      raf = (Math.abs(tx - cx) + Math.abs(ty - cy) > 0.001) ? requestAnimationFrame(loop) : 0;
+    };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
+    hero.addEventListener("pointermove", (e) => {
+      const r = hero.getBoundingClientRect();
+      tx = ((e.clientX - r.left) / r.width - 0.5) * 2;
+      ty = ((e.clientY - r.top) / r.height - 0.5) * 2;
+      kick();
+    });
+    hero.addEventListener("pointerleave", () => { tx = 0; ty = 0; kick(); });
+    // gentle device-tilt parallax on phones
+    window.addEventListener("deviceorientation", (e) => {
+      if (e.gamma == null) return;
+      tx = Math.max(-1, Math.min(1, e.gamma / 26));
+      ty = Math.max(-1, Math.min(1, ((e.beta || 40) - 40) / 30));
+      kick();
+    });
   })();
 })();

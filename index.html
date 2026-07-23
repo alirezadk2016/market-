@@ -7,7 +7,7 @@
   <meta name="description" content="A.z — a private advisory for luxury and old-money essentials. Curated pieces and personal purchase guidance, by appointment. Bags today; footwear and fragrance to follow." />
   <meta name="theme-color" content="#f5efe8" />
   <!-- Critical: paint dark immediately so there is never a white flash before styles.css loads -->
-  <style>html,body{margin:0;background:#f5efe8}#intro{position:fixed;inset:0;background:#f5efe8;z-index:9999}</style>
+  <style>html,body{margin:0;background:#f5efe8}#intro{position:fixed;inset:0;background:#140f12;z-index:9999}</style>
 
   <!-- Favicon (gold monogram) -->
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23f5efe8'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-style='italic' font-size='30' fill='%237a2c3d' text-anchor='middle'%3EAZ%3C/text%3E%3C/svg%3E" />
@@ -29,8 +29,8 @@
   <div class="intro" id="intro">
     <div class="intro-inner">
       <span class="intro-sig">
-        <img class="intro-logo-ghost" src="images/logo-ink.png" alt="" aria-hidden="true" />
-        <img class="intro-logo" src="images/logo-ink.png" alt="A.z" />
+        <img class="intro-logo-ghost" src="images/logo.png" alt="" aria-hidden="true" />
+        <img class="intro-logo" src="images/logo.png" alt="A.z" />
         <span class="intro-nib" aria-hidden="true"></span>
       </span>
       <span class="intro-line" aria-hidden="true"></span>
@@ -40,7 +40,10 @@
 
   <!-- Top bar -->
   <header class="topbar" id="topbar">
-    <a href="#" class="brand" aria-label="A.z — home"><img class="brand-logo" src="images/logo-ink.png" alt="A.z" /></a>
+    <a href="#" class="brand" aria-label="A.z — home">
+      <img class="brand-logo brand-logo--gold" src="images/logo.png" alt="A.z" />
+      <img class="brand-logo brand-logo--ink" src="images/logo-ink.png" alt="" aria-hidden="true" />
+    </a>
     <nav class="nav">
       <a href="#collection">Collection</a>
       <a href="#house">The House</a>
@@ -61,18 +64,25 @@
     <span class="menu-foot">A.z — By Appointment</span>
   </div>
 
-  <!-- Hero -->
-  <section class="hero">
+  <!-- Hero — cinematic dark stage -->
+  <section class="hero" id="hero">
+    <div class="hero-glow" aria-hidden="true"></div>
     <canvas class="hero-dust" id="dust" aria-hidden="true"></canvas>
-    <div class="hero-frame" aria-hidden="true"></div>
+    <div class="hero-stage" aria-hidden="true">
+      <img class="hero-bag" src="images/bag-cut.webp" alt="Armani Exchange Logo Top-Handle" />
+    </div>
     <div class="hero-vignette" aria-hidden="true"></div>
-    <p class="hero-eyebrow reveal">A.z — Private Luxury Advisory</p>
-    <h1 class="hero-title reveal">The art of<br /><em>choosing well.</em></h1>
-    <div class="hero-rule reveal" aria-hidden="true"></div>
-    <p class="hero-sub reveal">A private advisory for luxury &amp; old-money essentials. We curate the finest, then guide you to the piece that truly suits you — bags today, footwear and fragrance to follow.</p>
-    <div class="hero-actions reveal">
-      <a href="#collection" class="btn btn--solid">View the Collection</a>
-      <a href="#enquire" class="btn btn--ghost">Speak to an Advisor</a>
+    <div class="hero-top">
+      <p class="hero-eyebrow reveal">A.z — Private Luxury Advisory</p>
+      <h1 class="hero-title reveal">The art of <em>choosing well.</em></h1>
+    </div>
+    <div class="hero-bottom">
+      <div class="hero-rule reveal" aria-hidden="true"></div>
+      <p class="hero-sub reveal">A private advisory for luxury &amp; old-money essentials — we curate the finest, then guide you to the piece that truly suits you.</p>
+      <div class="hero-actions reveal">
+        <a href="#collection" class="btn btn--solid">View the Collection</a>
+        <a href="#enquire" class="btn btn--ghost">Speak to an Advisor</a>
+      </div>
     </div>
     <span class="hero-scroll reveal" aria-hidden="true">Scroll</span>
   </section>
