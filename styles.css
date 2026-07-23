@@ -77,6 +77,10 @@ em { font-style: italic; }
   letter-spacing: .3em; text-transform: uppercase;
 }
 
+/* mobile folio counter — hidden on larger screens */
+.swipe-hint { display: none; margin-top: 16px; font-size: 9.5px; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); }
+.swipe-hint b { font-weight: 400; color: var(--gold-2); }
+
 /* display type breaks in balanced lines; body copy avoids orphans */
 h1, h2, h3, .look-title, .range-title, .enquire-title { text-wrap: balance; }
 p { text-wrap: pretty; }
@@ -802,8 +806,26 @@ p { text-wrap: pretty; }
   /* the vitrine folds to a 2×2 wall on phones */
   .vitrine { padding-top: 72px; }
   .vit-wall { grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 430px; }
-  /* one immersive piece per screen, with room to breathe */
-  .grid { grid-template-columns: 1fr; max-width: 460px; gap: 46px; }
+  .vit-cap { padding: 12px 8px 11px; }
+  .vit-cap i { font-size: 15.5px; }
+  .vit-cap b { font-size: 7.5px; letter-spacing: .18em; }
+  .vit-soon em { font-size: 15.5px; }
+  .vit-soon b { font-size: 7.5px; letter-spacing: .22em; }
+  /* the curator's word, intimate on a small screen */
+  .word { padding: 78px 32px; }
+  .word-sign { height: 54px; }
+  /* the collection becomes a hand-flick carousel — one piece per swipe,
+     the next always peeking in, like turning cards in a private folio */
+  .grid {
+    display: flex; grid-template-columns: none; max-width: none; gap: 16px;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  .grid::-webkit-scrollbar { display: none; }
+  .grid > .card { flex: 0 0 82%; scroll-snap-align: center; opacity: 1; transform: none; }
+  .collection .grid { margin-inline: -26px; padding: 6px 26px 12px; scroll-padding-inline: 26px; }
+  .range .grid { padding: 6px 2px 12px; }
+  .swipe-hint { display: block; }
   .collection { padding: 20px 26px 20px; }
   .card-media img { padding: 30px 26px 34px; }
   /* centered, editorial captions on a single-column lookbook */

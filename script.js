@@ -284,6 +284,19 @@
     })();
   })();
 
+  /* ---- Mobile folio counter — live "02 / 13" as the carousel is swiped ---- */
+  (function () {
+    const hint = document.getElementById("swipeHint");
+    if (!hint || !grid) return;
+    const now = document.getElementById("swipeNow");
+    document.getElementById("swipeTotal").textContent = String(BAGS.length).padStart(2, "0");
+    grid.addEventListener("scroll", () => {
+      const card = grid.firstElementChild; if (!card) return;
+      const idx = Math.round(grid.scrollLeft / (card.offsetWidth + 16));
+      now.textContent = String(Math.max(1, Math.min(BAGS.length, idx + 1))).padStart(2, "0");
+    }, { passive: true });
+  })();
+
   /* ---- The Vitrine — wheel over a piece to draw it closer ---- */
   document.querySelectorAll(".vit-niche").forEach((niche) => {
     const img = niche.querySelector("img");
