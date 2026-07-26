@@ -103,6 +103,9 @@
     </div>
     <div class="hero-scene reveal">
       <div class="look-flip" id="lookFlip">
+      <!-- The crystal. Real glass when the device can draw it; the plate below
+           is the whole hero on its own when it cannot. -->
+      <div class="crystal-wrap" id="crystalWrap" aria-hidden="true"></div>
       <div class="flip-inner" id="flipInner">
       <div class="look-stage" id="lookStage">
         <div class="look-photo" id="lookPhoto">
@@ -163,6 +166,12 @@
         </button>
       </div><!-- /.look-flip -->
       <p class="scene-hint reveal"><span class="only-desktop">Scroll into the scene · </span>touch a marker<span class="hint-turn"> · turn the plate</span></p>
+      <p class="crystal-hint" id="crystalHint" aria-hidden="true">Touch a marker &middot; touch the crystal</p>
+      <a class="crystal-out" id="crystalOut" href="eyewear.html" data-no-xfer tabindex="-1" aria-hidden="true">
+        <span class="co-house">Gucci</span>
+        <span class="co-piece">Rectangular Sunglasses</span>
+        <span class="co-go">Enter the Eyewear <i>⟶</i></span>
+      </a>
     </div>
   </section>
 
@@ -312,5 +321,51 @@
 
   <script src="bags.js"></script>
   <script src="script.js"></script>
+
+  <!-- The crystal. Vendored, so the site depends on nothing it does not ship. -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "./vendor/three/three.module.min.js",
+      "three/addons/": "./vendor/three/addons/"
+    }
+  }
+  </script>
+  <script type="module">
+    import { boot } from "./crystal.js";
+    const host = document.getElementById("crystalWrap");
+    const scene = document.querySelector(".hero-scene");
+    const hint = document.getElementById("crystalHint");
+    const out = document.getElementById("crystalOut");
+
+    const crystal = boot(host, {
+      selfie: "images/look.webp",
+      portrait: "images/look-back.webp",
+      onFinish() {
+        scene.classList.add("crystal-done");
+        hint.textContent = "Drag to rotate";
+        out.removeAttribute("aria-hidden");
+        out.removeAttribute("tabindex");
+      },
+    });
+
+    if (crystal) {
+      scene.classList.add("crystal-on");
+      host.removeAttribute("aria-hidden");
+      // the flat plate stays until the crystal is actually up, so there is never
+      // an empty frame between them
+      setTimeout(() => scene.classList.add("crystal-live"), 6400);
+      const start = () => {
+        if (crystal.done) return;
+        if (crystal.running) crystal.skip();          // nobody should be trapped in it
+        else if (crystal.play()) scene.classList.add("crystal-playing");
+      };
+      host.addEventListener("pointerdown", start);
+      // the eyewear marker on the scene opens the same door
+      document.querySelectorAll(".spot--vitrine").forEach((b) =>
+        b.addEventListener("click", (e) => { e.stopPropagation(); e.preventDefault(); start(); }, true));
+      window.AZCrystal = crystal;
+    }
+  </script>
 </body>
 </html>
