@@ -15,6 +15,16 @@
    and it appears inside this panel for that piece only.
 ------------------------------------------------------------------- */
 const BRANDS = {
+  "Gucci": {
+    founded: "1921",
+    origin: "Florence, Italy",
+    standing: "The Florentine house of the double G — a century of Italian craft, from saddlery workshops to the front row of world fashion.",
+    facts: [
+      "Founded by Guccio Gucci in Florence in 1921.",
+      "The interlocking GG monogram honours the founder's initials.",
+      "Among the most valuable luxury houses in the world, part of the Kering group.",
+    ],
+  },
   "Polo Ralph Lauren": {
     founded: "1967",
     origin: "New York",
@@ -399,12 +409,32 @@ const HATS = [
       { color: "Navy · Yellow Pony", hex: "#22304d", shots: ["images/cap-navy.webp", "images/cap-navy-2.webp", "images/cap-navy-3.webp"] },
   ]},
 ];
-const EYEWEAR = [];
+const EYEWEAR = [
+  { name: "Gucci", note: "Oval Sunglasses", tag: "Icon",
+    story: "The quietest shape Gucci makes, returned from the nineties without raising its voice. A slim black oval in polished acetate, made in Japan, with the interlocking G resting at each temple like a small piece of jewellery. Worn low on the nose it is insolent; worn straight it is discreet — both readings are correct.",
+    details: {
+      "Frame": "Black polished acetate, slim oval",
+      "Lenses": "Grey-green, 100% UV protection (Cat. 3)",
+      "Hardware": "Interlocking G in light gold-tone",
+      "Size": "54□16 · 135 mm temples",
+      "Origin": "Made in Japan",
+      "Includes": "Velvet case and satin pouch",
+      "Care": "Keep in the case; clean only with the satin cloth",
+    },
+    advisor: {
+      note: "Black acetate and a whisper of gold — the same sentence the rest of this collection speaks. The oval flatters more faces than it is given credit for.",
+      who: "For sun-struck mornings, long drives, and anyone whose sunglasses are worn as punctuation, not disguise.",
+      why: "The gold G at the temple answers the hardware of the bags and the timepiece — one look, finished above the cheekbones.",
+    },
+    variants: [
+      { color: "Nero · Gold", hex: "#141414", shots: ["images/gg-oval.webp", "images/gg-oval-2.webp", "images/gg-oval-3.webp", "images/gg-oval-4.webp"] },
+  ]},
+];
 
 /* collection registry — range.html and piece.html read this */
 const RANGES = {
   bags:     { title: "The Bags",       lead: "Thirteen curated pieces — ask, and we advise.", items: BAGS },
   watches:  { title: "The Timepieces", lead: "Kept close, wound privately.",                  items: WATCHES },
   headwear: { title: "The Headwear",   lead: "Worn low, chosen well.",                        items: HATS },
-  eyewear:  { title: "The Eyewear",    lead: "Arriving to the salon.",                        items: EYEWEAR },
+  eyewear:  { title: "The Eyewear",    lead: "Seen through, never seen trying.",              items: EYEWEAR },
 };
