@@ -94,7 +94,7 @@ p { text-wrap: pretty; }
   position: fixed; inset: 0; z-index: 9500; display: grid; place-items: center;
   background: radial-gradient(110% 84% at 50% 44%, #3a2329 0%, #1d1215 48%, #0d0809 88%), #0d0809;
   opacity: 0; visibility: hidden; pointer-events: none;
-  perspective: 1400px; perspective-origin: 50% 46%;
+  perspective: 1020px; perspective-origin: 50% 46%;
 }
 .xfer.on { opacity: 1; visibility: visible; pointer-events: auto; animation: xferFade .34s var(--ease) both; }
 @keyframes xferFade { from { opacity: 0; } to { opacity: 1; } }
@@ -105,26 +105,36 @@ p { text-wrap: pretty; }
 }
 /* ④ the portrait plate becomes a lens — the frame reshapes, so the photograph
    re-crops rather than stretching */
-.xfer.on .xfer-stage { animation: xferShape .68s cubic-bezier(.2,.8,.2,1) 1.94s both; }
+.xfer.on .xfer-stage { animation: xferShape .62s cubic-bezier(.16,1,.3,1) 1.62s both; }
 @keyframes xferShape {
   from { width: var(--xw);  height: var(--xh); }
   to   { width: var(--xw2); height: var(--xh2); }
 }
 .xfer-card { position: absolute; inset: 0; transform-style: preserve-3d; }
 /* the passage only runs once it is actually shown — a hidden element still animates */
-.xfer.on .xfer-card { animation: xferTurn 2.4s cubic-bezier(.46,0,.32,1) .12s both; }
-/* Four beats, each given room to be read:
-   ① the plate you clicked  ② it turns  ③ the second image faces you
-   ④ it comes full circle, and only then does the shape become a lens and open toward you */
+.xfer.on .xfer-card { animation: xferTurn 1.95s linear .08s both; }
+/* Four beats. The easing lives on each keyframe, not on the animation — a single
+   curve stretched over the whole turn is what made it stall and lurch. Each
+   quarter accelerates out of rest and decelerates into the next hold, and the
+   plate recedes as it pivots instead of spinning on a flat plane. */
 @keyframes xferTurn {
-  0%   { transform: rotateY(0deg) scale(1) translateZ(0); }
-  6%   { transform: rotateY(0deg) scale(1) translateZ(0); }             /* ① hold */
-  22%  { transform: rotateY(-88deg) scale(1.02) translateZ(28px); }      /* ② edge-on */
-  38%  { transform: rotateY(-180deg) scale(1.03) translateZ(28px); }     /* ③ second image */
-  50%  { transform: rotateY(-180deg) scale(1.03) translateZ(28px); }     /*    hold on it */
-  64%  { transform: rotateY(-272deg) scale(1.04) translateZ(42px); }
-  76%  { transform: rotateY(-360deg) scale(1) translateZ(26px); }        /* ④ full circle, flat to you */
-  100% { transform: rotateY(-360deg) scale(1) translateZ(70px); }        /*    and it steps forward */
+  /* ① the plate you clicked */
+  0%   { transform: rotateY(0deg) rotateX(0deg) translateZ(0); animation-timing-function: linear; }
+  5%   { transform: rotateY(0deg) rotateX(0deg) translateZ(0);
+         animation-timing-function: cubic-bezier(.4,0,.78,.42); }
+  /* ② it turns — winding up into the edge */
+  26%  { transform: rotateY(-90deg) rotateX(2.2deg) translateZ(-46px);
+         animation-timing-function: cubic-bezier(.22,.5,.36,1); }
+  /* ③ the second image settles square to you */
+  45%  { transform: rotateY(-180deg) rotateX(0deg) translateZ(0); animation-timing-function: linear; }
+  62%  { transform: rotateY(-180deg) rotateX(0deg) translateZ(0);
+         animation-timing-function: cubic-bezier(.4,0,.78,.42); }
+  /* ④ round again, faster now that you know the move */
+  79%  { transform: rotateY(-270deg) rotateX(-2.2deg) translateZ(-38px);
+         animation-timing-function: cubic-bezier(.2,.55,.3,1); }
+  88%  { transform: rotateY(-360deg) rotateX(0deg) translateZ(0);
+         animation-timing-function: cubic-bezier(.16,1,.3,1); }
+  100% { transform: rotateY(-360deg) rotateX(0deg) translateZ(58px); }
 }
 .xf-face {
   position: absolute; inset: 0; overflow: hidden; display: block;
@@ -136,7 +146,21 @@ p { text-wrap: pretty; }
 .xf-back { transform: rotateY(180deg); }
 .xf-back img { object-position: center 24%; }
 /* ④ the shape resolves into a lens and the brass rim grows inward */
-.xfer.on .xf-face { animation: xferLens .68s cubic-bezier(.2,.8,.2,1) 1.94s both; }
+.xfer.on .xf-face { animation: xferLens .58s cubic-bezier(.16,1,.3,1) 1.66s both,
+                               xferSwing 1.95s linear .08s both; }
+/* speed you can see: the face smears through the fast part of each quarter and
+   comes back sharp wherever the eye is meant to rest */
+@keyframes xferSwing {
+  0%,  5% { filter: blur(0px)   brightness(1); }
+  15%     { filter: blur(2.4px) brightness(.9); }
+  26%     { filter: blur(1px)   brightness(.66); }
+  38%     { filter: blur(2.2px) brightness(.92); }
+  45%, 62%{ filter: blur(0px)   brightness(1); }
+  71%     { filter: blur(2.2px) brightness(.9); }
+  79%     { filter: blur(.9px)  brightness(.68); }
+  85%     { filter: blur(1.9px) brightness(.94); }
+  90%,100%{ filter: blur(0px)   brightness(1); }
+}
 @keyframes xferLens {
   from { border-radius: 0; box-shadow: 0 50px 100px rgba(0,0,0,.6); }
   to   { border-radius: 15% 19% 17% 15% / 36% 36% 40% 40%;
@@ -158,7 +182,7 @@ p { text-wrap: pretty; }
   background: linear-gradient(178deg, rgba(255,253,244,.85) 0 1.4%, transparent 8%),
               linear-gradient(2deg, rgba(255,246,224,.4) 0 1.4%, transparent 9%);
 }
-.xfer.on .xf-rim { animation: xferRim .6s var(--ease) 2.12s both; }
+.xfer.on .xf-rim { animation: xferRim .46s var(--ease) 1.78s both; }
 @keyframes xferRim { from { opacity: 0; transform: scale(1.05); } to { opacity: 1; transform: scale(1); } }
 /* glass gains body once it is a lens */
 .xf-glass {
@@ -167,15 +191,15 @@ p { text-wrap: pretty; }
     radial-gradient(30% 22% at 20% 12%, rgba(255,251,240,.2), rgba(255,251,240,0) 68%),
     radial-gradient(74% 66% at 50% 42%, rgba(62,40,26,0), rgba(18,11,8,.5) 100%);
 }
-.xfer.on .xf-glass { animation: xferFade .6s var(--ease) 2.1s both; }
+.xfer.on .xf-glass { animation: xferFade .44s var(--ease) 1.8s both; }
 /* a raking light crosses each face as it swings past the key light */
 .xf-glare {
   position: absolute; inset: -12% -40%; pointer-events: none;
   background: linear-gradient(102deg, rgba(255,240,214,0) 34%, rgba(255,243,220,.5) 50%, rgba(255,240,214,0) 66%);
   opacity: 0; transform: translateX(-70%);
 }
-.xfer.on .xf-front .xf-glare { animation: xferGlare .7s var(--ease) .32s both, xferGlare .7s var(--ease) 1.62s both; }
-.xfer.on .xf-back .xf-glare  { animation: xferGlare .7s var(--ease) .96s both; }
+.xfer.on .xf-front .xf-glare { animation: xferGlare .58s var(--ease) .14s both, xferGlare .58s var(--ease) 1.7s both; }
+.xfer.on .xf-back .xf-glare  { animation: xferGlare .58s var(--ease) .78s both; }
 @keyframes xferGlare {
   0%   { opacity: 0; transform: translateX(-70%); }
   46%  { opacity: .9; }
@@ -186,7 +210,7 @@ p { text-wrap: pretty; }
   position: absolute; left: 94%; top: 27%; width: 26%; height: 7.4%;
   pointer-events: none; opacity: 0; transform-origin: left center;
 }
-.xfer.on .xfer-arm { animation: xferArm .7s cubic-bezier(.2,.8,.2,1) 2.24s both; }
+.xfer.on .xfer-arm { animation: xferArm .5s cubic-bezier(.16,1,.3,1) 1.9s both; }
 .xfer-arm i {
   position: absolute; inset: 0; border-radius: 3px 13px 16px 3px;
   background: linear-gradient(176deg, #fff3da 0 5%, #cfa96c 20%, #8f6c37 46%, #e8d3a6 62%, #a3803f 80%, #6b5026 100%);
@@ -201,7 +225,7 @@ p { text-wrap: pretty; }
   font-size: 9.5px; letter-spacing: .34em; text-transform: uppercase; color: rgba(201,168,121,.8);
   opacity: 0;
 }
-.xfer.on .xfer-label { animation: xferFade .7s var(--ease) 2.3s both; }
+.xfer.on .xfer-label { animation: xferFade .42s var(--ease) 2s both; }
 @media (prefers-reduced-motion: reduce) {
   .xfer.on .xfer-card, .xfer.on .xf-face, .xfer.on .xf-glare,
   .xfer.on .xf-glass, .xfer.on .xfer-arm, .xfer.on .xfer-label {

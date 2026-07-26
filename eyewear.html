@@ -90,11 +90,13 @@
       transform-style: preserve-3d;
       transform: rotateX(calc(var(--my) * -9deg)) rotateY(calc(var(--mx) * 13deg));
       transition: transform .9s var(--ease);
-      animation: lensRise 1.7s cubic-bezier(.16,1,.3,1) both, lensHover 12s ease-in-out 1.7s infinite;
+      animation: lensRise .62s cubic-bezier(.16,1,.3,1) both, lensHover 12s ease-in-out .62s infinite;
     }
+    /* the passage hands the lens over already formed and sharp — this only settles
+       it into the room, so the two pages read as one continuous move */
     @keyframes lensRise {
-      from { opacity: 0; transform: translateY(52px) scale(.9) rotateY(-18deg); filter: blur(22px); }
-      to { opacity: 1; transform: none; filter: blur(0); }
+      from { opacity: 0; transform: translateY(14px) scale(.978); }
+      to { opacity: 1; transform: none; }
     }
     @keyframes lensHover {
       0%, 100% { translate: 0 0; }

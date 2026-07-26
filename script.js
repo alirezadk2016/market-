@@ -309,7 +309,7 @@
       xfer.classList.add("on");
       xfer.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
-      const wait = matchMedia("(prefers-reduced-motion: reduce)").matches ? 260 : 2900;
+      const wait = matchMedia("(prefers-reduced-motion: reduce)").matches ? 240 : 2480;
       setTimeout(() => { location.href = href; }, wait);
     }
     document.querySelectorAll('a[href="eyewear.html"]').forEach((a) => {
