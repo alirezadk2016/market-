@@ -430,6 +430,26 @@ const EYEWEAR = [
     variants: [
       { color: "Black · Grey", hex: "#141414", shots: ["images/gg-oval.webp", "images/gg-oval-2.webp", "images/gg-oval-3.webp", "images/gg-oval-4.webp"] },
   ]},
+  { name: "Gucci", note: "Rectangular Sunglasses", tag: "Statement",
+    story: "A narrow rectangle cut sharp across the face — the shape that made the house's nineties revival famous. Glossy black acetate outside, a marbled pale-blue interior that only the wearer knows about, and the interlocking G set large at the temple. Made in Italy, and unmistakable at ten paces.",
+    details: {
+      "Frame": "Black polished acetate, slim rectangle",
+      "Interior": "Marbled pale-blue acetate on the temples",
+      "Lenses": "Grey-green, category 3 — full UV protection",
+      "Hardware": "Oversized interlocking G in gold-tone",
+      "Origin": "Made in Italy",
+      "Includes": "Gucci hard case, satin pouch and cloth",
+      "Care": "Keep in the case; clean only with the cloth provided",
+    },
+    advisor: {
+      note: "The oval is discretion; this one is declaration. Black outside, a secret blue inside — the detail only the person wearing it ever sees.",
+      who: "For the woman who enters first and explains later — daylight events, travel, the photograph you did not pose for.",
+      why: "It sharpens a soft outfit instantly, and the gold G answers every other piece in this vitrine.",
+    },
+    retailer: { name: "Zalando", url: "https://www.zalando.co.uk/gucci-sunglasses-blackgrey-gu451k08b-q11.html" },
+    variants: [
+      { color: "Black · Grey", hex: "#141414", shots: ["images/gg-rect.webp", "images/gg-rect-2.webp", "images/gg-rect-3.webp"] },
+  ]},
 ];
 
 /* collection registry — range.html and piece.html read this */
@@ -437,5 +457,5 @@ const RANGES = {
   bags:     { title: "The Bags",       lead: "Thirteen curated pieces — ask, and we advise.", items: BAGS },
   watches:  { title: "The Timepieces", lead: "Kept close, wound privately.",                  items: WATCHES },
   headwear: { title: "The Headwear",   lead: "Worn low, chosen well.",                        items: HATS },
-  eyewear:  { title: "The Eyewear",    lead: "Seen through, never seen trying.",              items: EYEWEAR },
+  eyewear:  { title: "The Eyewear",    lead: "Two shapes — discretion, and declaration.",     items: EYEWEAR },
 };
