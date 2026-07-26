@@ -378,6 +378,12 @@
       vase: {
         kicker: "The Salon", name: "Wild Blossom & Stone", zoom: 2.8,
         note: "Spring branches in glazed stoneware — the quiet company the pieces keep. Nothing in the room raises its voice."
+      },
+      eyewear: {
+        kicker: "The Eyewear", name: "Gucci — Rectangular Sunglasses", zoom: 2.9,
+        note: "The lit niche of the salon, kept for one piece at a time. Step through the glass.",
+        link: "piece.html?id=1&c=eyewear",
+        glass: "images/look-back.webp"
       }
     };
     /* one camera: z / tx / ty glide toward targets (marker clicks AND wheel) */
@@ -410,18 +416,22 @@
     const holoRefl = document.getElementById("holoRefl");
     /* the reveal never opens on a stale image: it waits for the new piece
        to finish loading, and a token cancels any reveal that was overtaken */
+    const holoEl = document.getElementById("holo");
     let holoToken = 0;
     function showHolo(p) {
       const token = ++holoToken;
+      const src = p.glass || p.cut;
       const arm = () => {
         if (token !== holoToken) return;
         requestAnimationFrame(() => requestAnimationFrame(() => {
           if (token === holoToken) stage.classList.add("holo-on");
         }));
       };
+      /* a cut-out floats in the room; a glass panel is stepped into */
+      if (holoEl) holoEl.classList.toggle("glass", !!p.glass);
       holoImg.onload = () => { holoImg.onload = null; arm(); };
-      holoImg.alt = p.name; holoRefl.src = p.cut;
-      if (holoImg.getAttribute("src") !== p.cut) holoImg.src = p.cut;
+      holoImg.alt = p.name; holoRefl.src = src;
+      if (holoImg.getAttribute("src") !== src) holoImg.src = src;
       if (holoImg.complete && holoImg.naturalWidth) { holoImg.onload = null; arm(); }
     }
     function dropHolo() {
@@ -442,7 +452,7 @@
       txt = clamp(-(x - 50) * p.zoom, lim);
       tyt = clamp(-(y - 50) * p.zoom, lim);
       /* pieces with a cut-out spring forward as a floating hologram */
-      if (p.cut) { stage.classList.remove("holo-on"); showHolo(p); }
+      if (p.cut || p.glass) { stage.classList.remove("holo-on"); showHolo(p); }
       else dropHolo();
       zoomState(); setCard(p); kick();
     }

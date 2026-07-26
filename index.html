@@ -94,13 +94,16 @@
           <button class="spot" data-piece="bag" data-label="The Bag" style="--x:40%; --y:73%" aria-label="View the bag"><i></i></button>
           <button class="spot spot--salon spot--edge-r" data-piece="parfum" data-label="The Parfum" style="--x:83%; --y:15%" aria-label="View the parfum shelf"><i></i></button>
           <button class="spot spot--salon spot--edge-r" data-piece="shelf" data-label="The Display" style="--x:85%; --y:42%" aria-label="View the display shelf"><i></i></button>
+          <button class="spot spot--vitrine spot--edge-r" data-piece="eyewear" data-label="The Eyewear" style="--x:86%; --y:66%" aria-label="Enter the eyewear vitrine"><i></i></button>
           <button class="spot spot--salon spot--edge-l" data-piece="vase" data-label="The Blossom" style="--x:10%; --y:56%" aria-label="View the blossom vase"><i></i></button>
         </div>
         <div class="holo" id="holo" aria-hidden="true">
           <span class="holo-glow"></span>
+          <span class="holo-beam" aria-hidden="true"></span>
           <div class="holo-body">
             <img id="holoImg" src="" alt="" />
             <img class="holo-refl" id="holoRefl" src="" alt="" aria-hidden="true" />
+            <span class="glass-face" aria-hidden="true"></span>
           </div>
           <i class="holo-corner hc1"></i><i class="holo-corner hc2"></i>
           <i class="holo-corner hc3"></i><i class="holo-corner hc4"></i>
@@ -113,6 +116,7 @@
           <img class="lc-img hidden" id="lcImg" src="" alt="" loading="lazy" />
           <a class="lc-link hidden" id="lcLink" href="#">Discover the Piece</a>
         </article>
+        <span class="plate-sheen" aria-hidden="true"></span>
       </div><!-- /.look-stage -->
 
       <!-- the reverse of the plate — the campaign portrait -->
@@ -125,6 +129,7 @@
           <span class="bp-piece">Rectangular Sunglasses</span>
           <span class="bp-go">Discover the Piece <i>⟶</i></span>
         </a>
+        <span class="plate-sheen" aria-hidden="true"></span>
       </div>
       </div><!-- /.flip-inner -->
         <button class="flip-btn" id="flipBtn" aria-label="Turn the plate">
