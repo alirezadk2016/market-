@@ -82,6 +82,8 @@
       <p class="hero-sign reveal">Curated personally — <em>A.z</em></p>
     </div>
     <div class="hero-scene reveal">
+      <div class="look-flip" id="lookFlip">
+      <div class="flip-inner" id="flipInner">
       <div class="look-stage" id="lookStage">
         <div class="look-photo" id="lookPhoto">
           <img src="images/look.webp" alt="Styled in the salon — every piece in the scene can be explored" />
@@ -111,8 +113,25 @@
           <img class="lc-img hidden" id="lcImg" src="" alt="" loading="lazy" />
           <a class="lc-link hidden" id="lcLink" href="#">Discover the Piece</a>
         </article>
+      </div><!-- /.look-stage -->
+
+      <!-- the reverse of the plate — the campaign portrait -->
+      <div class="look-back" id="lookBack">
+        <img src="images/look-back.webp" alt="A.z campaign — the Gucci rectangular sunglasses" loading="lazy" />
+        <span class="back-vignette" aria-hidden="true"></span>
+        <span class="back-edge" aria-hidden="true">The Campaign</span>
+        <a class="back-plate" href="piece.html?id=1&amp;c=eyewear">
+          <span class="bp-house">Gucci</span>
+          <span class="bp-piece">Rectangular Sunglasses</span>
+          <span class="bp-go">Discover the Piece <i>⟶</i></span>
+        </a>
       </div>
-      <p class="scene-hint reveal"><span class="only-desktop">Scroll into the scene · </span>touch a marker</p>
+      </div><!-- /.flip-inner -->
+        <button class="flip-btn" id="flipBtn" aria-label="Turn the plate">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>
+        </button>
+      </div><!-- /.look-flip -->
+      <p class="scene-hint reveal"><span class="only-desktop">Scroll into the scene · </span>touch a marker<span class="hint-turn"> · turn the plate</span></p>
     </div>
   </section>
 

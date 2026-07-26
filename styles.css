@@ -301,12 +301,12 @@ p { text-wrap: pretty; }
 /* the scene — the salon photograph, explorable */
 .hero-scene { position: relative; z-index: 5; }
 .hero .hero-scene { animation-delay: 3.4s; }
-.hero-scene .look-stage {
-  width: clamp(250px, 27vw, 370px);
+.hero-scene .look-flip { width: clamp(250px, 27vw, 370px); }
+.hero-scene .look-stage, .hero-scene .look-back {
   box-shadow: 0 46px 100px rgba(0,0,0,.55), 0 8px 24px rgba(0,0,0,.3);
   border: 1px solid rgba(201,168,121,.22);
 }
-.scene-hint { margin-top: 16px; text-align: center; font-size: 9.5px; letter-spacing: .28em;
+.scene-hint { margin-top: 38px; text-align: center; font-size: 9.5px; letter-spacing: .28em;
   text-transform: uppercase; color: rgba(240,232,220,.42); }
 .hero .scene-hint { animation-delay: 3.9s; }
 /* base buttons on paper (collection pages, invitations) */
@@ -421,13 +421,27 @@ p { text-wrap: pretty; }
 .look-title { font-family: var(--serif); font-weight: 500; font-size: clamp(30px, 4.6vw, 46px); color: var(--ink); margin-top: 14px; }
 .look-title em { font-style: italic; color: var(--gold-2); }
 .look-lead { margin-top: 14px; font-size: 10.5px; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); }
-.look-stage {
-  position: relative; width: min(440px, 88vw); aspect-ratio: 1023 / 1537; overflow: hidden;
-  background: #e7ded4; flex: none;
-  box-shadow: 0 36px 84px rgba(43,34,38,.22), 0 6px 18px rgba(43,34,38,.1);
-  transform: perspective(1100px) rotateX(var(--tx, 0deg)) rotateY(var(--ty, 0deg));
-  transition: transform .7s var(--ease);
+/* the plate turns in space — salon scene on the face, campaign on the reverse */
+.look-flip {
+  position: relative; flex: none;
+  width: min(440px, 88vw); aspect-ratio: 1023 / 1537;
+  perspective: 1500px;
 }
+.flip-inner {
+  position: absolute; inset: 0; transform-style: preserve-3d;
+  transform: rotateX(var(--tx, 0deg)) rotateY(calc(var(--ty, 0deg) + var(--flip, 0deg)));
+  transition: transform 1.35s cubic-bezier(.68, .02, .16, 1);
+}
+.look-stage, .look-back {
+  position: absolute; inset: 0; overflow: hidden;
+  -webkit-backface-visibility: hidden; backface-visibility: hidden;
+  box-shadow: 0 36px 84px rgba(43,34,38,.22), 0 6px 18px rgba(43,34,38,.1);
+}
+.look-stage { background: #e7ded4; }
+.look-back { transform: rotateY(180deg); background: #17100f; }
+/* the plate is turning: nothing on the face may be touched mid-flight */
+.look-flip.turning .look-stage, .look-flip.turning .look-back { pointer-events: none; }
+.look-flip.flipped .look-stage { pointer-events: none; }
 .look-photo {
   position: absolute; inset: 0; transform-origin: 50% 50%; will-change: transform;
 }
@@ -474,6 +488,67 @@ p { text-wrap: pretty; }
 .spot--edge-l::before { left: -6px; transform: translate(0, 4px); }
 .spot--edge-l:hover::before, .spot--edge-l:focus-visible::before { transform: translate(0, 0); }
 .look-stage.zoomed .spot { opacity: 0; pointer-events: none; }
+
+/* ---------- The reverse — the campaign portrait, alive ---------- */
+.look-back img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  object-position: center 28%;
+  transform: scale(1.06); transform-origin: 52% 34%;
+}
+/* it breathes only while it is the face being shown */
+.look-flip.flipped .look-back img { animation: backDrift 22s ease-in-out infinite alternate; }
+@keyframes backDrift {
+  from { transform: scale(1.06) translate(0, 0); }
+  to   { transform: scale(1.13) translate(-1.2%, -1.6%); }
+}
+.back-vignette {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(78% 60% at 52% 30%, transparent 40%, rgba(20,12,14,.45) 100%),
+    linear-gradient(180deg, rgba(20,12,14,.34) 0%, transparent 26%, transparent 52%, rgba(16,10,12,.86) 100%);
+}
+/* a spine mark, read vertically like the edge of a portfolio */
+.back-edge {
+  position: absolute; top: 16px; left: 14px; z-index: 3;
+  writing-mode: vertical-rl; letter-spacing: .34em; text-transform: uppercase;
+  font-size: 8.5px; color: rgba(240,232,220,.62);
+}
+.back-plate {
+  position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 3;
+  display: flex; flex-direction: column; gap: 3px; padding: 14px 16px 13px;
+  background: rgba(18,11,14,.5); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border: 1px solid rgba(201,168,121,.3);
+  transition: border-color .4s var(--ease), background .4s var(--ease);
+}
+.back-plate:hover { border-color: rgba(201,168,121,.62); background: rgba(18,11,14,.62); }
+.bp-house { font-size: 9px; letter-spacing: .32em; text-transform: uppercase; color: #c9a879; }
+.bp-piece { font-family: var(--serif); font-style: italic; font-size: 19px; color: #f0e8dc; }
+.bp-go { margin-top: 6px; font-size: 9px; letter-spacing: .26em; text-transform: uppercase; color: rgba(240,232,220,.72); }
+.bp-go i { font-style: normal; display: inline-block; transition: transform .35s var(--ease); }
+.back-plate:hover .bp-go i { transform: translateX(5px); }
+
+/* the turn control — a small brass key at the corner of the plate */
+.flip-btn {
+  position: absolute; z-index: 6; right: -16px; bottom: -16px; width: 46px; height: 46px;
+  display: grid; place-items: center; border-radius: 50%; cursor: pointer;
+  border: 1px solid rgba(201,168,121,.55);
+  background: linear-gradient(180deg, rgba(38,24,28,.94), rgba(20,13,15,.94));
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  box-shadow: 0 12px 26px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,236,204,.16);
+  transition: border-color .4s var(--ease), transform .5s var(--ease), box-shadow .4s var(--ease);
+}
+.flip-btn svg { width: 19px; height: 19px; fill: none; stroke: #c9a879; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round;
+  transition: transform .7s cubic-bezier(.68,.02,.16,1); }
+.flip-btn:hover { border-color: #c9a879; box-shadow: 0 16px 32px rgba(0,0,0,.5), 0 0 22px rgba(201,168,121,.22), inset 0 1px 0 rgba(255,236,204,.22); }
+.flip-btn:hover svg { transform: rotate(-120deg); }
+.look-flip.flipped .flip-btn svg { transform: rotate(-180deg); }
+.look-flip.flipped .flip-btn:hover svg { transform: rotate(-300deg); }
+/* the light catches the plate's edge as it swings */
+.look-flip.turning .flip-btn { transform: scale(.92); }
+@media (prefers-reduced-motion: reduce) {
+  .flip-inner { transition: none; }
+  .look-flip.flipped .look-back img { animation: none; }
+}
 
 /* ---------- Holo reveal — the piece springs out of the scene in 3D ---------- */
 .holo {

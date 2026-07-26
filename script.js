@@ -399,9 +399,12 @@
       card.classList.add("show");
     }
     function hideCard() { card.classList.remove("show"); }
+    const flipInner = document.getElementById("flipInner");
     function zoomState() {
       stage.classList.toggle("zoomed", zt > 1.05);
-      if (zt > 1.02) { stage.style.setProperty("--tx", "0deg"); stage.style.setProperty("--ty", "0deg"); }
+      if (zt > 1.02 && flipInner) {
+        flipInner.style.setProperty("--tx", "0deg"); flipInner.style.setProperty("--ty", "0deg");
+      }
     }
     const holoImg = document.getElementById("holoImg");
     const holoRefl = document.getElementById("holoRefl");
@@ -468,19 +471,34 @@
     closeBtn.addEventListener("click", (e) => { e.stopPropagation(); stepBack(); });
     stage.addEventListener("click", stepBack);
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") stepBack(); });
-    /* gentle 3D tilt at rest — desktop pointers only */
-    if (matchMedia("(hover:hover)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      stage.addEventListener("pointermove", (e) => {
-        if (zt > 1.02) return;
-        const r = stage.getBoundingClientRect();
-        const nx = (e.clientX - r.left) / r.width - 0.5;
-        const ny = (e.clientY - r.top) / r.height - 0.5;
-        stage.style.setProperty("--ty", (nx * 5).toFixed(2) + "deg");
-        stage.style.setProperty("--tx", (-ny * 4).toFixed(2) + "deg");
+    /* ---- turning the plate: salon scene on the face, campaign on the reverse ---- */
+    const flip = document.getElementById("lookFlip");
+    const inner = document.getElementById("flipInner");
+    const flipBtn = document.getElementById("flipBtn");
+    let flipped = false;
+    if (flip && inner && flipBtn) {
+      const setTilt = (x, y) => { inner.style.setProperty("--tx", x); inner.style.setProperty("--ty", y); };
+      flipBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        flipped = !flipped;
+        stepBack();                       // the face resets before it turns away
+        setTilt("0deg", "0deg");
+        flip.classList.add("turning");
+        flip.classList.toggle("flipped", flipped);
+        inner.style.setProperty("--flip", flipped ? "180deg" : "0deg");
+        setTimeout(() => flip.classList.remove("turning"), 1400);
       });
-      stage.addEventListener("pointerleave", () => {
-        stage.style.setProperty("--tx", "0deg"); stage.style.setProperty("--ty", "0deg");
-      });
+      /* gentle 3D tilt at rest — desktop pointers only */
+      if (matchMedia("(hover:hover)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        flip.addEventListener("pointermove", (e) => {
+          if (zt > 1.02 || flip.classList.contains("turning")) return;
+          const r = flip.getBoundingClientRect();
+          const nx = (e.clientX - r.left) / r.width - 0.5;
+          const ny = (e.clientY - r.top) / r.height - 0.5;
+          setTilt((-ny * 4).toFixed(2) + "deg", (nx * 5).toFixed(2) + "deg");
+        });
+        flip.addEventListener("pointerleave", () => setTilt("0deg", "0deg"));
+      }
     }
   })();
 
