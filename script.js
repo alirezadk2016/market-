@@ -298,6 +298,37 @@
     }, { passive: true });
   })();
 
+  /* ---- The passage: any way into the eyewear room turns the plate first ---- */
+  (function () {
+    const xfer = document.getElementById("xfer");
+    if (!xfer) return;
+    let travelling = false;
+    function travel(href) {
+      if (travelling) return;
+      travelling = true;
+      xfer.classList.add("on");
+      xfer.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      const wait = matchMedia("(prefers-reduced-motion: reduce)").matches ? 260 : 2900;
+      setTimeout(() => { location.href = href; }, wait);
+    }
+    document.querySelectorAll('a[href="eyewear.html"]').forEach((a) => {
+      a.addEventListener("click", (e) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;   // let people open it in a tab
+        e.preventDefault();
+        travel(a.getAttribute("href"));
+      });
+    });
+    /* the piece card's link is written at runtime, so catch it on the way out */
+    const lcLink = document.getElementById("lcLink");
+    if (lcLink) lcLink.addEventListener("click", (e) => {
+      if (lcLink.getAttribute("href") !== "eyewear.html") return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
+      e.preventDefault();
+      travel("eyewear.html");
+    });
+  })();
+
   /* ---- The Vitrine — wheel over a piece to draw it closer ---- */
   document.querySelectorAll(".vit-niche").forEach((niche) => {
     const img = niche.querySelector("img");
