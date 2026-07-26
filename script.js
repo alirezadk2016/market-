@@ -382,7 +382,7 @@
       eyewear: {
         kicker: "The Eyewear", name: "Gucci — Rectangular Sunglasses", zoom: 2.9,
         note: "The lit niche of the salon, kept for one piece at a time. Step through the glass.",
-        link: "piece.html?id=1&c=eyewear",
+        link: "eyewear.html",
         glass: "images/look-back.webp"
       }
     };

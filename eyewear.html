@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A.z — The Eyewear</title>
+  <meta name="theme-color" content="#130d0e" />
+  <style>html,body{margin:0;background:#130d0e}</style>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23f5efe8'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-style='italic' font-size='30' fill='%237a2c3d' text-anchor='middle'%3EAZ%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* the bar sits over the dark room until the collection is reached */
+    .topbar { background: transparent; border-bottom-color: transparent; }
+    .topbar .nav a { color: rgba(240,232,220,.78); }
+    .topbar .nav a:hover { color: #c9a879; }
+    .topbar .nav a::after { background: #c9a879; }
+    .topbar .brand-logo { filter: brightness(0) saturate(100%) invert(78%) sepia(28%) saturate(560%) hue-rotate(2deg) brightness(96%) contrast(88%); }
+    .topbar.lit {
+      padding: 14px clamp(20px, 5vw, 60px);
+      background: rgba(242,237,229,.8); border-bottom-color: var(--line-2);
+      -webkit-backdrop-filter: blur(14px) saturate(1.5); backdrop-filter: blur(14px) saturate(1.5);
+    }
+    .topbar.lit .brand-logo { height: 40px; }
+    .topbar.lit .nav a { color: var(--ink-2); }
+    .topbar.lit .nav a:hover { color: var(--gold-2); }
+    .topbar.lit .nav a::after { background: var(--gold); }
+    .topbar.lit .brand-logo { filter: none; }
+
+    /* ================= The Eyewear — the lens room ================= */
+    .lens-room {
+      position: relative; min-height: 100svh; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      padding: 120px clamp(20px, 5vw, 70px) 90px;
+      background:
+        radial-gradient(120% 84% at 50% 42%, #3d2530 0%, #221518 46%, #120c0d 82%), #120c0d;
+      perspective: 1300px; perspective-origin: 50% 46%;
+      --mx: 0; --my: 0;
+    }
+    /* the floor the lens hovers over */
+    .room-floor {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 34%;
+      background: linear-gradient(180deg, transparent, rgba(228,196,150,.05) 40%, rgba(228,196,150,.09));
+      -webkit-mask-image: radial-gradient(70% 100% at 50% 100%, #000, transparent 78%);
+      mask-image: radial-gradient(70% 100% at 50% 100%, #000, transparent 78%);
+    }
+    /* a shaft of light from above */
+    .room-beam {
+      position: absolute; left: 50%; top: -12%; width: 66%; height: 96%;
+      transform: translateX(-50%); pointer-events: none;
+      background: radial-gradient(48% 58% at 50% 0%, rgba(236,206,158,.16), transparent 72%);
+    }
+    .room-dust { position: absolute; inset: 0; pointer-events: none; }
+
+    .room-grid {
+      position: relative; z-index: 3; width: 100%; max-width: 1240px;
+      display: grid; grid-template-columns: 1fr 1.05fr; gap: clamp(30px, 5vw, 80px); align-items: center;
+    }
+
+    /* ---- the copy ---- */
+    .room-copy { max-width: 470px; }
+    .room-kicker { font-size: 10px; letter-spacing: .34em; text-transform: uppercase; color: #c9a879; }
+    .room-title {
+      font-family: var(--serif); font-weight: 500; line-height: 1.04;
+      font-size: clamp(42px, 6.4vw, 84px); color: #f0e8dc; margin-top: 18px;
+    }
+    .room-title em { color: #c9a879; }
+    .room-rule { position: relative; width: 150px; height: 1px; margin: 26px 0 24px;
+      background: linear-gradient(90deg, transparent 0, rgba(201,168,121,.5) 26%, rgba(201,168,121,.5) 40%, transparent 44%,
+        transparent 56%, rgba(201,168,121,.5) 60%, rgba(201,168,121,.5) 74%, transparent 100%); }
+    .room-rule::after { content: "\2726"; position: absolute; left: 50%; top: 50%;
+      transform: translate(-50%,-50%); color: #c9a879; font-size: 12px; line-height: 1; }
+    .room-sub { color: rgba(240,232,220,.66); font-size: 15.5px; line-height: 1.95; }
+    .room-meta { margin-top: 30px; display: grid; gap: 11px; }
+    .room-meta div { display: flex; gap: 14px; align-items: baseline; font-size: 12px; }
+    .room-meta span { flex: 0 0 96px; font-size: 9px; letter-spacing: .28em; text-transform: uppercase; color: rgba(201,168,121,.8); }
+    .room-meta b { font-weight: 400; color: rgba(240,232,220,.78); }
+    .room-actions { margin-top: 34px; display: flex; gap: 14px; flex-wrap: wrap; }
+    .room-actions .btn--solid {
+      background: linear-gradient(180deg, #d6b98e, #bd9c6c); color: #1a1216; border: 1px solid rgba(255,255,255,.16);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 16px 34px -12px rgba(0,0,0,.6);
+    }
+    .room-actions .btn--solid:hover { background: linear-gradient(180deg, #e1c79f, #caa877); letter-spacing: .3em; }
+    .room-actions .btn--ghost { border: 1px solid rgba(240,232,220,.34); color: #f0e8dc; }
+    .room-actions .btn--ghost:hover { border-color: #c9a879; color: #c9a879; letter-spacing: .3em; }
+
+    /* ---- the lens itself ---- */
+    .lens-wrap {
+      position: relative; justify-self: center; width: min(560px, 92%); aspect-ratio: 1 / 1;
+      transform-style: preserve-3d;
+      transform: rotateX(calc(var(--my) * -7deg)) rotateY(calc(var(--mx) * 9deg));
+      transition: transform .9s var(--ease);
+      animation: lensRise 1.6s cubic-bezier(.16,1,.3,1) both, lensHover 11s ease-in-out 1.6s infinite;
+    }
+    @keyframes lensRise {
+      from { opacity: 0; transform: translateY(46px) scale(.9) rotateY(-16deg); filter: blur(20px); }
+      to { opacity: 1; transform: none; filter: blur(0); }
+    }
+    @keyframes lensHover {
+      0%, 100% { translate: 0 0; }
+      34% { translate: 0 -12px; }
+      68% { translate: 0 -4px; }
+    }
+    .lens-body {
+      position: absolute; left: 2%; right: 20%; top: 22%; bottom: 22%;
+      border-radius: 30% 26% 27% 31% / 32% 32% 34% 34%;
+      overflow: hidden; transform: translateZ(34px);
+      box-shadow:
+        0 60px 110px rgba(0,0,0,.66), 0 14px 34px rgba(0,0,0,.44),
+        0 0 46px rgba(201,168,121,.26),
+        inset 0 0 0 1px rgba(255,247,226,.75),
+        inset 0 0 0 5px rgba(196,160,104,.95),
+        inset 0 0 0 6.5px rgba(120,88,44,.8),
+        inset 0 0 46px rgba(255,232,186,.18),
+        inset 0 6px 0 rgba(255,248,230,.3);
+    }
+    .lens-body img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; object-position: 52% 24%; transform: scale(1.12);
+      animation: lensPan 26s ease-in-out infinite alternate;
+    }
+    @keyframes lensPan { from { transform: scale(1.12) translate(0,0); } to { transform: scale(1.2) translate(-2%, -2%); } }
+    .lens-body .tint {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(70% 58% at 48% 38%, rgba(62,40,26,.06), rgba(24,14,10,.5) 100%),
+        linear-gradient(198deg, rgba(214,182,128,.14), transparent 44%);
+    }
+    .lens-body .gleam {
+      position: absolute; inset: -8% -6%;
+      background:
+        radial-gradient(44% 28% at 22% 14%, rgba(255,250,238,.34), transparent 62%),
+        radial-gradient(24% 16% at 80% 84%, rgba(255,240,214,.18), transparent 66%);
+      animation: gleamDrift 12s ease-in-out infinite alternate;
+    }
+    @keyframes gleamDrift { from { transform: translate(0,0); } to { transform: translate(3%, 2%); } }
+    /* the light that travels the rim */
+    .lens-body::after {
+      content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+      background: linear-gradient(102deg, transparent 36%, rgba(255,247,232,.3) 47%,
+        rgba(255,255,255,.5) 50%, rgba(255,247,232,.24) 54%, transparent 66%);
+      background-size: 320% 100%; background-position: 160% 0;
+      animation: rimTravel 7s cubic-bezier(.5,0,.35,1) 2.2s infinite;
+    }
+    @keyframes rimTravel { 0% { background-position: 160% 0; } 55%, 100% { background-position: -90% 0; } }
+
+    /* the bridge and the temple, in their own planes */
+    .lens-bridge { display: none; }
+    .lens-temple-3d {
+      position: absolute; right: 4%; top: 30%; width: 24%; height: 11%;
+      transform: translateZ(30px) rotateY(-52deg) rotate(-8deg); transform-origin: left center;
+      border-radius: 4px 12px 14px 4px;
+      background: linear-gradient(100deg, #e6c894 0%, #b9945c 32%, #f2e0b6 52%, #a9854f 74%, #d8bb87 100%);
+      box-shadow: 0 14px 30px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,248,232,.6);
+    }
+    .lens-temple-3d .gg {
+      position: absolute; left: 24%; top: 50%; width: 26px; height: 26px; margin-top: -13px;
+      border-radius: 50%; border: 3px solid rgba(58,36,16,.7);
+      box-shadow: inset 0 0 0 1px rgba(255,246,226,.5);
+    }
+    .lens-temple-3d .gg::after {
+      content: ""; position: absolute; left: 7px; top: -3px; width: 26px; height: 26px;
+      border-radius: 50%; border: 3px solid rgba(58,36,16,.5);
+    }
+    /* what the lens casts on the floor */
+    .lens-shadow {
+      position: absolute; left: 6%; right: 22%; bottom: 6%; height: 9%;
+      transform: translateZ(-40px); filter: blur(16px);
+      background: radial-gradient(50% 50% at 50% 50%, rgba(0,0,0,.72), transparent 72%);
+    }
+    .lens-caption {
+      position: absolute; left: 0; right: 18%; bottom: 3%; text-align: center;
+      font-size: 9px; letter-spacing: .34em; text-transform: uppercase; color: rgba(201,168,121,.72);
+    }
+
+    /* ---- the collection, opening below ---- */
+    .room-scroll {
+      position: absolute; left: 0; right: 0; bottom: 26px; z-index: 4; text-align: center;
+      font-size: 9.5px; letter-spacing: .3em; text-transform: uppercase; color: rgba(240,232,220,.42);
+    }
+    .room-scroll::after { content: ""; display: block; width: 1px; height: 28px;
+      background: linear-gradient(#c9a879, transparent); margin: 12px auto 0; }
+    .ew-collection { padding: clamp(70px, 9vw, 110px) clamp(18px, 4.5vw, 48px) 90px; max-width: 1180px; margin: 0 auto; }
+    .ew-head { text-align: center; margin-bottom: 50px; }
+    .ew-head .adv-kicker, .ew-kicker { font-size: 10px; letter-spacing: .34em; text-transform: uppercase; color: var(--gold); }
+    .ew-title { font-family: var(--serif); font-weight: 500; font-size: clamp(30px, 4.6vw, 46px); color: var(--ink); margin-top: 14px; }
+    .ew-title em { color: var(--gold-2); }
+    .ew-lead { margin-top: 12px; font-size: 10.5px; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); }
+    .grid--objects .card-media img { object-fit: contain; padding: 14% 12%; }
+
+    @media (max-width: 940px) {
+      .room-grid { grid-template-columns: 1fr; gap: 44px; }
+      .room-copy { max-width: none; text-align: center; margin-inline: auto; }
+      .room-rule { margin-inline: auto; }
+      .room-actions { justify-content: center; }
+      .room-meta div { justify-content: center; }
+      .room-meta span { flex: 0 0 auto; }
+      .lens-wrap { width: min(430px, 94%); }
+      .lens-room { padding-top: 104px; }
+    }
+    @media (max-width: 560px) {
+      .room-meta { display: none; }
+      .room-actions { flex-direction: column; align-items: stretch; max-width: 260px; margin-inline: auto; }
+      .room-scroll { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .lens-wrap, .lens-body img, .lens-body .gleam, .lens-body::after { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar" id="topbar">
+    <a href="index.html" class="brand" aria-label="A.z — home"><img class="brand-logo" src="images/logo-ink.png" alt="A.z" /></a>
+    <nav class="nav">
+      <a href="index.html#collection">Collection</a>
+      <a href="index.html#house">The House</a>
+      <a href="index.html#enquire">Enquire</a>
+    </nav>
+  </header>
+
+  <!-- the lens room -->
+  <section class="lens-room" id="lensRoom">
+    <span class="room-beam" aria-hidden="true"></span>
+    <span class="room-floor" aria-hidden="true"></span>
+    <canvas class="room-dust" id="roomDust" aria-hidden="true"></canvas>
+
+    <div class="room-grid">
+      <div class="room-copy">
+        <p class="room-kicker">The Eyewear</p>
+        <h1 class="room-title">Seen through,<br /><em>never seen trying.</em></h1>
+        <div class="room-rule" aria-hidden="true"></div>
+        <p class="room-sub">Two shapes, one house. Black acetate cut in Italy and Japan, a whisper of
+          gold at the temple, and lenses dark enough to keep your own counsel.</p>
+        <div class="room-meta">
+          <div><span>House</span><b>Gucci</b></div>
+          <div><span>Lenses</span><b>Category 3 — full UV protection</b></div>
+          <div><span>Frames</span><b>Polished acetate, interlocking G</b></div>
+        </div>
+        <div class="room-actions">
+          <a class="btn btn--solid" href="#pieces">View the Pieces</a>
+          <a class="btn btn--ghost" href="index.html#enquire">Speak to an Advisor</a>
+        </div>
+      </div>
+
+      <div class="lens-wrap" id="lensWrap">
+        <span class="lens-shadow" aria-hidden="true"></span>
+        <span class="lens-bridge" aria-hidden="true"></span>
+        <div class="lens-body">
+          <img src="images/look-back.webp" alt="A.z campaign — the Gucci rectangular sunglasses" />
+          <span class="tint" aria-hidden="true"></span>
+          <span class="gleam" aria-hidden="true"></span>
+        </div>
+        <span class="lens-temple-3d" aria-hidden="true"><i class="gg"></i></span>
+        <span class="lens-caption">The A.z Campaign</span>
+      </div>
+    </div>
+    <span class="room-scroll" aria-hidden="true">The Collection</span>
+  </section>
+
+  <!-- the collection opens beneath -->
+  <section class="ew-collection" id="pieces">
+    <div class="ew-head">
+      <p class="ew-kicker">The Vitrine</p>
+      <h2 class="ew-title">Two shapes. <em>Discretion, and declaration.</em></h2>
+      <p class="ew-lead">Select a piece to open its sheet</p>
+    </div>
+    <div class="grid grid--objects" id="ewGrid"></div>
+  </section>
+
+  <footer class="footer">
+    <img class="footer-logo" src="images/logo.png" alt="A.z" />
+    <div class="footer-rule" aria-hidden="true"></div>
+    <nav class="footer-nav" aria-label="Collections">
+      <a href="range.html?c=bags">Bags</a><span>·</span>
+      <a href="range.html?c=watches">Timepieces</a><span>·</span>
+      <a href="range.html?c=headwear">Headwear</a><span>·</span>
+      <a href="advisory.html">The Advisory</a>
+    </nav>
+    <span class="footer-copy">© A.z — By Appointment</span>
+  </footer>
+
+  <script src="bags.js"></script>
+  <script>
+  (function () {
+    "use strict";
+    /* the pieces, from the same registry the rest of the house reads */
+    var items = (typeof RANGES !== "undefined" && RANGES.eyewear.items) || [];
+    var grid = document.getElementById("ewGrid");
+    items.forEach(function (it, idx) {
+      var first = (it.variants || [])[0] || {};
+      var shot = (first.shots || [])[0] || "";
+      var a = document.createElement("a");
+      a.className = "card in";
+      a.style.transitionDelay = (idx % 3) * 90 + "ms";
+      a.href = "piece.html?id=" + idx + "&c=eyewear";
+      a.innerHTML =
+        '<div class="card-media">' +
+          '<span class="card-tag">' + (it.tag || "") + '</span>' +
+          '<span class="card-index">' + String(idx + 1).padStart(2, "0") + '</span>' +
+          '<img alt="' + (it.name || "") + '" loading="lazy" src="' + shot + '" />' +
+        '</div>' +
+        '<div class="card-info">' +
+          '<div class="card-name">' + (it.name || "") + '</div>' +
+          '<div class="card-note"><span class="note-base">' + (it.note || "") + '</span>' +
+            (first.color ? ' · <span class="note-color">' + first.color + '</span>' : "") + '</div>' +
+        '</div>';
+      grid.appendChild(a);
+    });
+
+    /* the bar only lights once the room is behind you */
+    var bar = document.getElementById("topbar"), roomEl = document.getElementById("lensRoom");
+    var litScroll = function () {
+      bar.classList.toggle("lit", window.scrollY > roomEl.offsetHeight - 90);
+    };
+    window.addEventListener("scroll", litScroll, { passive: true });
+    litScroll();
+
+    /* the lens answers the pointer — and the phone's own tilt */
+    var room = document.getElementById("lensRoom");
+    if (room && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      var tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
+      function loop() {
+        cx += (tx - cx) * 0.07; cy += (ty - cy) * 0.07;
+        room.style.setProperty("--mx", cx.toFixed(3));
+        room.style.setProperty("--my", cy.toFixed(3));
+        raf = (Math.abs(tx - cx) + Math.abs(ty - cy) > 0.001) ? requestAnimationFrame(loop) : 0;
+      }
+      var kick = function () { if (!raf) raf = requestAnimationFrame(loop); };
+      room.addEventListener("pointermove", function (e) {
+        var r = room.getBoundingClientRect();
+        tx = ((e.clientX - r.left) / r.width - 0.5) * 2;
+        ty = ((e.clientY - r.top) / r.height - 0.5) * 2;
+        kick();
+      });
+      room.addEventListener("pointerleave", function () { tx = 0; ty = 0; kick(); });
+      window.addEventListener("deviceorientation", function (e) {
+        if (e.gamma == null) return;
+        tx = Math.max(-1, Math.min(1, e.gamma / 26));
+        ty = Math.max(-1, Math.min(1, ((e.beta || 40) - 40) / 30));
+        kick();
+      });
+
+      /* motes of light in the room */
+      var cv = document.getElementById("roomDust");
+      if (cv) {
+        var ctx = cv.getContext("2d"), W, H, DPR;
+        function size() {
+          DPR = Math.min(2, window.devicePixelRatio || 1);
+          W = cv.width = room.clientWidth * DPR; H = cv.height = room.clientHeight * DPR;
+        }
+        size(); addEventListener("resize", size);
+        var ps = [];
+        for (var i = 0; i < 40; i++) ps.push({
+          x: Math.random() * W, y: Math.random() * H,
+          r: (Math.random() * 1.5 + .4) * DPR, s: (Math.random() * .2 + .04) * DPR,
+          a: Math.random() * .4 + .1, tw: Math.random() * 6.28
+        });
+        (function tick() {
+          ctx.clearRect(0, 0, W, H);
+          for (var j = 0; j < ps.length; j++) {
+            var d = ps[j];
+            d.y -= d.s; d.tw += .024; d.x += Math.sin(d.tw) * .13 * DPR;
+            if (d.y < -5) { d.y = H + 5; d.x = Math.random() * W; }
+            ctx.beginPath();
+            ctx.fillStyle = "rgba(214,182,128," + d.a * (.6 + .4 * Math.sin(d.tw)) + ")";
+            ctx.arc(d.x, d.y, d.r, 0, 6.28); ctx.fill();
+          }
+          requestAnimationFrame(tick);
+        })();
+      }
+    }
+  })();
+  </script>
+</body>
+</html>

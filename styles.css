@@ -302,7 +302,7 @@ p { text-wrap: pretty; }
 .hero-scene { position: relative; z-index: 5; }
 .hero .hero-scene { animation-delay: 3.4s; }
 .hero-scene .look-flip { width: clamp(250px, 27vw, 370px); }
-.hero-scene .look-stage, .hero-scene .look-back {
+.hero-scene .look-stage {
   box-shadow: 0 46px 100px rgba(0,0,0,.55), 0 8px 24px rgba(0,0,0,.3);
   border: 1px solid rgba(201,168,121,.22);
 }
@@ -513,10 +513,79 @@ p { text-wrap: pretty; }
 .look-stage.zoomed .spot { opacity: 0; pointer-events: none; }
 
 /* ---------- The reverse — the campaign portrait, alive ---------- */
+/* the reverse resolves from a plate into a lens */
+.look-back { overflow: visible; box-shadow: none; border: 0; }
+.lens-glass {
+  position: absolute; inset: 0; overflow: hidden; display: block;
+  border-radius: 0;
+  box-shadow: 0 46px 100px rgba(0,0,0,.55), 0 8px 24px rgba(0,0,0,.3);
+  transition: border-radius 1s cubic-bezier(.2, .8, .2, 1) .34s;
+}
+.look-flip.flipped .lens-glass { border-radius: 30% 26% 27% 31% / 15% 15% 17% 17%; }
 .look-back img {
   position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
   object-position: center 28%;
   transform: scale(1.06); transform-origin: 52% 34%;
+}
+/* looking through tinted glass */
+.lens-tint {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0;
+  background:
+    radial-gradient(72% 58% at 50% 40%, rgba(58,38,24,.1), rgba(28,17,12,.42) 100%),
+    linear-gradient(200deg, rgba(206,168,116,.12), transparent 46%);
+  transition: opacity 1.1s var(--ease) .4s;
+}
+.look-flip.flipped .lens-tint { opacity: 1; }
+/* the curved sheen that sits on a real lens */
+.lens-gleam {
+  position: absolute; inset: -6% -4%; pointer-events: none; opacity: 0;
+  background:
+    radial-gradient(46% 30% at 24% 16%, rgba(255,247,232,.3), transparent 62%),
+    radial-gradient(28% 18% at 78% 82%, rgba(255,240,214,.16), transparent 66%);
+  transition: opacity 1.2s var(--ease) .5s;
+}
+.look-flip.flipped .lens-gleam { opacity: 1; animation: lensGleam 9s ease-in-out 1.6s infinite; }
+@keyframes lensGleam {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(2.4%, 1.4%); }
+}
+/* the brass rim, drawn on as the shape settles */
+.lens-rim {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0;
+  border-radius: 30% 26% 27% 31% / 15% 15% 17% 17%;
+  box-shadow:
+    inset 0 0 0 2px rgba(211,178,124,.9),
+    inset 0 0 26px rgba(255,232,186,.22),
+    inset 0 3px 0 rgba(255,244,222,.34),
+    0 0 34px rgba(201,168,121,.2);
+  transition: opacity .9s var(--ease) .55s;
+}
+.look-flip.flipped .lens-rim { opacity: 1; }
+/* the temple, hinged at the right edge */
+.lens-temple {
+  position: absolute; right: -13px; top: 34%; width: 26px; height: 96px;
+  pointer-events: none; opacity: 0; transform: translateX(-14px) rotate(-4deg);
+  border-radius: 4px 8px 10px 4px;
+  background: linear-gradient(100deg, #e6c894 0%, #b9945c 34%, #f0dcb0 52%, #a9854f 74%, #d8bb87 100%);
+  box-shadow: 0 8px 20px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,248,232,.6);
+  transition: opacity .8s var(--ease) .7s, transform .9s cubic-bezier(.2,.8,.2,1) .7s;
+}
+.look-flip.flipped .lens-temple { opacity: 1; transform: translateX(0) rotate(-4deg); }
+/* once it is a lens, the plate it was mounted on falls away */
+.look-flip.flipped .look-back { background: transparent; }
+.look-flip.flipped .back-edge { opacity: 0; transition: opacity .5s var(--ease); }
+.look-flip.flipped .back-plate {
+  left: 13%; right: 13%; bottom: 6.5%; text-align: center; align-items: center;
+  background: rgba(12,8,9,.42); border-color: rgba(211,178,124,.42);
+}
+.lens-temple i {
+  position: absolute; left: 50%; top: 26px; width: 17px; height: 17px; margin-left: -8.5px;
+  border-radius: 50%; border: 2.2px solid rgba(60,38,18,.68);
+  box-shadow: inset 0 0 0 1px rgba(255,244,222,.5);
+}
+.lens-temple i::after {
+  content: ""; position: absolute; left: 4px; top: -1px; width: 17px; height: 17px;
+  border-radius: 50%; border: 2.2px solid rgba(60,38,18,.5);
 }
 /* it breathes only while it is the face being shown */
 .look-flip.flipped .look-back img { animation: backDrift 22s ease-in-out infinite alternate; }
