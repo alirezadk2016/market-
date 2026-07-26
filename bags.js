@@ -414,20 +414,21 @@ const EYEWEAR = [
     story: "The quietest shape Gucci makes, returned from the nineties without raising its voice. A slim black oval in polished acetate, made in Japan, with the interlocking G resting at each temple like a small piece of jewellery. Worn low on the nose it is insolent; worn straight it is discreet — both readings are correct.",
     details: {
       "Frame": "Black polished acetate, slim oval",
-      "Lenses": "Grey-green, 100% UV protection (Cat. 3)",
-      "Hardware": "Interlocking G in light gold-tone",
-      "Size": "54□16 · 135 mm temples",
+      "Lenses": "Grey, category 3 — full UV protection",
+      "Hardware": "Interlocking G in light gold-tone, at each temple",
+      "Size": "54 □ 16 · 135 mm temples",
       "Origin": "Made in Japan",
-      "Includes": "Velvet case and satin pouch",
-      "Care": "Keep in the case; clean only with the satin cloth",
+      "Includes": "Gucci hard case, satin pouch and cloth",
+      "Care": "Keep in the case; clean only with the cloth provided",
     },
     advisor: {
       note: "Black acetate and a whisper of gold — the same sentence the rest of this collection speaks. The oval flatters more faces than it is given credit for.",
       who: "For sun-struck mornings, long drives, and anyone whose sunglasses are worn as punctuation, not disguise.",
       why: "The gold G at the temple answers the hardware of the bags and the timepiece — one look, finished above the cheekbones.",
     },
+    retailer: { name: "Zalando", url: "https://www.zalando.dk/gucci-solbriller-blackgrey-gu451k0c0-q11.html" },
     variants: [
-      { color: "Nero · Gold", hex: "#141414", shots: ["images/gg-oval.webp", "images/gg-oval-2.webp", "images/gg-oval-3.webp", "images/gg-oval-4.webp"] },
+      { color: "Black · Grey", hex: "#141414", shots: ["images/gg-oval.webp", "images/gg-oval-2.webp", "images/gg-oval-3.webp", "images/gg-oval-4.webp"] },
   ]},
 ];
 
