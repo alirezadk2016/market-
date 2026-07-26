@@ -268,7 +268,7 @@ function samplePM(stops, t) {
 }
 
 function backdropTexture(rect, hero, vmin) {
-  const S = 160;
+  const S = 224;
   const c = document.createElement("canvas");
   c.width = c.height = S;
   const x = c.getContext("2d");
@@ -278,7 +278,10 @@ function backdropTexture(rect, hero, vmin) {
   const bcx = hero.width * 0.5, bcy = hero.height * 0.41;
   const brx = hero.width * 1.16, bry = hero.height * 0.8;          // base: 116% 80% at 50% 41%
   const gcx = hero.width * 0.5, gcy = hero.height * 0.46;
-  const gr = vmin * 0.48;                                          // glow: 96vmin circle at 50% 46%
+  // glow: a 96vmin circle at 50% 46%. Its gradient has no explicit size, so the
+  // 100% stop sits at the box's farthest corner — 0.48 * vmin * sqrt(2), not the
+  // radius. Using the radius makes it both too weak and too small.
+  const gr = vmin * 0.48 * Math.SQRT2;
   const vrx = hero.width * 1.2, vry = hero.height * 0.92;          // vignette: 120% 92% at 50% 46%
 
   for (let j = 0; j < S; j++) {
@@ -295,8 +298,11 @@ function backdropTexture(rect, hero, vmin) {
         col = [r + col[0] * (1 - a), g + col[1] * (1 - a), b + col[2] * (1 - a)];
       }
 
+      // a bit of dither: these are very dark, very smooth gradients and eight
+      // bits of them band into visible rings
+      const n = (((i * 7 + j * 13) % 5) - 2) * 0.32;
       const o = (j * S + i) * 4;
-      d[o] = col[0]; d[o + 1] = col[1]; d[o + 2] = col[2]; d[o + 3] = 255;
+      d[o] = col[0] + n; d[o + 1] = col[1] + n; d[o + 2] = col[2] + n; d[o + 3] = 255;
     }
   }
   x.putImageData(img, 0, 0);
@@ -326,6 +332,18 @@ function scratchTexture() {
   t.wrapS = t.wrapT = THREE.RepeatWrapping;
   t.repeat.set(2, 3);
   return t;
+}
+
+/* The pool the object sits in, and the light it throws through itself.
+   A body with weight has both: something under it, and something beyond it. */
+function poolTexture(inner, mid, outer) {
+  const c = document.createElement("canvas");
+  c.width = c.height = 256;
+  const x = c.getContext("2d");
+  const g = x.createRadialGradient(128, 128, 0, 128, 128, 128);
+  g.addColorStop(0, inner); g.addColorStop(0.42, mid); g.addColorStop(1, outer);
+  x.fillStyle = g; x.fillRect(0, 0, 256, 256);
+  return new THREE.CanvasTexture(c);
 }
 
 function dustTexture() {
@@ -443,6 +461,24 @@ export function boot(host, opts) {
     back.material.needsUpdate = true;
   }
 
+  /* What gives a body weight: something beneath it, and something beyond it.
+     The shadow sits between the backdrop and the object; the caustic is the
+     warm light the crystal gathers and throws past itself, offset away from
+     the key the way a real one is. */
+  const shadow = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({
+    map: poolTexture("rgba(9,5,6,.62)", "rgba(9,5,6,.2)", "rgba(9,5,6,0)"),
+    transparent: true, depthWrite: false,
+  }));
+  shadow.position.set(0.06, -0.06, -1.5);
+  scene.add(shadow);
+
+  const caustic = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({
+    map: poolTexture("rgba(255,214,150,.5)", "rgba(214,150,88,.16)", "rgba(180,120,70,0)"),
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+  }));
+  caustic.position.set(0.5, -0.34, -1.1);
+  scene.add(caustic);
+
   /* atmosphere */
   const N = small ? 46 : 96;
   const dp = new Float32Array(N * 3);
@@ -525,6 +561,19 @@ export function boot(host, opts) {
   arm.visible = false;
   scene.add(arm);
 
+  /* The nose bridge. One lens with a temple reads as a loupe; the same lens
+     with a bridge leaving the other side reads, unmistakably, as one half of a
+     pair of glasses. It is the cheapest honest thing in the scene. */
+  const bridgeGeo = makeSlab();
+  shapeSlab(bridgeGeo, 0.135, 0.042, 0.04, 0.026, 0.018);
+  const bridge = new THREE.Mesh(bridgeGeo, new THREE.MeshPhysicalMaterial({
+    color: 0xdcb066, metalness: 1, roughness: 0.15,
+    clearcoat: 1, clearcoatRoughness: 0.09, envMapIntensity: 2.1,
+    transparent: true, opacity: 0,
+  }));
+  bridge.visible = false;
+  scene.add(bridge);
+
   /* the crystal */
   const glassGeo = makeSlab();
   const glass = new THREE.Mesh(glassGeo, new THREE.MeshPhysicalMaterial({
@@ -552,13 +601,17 @@ export function boot(host, opts) {
   let clock = new THREE.Clock();
   let px = 0, py = 0, tpx = 0, tpy = 0;
   let live = true, visible = true;
-  let camZ = 5.5, lastSig = -1;
+  let camZ = 5.5, lastSig = -1, coverTries = 0;
 
   function resize() {
     const w = host.clientWidth, h = host.clientHeight;
     if (!w || !h) return;
     renderer.setSize(w, h, false);
     composer.setSize(w, h);
+    // composer.setSize resizes every pass to the full frame; bloom does not need
+    // it, and at 2x device pixels five mip levels of it is the most expensive
+    // thing on screen
+    bloom.setSize(Math.min(w, 400), Math.min(h, 400));
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
     repaintBackdrop();
@@ -570,14 +623,16 @@ export function boot(host, opts) {
   function fitBackdrop() {
     const d = back.position.z * -1 + camera.position.z;
     const hh = Math.tan((FOV * Math.PI) / 360) * d;
-    back.scale.set(hh * camera.aspect * 2.04, hh * 2.04, 1);
+    // exactly the frame, not a hair over: the texture is painted for the
+    // canvas's rectangle, so any margin here scales the gradient off register
+    back.scale.set(hh * camera.aspect * 2, hh * 2, 1);
   }
 
   /* Pull back only as far as the current silhouette needs — the camera move is
      a consequence of the object growing, never a separate effect. */
   function fit(hw, hh, armK) {
-    const reach = hw + (armK || 0) * 0.6;          // the temple is part of the object
-    const need = Math.max(hh * 1.13, (reach * 1.07) / camera.aspect);
+    const reach = hw + (armK || 0) * 0.42;         // the temple is part of the object
+    const need = Math.max(hh * 1.09, (reach * 1.02) / camera.aspect);
     return need / Math.tan((FOV * Math.PI) / 360);
   }
 
@@ -606,7 +661,9 @@ export function boot(host, opts) {
       shapeDisc(disc, iw, ih, Math.max(rad - bevel * 0.6, 0.014));
       const okA = cover(texA, U.uRepA.value, U.uOffA.value, iw, ih, 0.33);
       const okB = cover(texB, U.uRepB.value, U.uOffB.value, iw, ih, 0.34);
-      if (!okA || !okB) lastSig = -1;      // try again once the files are decoded
+      // retry while the files are still decoding, but never forever: a 404 would
+      // otherwise rebuild the geometry on every frame for the life of the page
+      if ((!okA || !okB) && coverTries++ < 240) lastSig = -1;
     }
 
     /* the body */
@@ -629,6 +686,16 @@ export function boot(host, opts) {
       shapeSlab(rimGeo, hw + grow, hh + grow, rad + grow * 0.8, halfT * 0.94, bevel * 0.5);
       rim.material.opacity = rimK;
       rim.position.z = -0.004;
+    }
+
+    /* the bridge, leaving toward the lens that is out of frame */
+    const bridgeK = T.rim(t);
+    bridge.visible = bridgeK > 0.002;
+    if (bridge.visible) {
+      bridge.material.opacity = bridgeK;
+      bridge.position.set(-(hw + 0.075 * bridgeK), hh * 0.1, 0.01);
+      bridge.rotation.set(0, 0.3, 0.24);              // rising toward the lens out of frame
+      bridge.scale.setScalar(0.55 + bridgeK * 0.45);
     }
 
     /* the temple, arriving from behind and locking in */
@@ -661,11 +728,23 @@ export function boot(host, opts) {
     for (const o of [glass, photo, rim]) {
       o.rotation.y = ry; o.rotation.x = rx; o.position.y = breath;
     }
-    if (arm.visible) {
-      arm.rotation.y += ry;
-      arm.position.y += breath;
-      arm.position.applyAxisAngle(YAXIS, ry);   // the temple travels with the rim it is hinged to
+    for (const o of [arm, bridge]) {
+      if (!o.visible) continue;
+      o.rotation.y += ry;
+      o.rotation.x += rx * 0.6;
+      o.position.y += breath;
+      o.position.applyAxisAngle(YAXIS, ry);     // fixed to the rim, so it travels with it
     }
+
+    /* The shadow and the caustic follow the body they belong to, and stay tight
+       to it. A broad soft field would read as atmosphere, but it would also
+       darken the whole canvas — and the canvas is painted to match the hero
+       exactly, so anything that covers all of it puts the rectangle back. */
+    shadow.scale.set(hw * 2.7, hh * 2.5, 1);
+    shadow.position.set(hw * 0.12 + ry * 0.4, breath * 0.5 - hh * 0.1, -1.5);
+    caustic.scale.set(hw * 2.1, hh * 1.9, 1);
+    caustic.position.set(hw * 0.62 + ry * 1.2, breath * 0.6 - hh * 0.34, -1.1);
+    caustic.material.opacity = 0.62 + Math.sin(now * 0.37) * 0.1;
 
     dust.rotation.y = now * 0.014;
     dust.position.y = Math.sin(now * 0.2) * 0.09;
@@ -682,7 +761,30 @@ export function boot(host, opts) {
   host.addEventListener("pointermove", onMove);
   host.addEventListener("pointerleave", () => { px = 0; py = 0; });
 
-  addEventListener("resize", resize);
+  /* A lost context — a backgrounded tab on a phone, memory pressure, a driver
+     reset — would otherwise leave a blank rectangle where the hero was, because
+     the plate underneath has already been hidden. Stop, and hand the hero back. */
+  renderer.domElement.addEventListener("webglcontextlost", (e) => {
+    e.preventDefault();
+    live = false;
+    if (opts.onLost) opts.onLost();
+  }, false);
+
+  /* Resize is a storm on mobile — the address bar alone fires it continuously,
+     and each repaint allocates a texture. Coalesce to one per frame budget. */
+  let resizeTimer = 0;
+  const queueResize = () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resize, 140);
+  };
+  addEventListener("resize", queueResize);
+  // layout can change with no window resize at all: fonts landing, the reveal
+  // running, the hero growing. Watch the boxes themselves.
+  if ("ResizeObserver" in window) {
+    const ro = new ResizeObserver(queueResize);
+    ro.observe(host);
+    ro.observe(heroEl);
+  }
   document.addEventListener("visibilitychange", () => { visible = !document.hidden; clock.getDelta(); });
   if ("IntersectionObserver" in window) {
     new IntersectionObserver((es) => {

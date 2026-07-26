@@ -332,40 +332,79 @@
   }
   </script>
   <script type="module">
-    import { boot } from "./crystal.js";
+    /* Nothing here loads unless the device is actually going to use it: the
+       renderer is ~700 KB, and shipping it to a phone that will fall back to
+       the CSS plate anyway is pure waste. Capability first, import second. */
     const host = document.getElementById("crystalWrap");
     const scene = document.querySelector(".hero-scene");
     const hint = document.getElementById("crystalHint");
     const out = document.getElementById("crystalOut");
 
-    const crystal = boot(host, {
-      selfie: "images/look.webp",
-      portrait: "images/look-back.webp",
-      onFinish() {
-        scene.classList.add("crystal-done");
-        hint.textContent = "Drag to rotate";
-        out.removeAttribute("aria-hidden");
-        out.removeAttribute("tabindex");
-      },
-    });
+    const FORCE = location.search.includes("crystal=force");   // for headless review
 
-    if (crystal) {
+    function capable() {
+      if (matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
+      if (FORCE) return true;
+      if (navigator.deviceMemory && navigator.deviceMemory < 3) return false;
+      if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) return false;
+      try {
+        const c = document.createElement("canvas");
+        const gl = c.getContext("webgl2");
+        if (!gl) return false;
+        // software rasterisers can create a context and then run at three frames
+        // a second; the plate is a better hero than a slideshow
+        const dbg = gl.getExtension("WEBGL_debug_renderer_info");
+        const name = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)) : "";
+        if (/swiftshader|llvmpipe|software/i.test(name) && !FORCE) return false;
+        return true;
+      } catch (e) { return false; }
+    }
+
+    function fallBack() {
+      scene.classList.remove("crystal-on", "crystal-live", "crystal-playing", "crystal-done");
+      host.innerHTML = "";
+    }
+
+    async function start() {
+      if (!host || !capable()) return;
+      let boot;
+      try { ({ boot } = await import("./crystal.js")); } catch (e) { return; }
+
+      const crystal = boot(host, {
+        selfie: "images/look.webp",
+        portrait: "images/look-back.webp",
+        onFinish() {
+          scene.classList.add("crystal-done");
+          hint.textContent = "Drag to rotate";
+          out.removeAttribute("aria-hidden");
+          out.removeAttribute("tabindex");
+        },
+        // a lost context must never leave an empty hero
+        onLost: fallBack,
+      });
+      if (!crystal) return;
+
       scene.classList.add("crystal-on");
-      host.removeAttribute("aria-hidden");
       // the flat plate stays until the crystal is actually up, so there is never
       // an empty frame between them
-      setTimeout(() => scene.classList.add("crystal-live"), 6400);
-      const start = () => {
+      setTimeout(() => scene.classList.add("crystal-live"), 5200);
+
+      const play = () => {
         if (crystal.done) return;
         if (crystal.running) crystal.skip();          // nobody should be trapped in it
         else if (crystal.play()) scene.classList.add("crystal-playing");
       };
-      host.addEventListener("pointerdown", start);
-      // the eyewear marker on the scene opens the same door
+      // click, not pointerdown — a touch that turns into a scroll must not fire it
+      host.addEventListener("click", play);
+      // the eyewear marker on the scene opens the same door, and is the keyboard route
       document.querySelectorAll(".spot--vitrine").forEach((b) =>
-        b.addEventListener("click", (e) => { e.stopPropagation(); e.preventDefault(); start(); }, true));
+        b.addEventListener("click", (e) => { e.stopPropagation(); e.preventDefault(); play(); }, true));
       window.AZCrystal = crystal;
     }
+
+    // never in the way of first paint or the hero's own entrance
+    if (document.readyState === "complete") requestAnimationFrame(start);
+    else addEventListener("load", () => requestAnimationFrame(start));
   </script>
 </body>
 </html>
