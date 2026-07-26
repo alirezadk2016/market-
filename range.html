@@ -29,6 +29,10 @@
     .range-nav a:hover { color: var(--gold-2); border-color: var(--gold); }
     .range-nav a.on { color: var(--gold-2); border-color: var(--gold); }
     @media (max-width: 880px) { .range { padding-top: 108px; } }
+    @media (max-width: 560px) {
+      .range-nav { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 320px; margin-inline: auto; }
+      .range-nav a { text-align: center; padding: 11px 8px; }
+    }
   </style>
 </head>
 <body>

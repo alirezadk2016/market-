@@ -23,6 +23,7 @@
       menuToggle.classList.toggle("open", open);
       menuToggle.setAttribute("aria-expanded", open ? "true" : "false");
       menu.setAttribute("aria-hidden", open ? "false" : "true");
+      document.body.classList.toggle("menu-open", open);
       document.body.style.overflow = open ? "hidden" : "";
     };
     menuToggle.addEventListener("click", () => setMenu(!menu.classList.contains("open")));
