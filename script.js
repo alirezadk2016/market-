@@ -313,8 +313,6 @@
       setTimeout(() => { location.href = href; }, wait);
     }
     document.querySelectorAll('a[href="eyewear.html"]').forEach((a) => {
-      // the crystal's own reveal already is the passage — it must not play twice
-      if (a.hasAttribute("data-no-xfer")) return;
       a.addEventListener("click", (e) => {
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;   // let people open it in a tab
         e.preventDefault();
