@@ -340,13 +340,18 @@
     const hint = document.getElementById("crystalHint");
     const out = document.getElementById("crystalOut");
 
-    const FORCE = location.search.includes("crystal=force");   // for headless review
+    // review hooks: force past the renderer-name check, and separately past the
+    // frame-rate check, so both can be exercised in a headless harness
+    const FORCE = location.search.includes("crystal=force");
+    const NOPROBE = location.search.includes("crystal=noprobe");
 
     function capable() {
       if (matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
       if (FORCE) return true;
-      if (navigator.deviceMemory && navigator.deviceMemory < 3) return false;
-      if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) return false;
+      // No guessing from device specs. deviceMemory is unreported on iOS and
+      // coarse everywhere else, and it was turning the crystal off on phones
+      // that draw it perfectly well. What matters is whether this machine can
+      // hold a frame rate, and that is measured for real once it is running.
       try {
         const c = document.createElement("canvas");
         const gl = c.getContext("webgl2");
@@ -360,7 +365,11 @@
       } catch (e) { return false; }
     }
 
+    let handover = 0;
     function fallBack() {
+      // the handover that hides the plate must be cancelled too, or it fires
+      // after the fallback and empties the hero anyway
+      clearTimeout(handover);
       scene.classList.remove("crystal-on", "crystal-live", "crystal-playing", "crystal-done");
       host.innerHTML = "";
     }
@@ -379,15 +388,19 @@
           out.removeAttribute("aria-hidden");
           out.removeAttribute("tabindex");
         },
-        // a lost context must never leave an empty hero
+        // a lost context, or a machine that cannot hold a frame rate, must never
+        // leave an empty hero
         onLost: fallBack,
+        onSlow: fallBack,
+        onPlay() { scene.classList.add("crystal-playing"); },
+        probe: !NOPROBE,
       });
       if (!crystal) return;
 
       scene.classList.add("crystal-on");
       // the flat plate stays until the crystal is actually up, so there is never
       // an empty frame between them
-      setTimeout(() => scene.classList.add("crystal-live"), 5200);
+      handover = setTimeout(() => scene.classList.add("crystal-live"), 5000);
 
       const play = () => {
         if (crystal.done) return;

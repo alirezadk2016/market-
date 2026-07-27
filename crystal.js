@@ -598,6 +598,11 @@ export function boot(host, opts) {
   /* ------------------------------------------------------------------ state */
   let t = 0;                 // sequence time; 0 = stage 01, END = stage 08
   let playing = false, startedAt = 0;
+  /* Health, measured rather than guessed: the first second at rest is the
+     cheapest the scene ever gets, so if it cannot hold a frame rate there it
+     never will, and the plate is a better hero than a slideshow. */
+  let probeFrames = 0, probeSum = 0, healthy = false, seenFor = 0;
+  const SPEED = 1.16;        // the beats keep their relative timing; the whole is tighter
   let clock = new THREE.Clock();
   let px = 0, py = 0, tpx = 0, tpy = 0;
   let live = true, visible = true;
@@ -639,13 +644,43 @@ export function boot(host, opts) {
   function frame() {
     if (!live) return;
     requestAnimationFrame(frame);
-    const dt = Math.min(clock.getDelta(), 0.05);
+    const raw = clock.getDelta();
+    const dt = Math.min(raw, 0.05);
     if (!visible) return;
 
+    /* Decide on elapsed time, never on a frame count. A machine drawing two
+       frames a second is the one this exists to catch, and counting to sixty
+       frames would take it half a minute to reach the verdict. */
+    if (opts.probe === false) healthy = true;
+    if (!healthy && !playing && t === 0) {
+      probeSum += raw;
+      if (probeSum > 0.55) probeFrames++;         // the first half second compiles shaders
+      if (probeSum > 1.75) {
+        if (probeFrames / (probeSum - 0.55) < 24) {
+          live = false;
+          if (opts.onSlow) opts.onSlow();
+          return;
+        }
+        healthy = true;
+      }
+    }
+
+    /* It plays itself. A ten-second reveal nobody knows to tap for is a
+       ten-second reveal nobody sees — and only once it is on screen, in a
+       foreground tab, and actually drawing. */
+    if (healthy && !playing && t === 0 && opts.autoplay !== false) {
+      seenFor += raw;   // real seconds on screen, not frames drawn
+      if (seenFor > (opts.autoplayAfter || 6.6)) {
+        startedAt = performance.now();
+        playing = true;
+        if (opts.onPlay) opts.onPlay();
+      }
+    }
+
     if (playing) {
-      // wall clock, so the reveal takes the same nine seconds on a slow machine
-      // as on a fast one — it just draws fewer of them
-      t = Math.min((performance.now() - startedAt) / 1000, END);
+      // wall clock, so the reveal takes the same time on a slow machine as on a
+      // fast one — it just draws fewer of them
+      t = Math.min(((performance.now() - startedAt) / 1000) * SPEED, END);
       if (t >= END) { playing = false; if (opts.onFinish) opts.onFinish(); }
     }
     const now = performance.now() / 1000;
@@ -802,7 +837,12 @@ export function boot(host, opts) {
   requestAnimationFrame(frame);
 
   return {
-    play() { if (t === 0) { startedAt = performance.now(); playing = true; return true; } return false; },
+    play() {
+      if (t !== 0 || playing) return false;
+      startedAt = performance.now(); playing = true;
+      if (opts.onPlay) opts.onPlay();
+      return true;
+    },
     seek(v) { t = Math.max(0, Math.min(v, END)); playing = false; startedAt = performance.now() - t * 1000; },
     skip() { if (playing || t < END) { t = END; playing = false; if (opts.onFinish) opts.onFinish(); } },
     get done() { return t >= END; },

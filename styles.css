@@ -573,7 +573,7 @@ p { text-wrap: pretty; }
    shop-the-look scene is still the scene. */
 .crystal-wrap {
   position: absolute; inset: -9% -24%; z-index: 1;
-  opacity: 0; transition: opacity 1.6s var(--ease) 5.2s;   /* after the hero's own light has settled */
+  opacity: 0; transition: opacity 1.8s var(--ease) 3s;   /* as the hero's own light settles */
   cursor: pointer; touch-action: pan-y;
 }
 .crystal-wrap canvas {
