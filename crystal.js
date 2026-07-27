@@ -198,9 +198,9 @@ function studio(renderer) {
       side: THREE.BackSide,
     })
   ));
-  panel(28, 17, [2.15, 1.55, 0.95], [-14, 10, 10]);  // the warm key
-  panel(2.8, 27, [4.6, 4.0, 2.9], [-6.5, 2, 14]);   // the hard streak the bevel is drawn by
-  panel(1.7, 20, [2.9, 2.5, 1.8], [8.5, 1, 13]);    // a second, quieter edge
+  panel(28, 17, [2.5, 1.8, 1.1], [-14, 10, 10]);     // the warm key
+  panel(2.2, 27, [9, 7.8, 5.6], [-6.5, 2, 14]);     // the hard streak the bevel is drawn by
+  panel(1.3, 20, [6, 5.2, 3.7], [8.5, 1, 13]);      // a second, quieter edge
   panel(19, 13, [0.98, 0.68, 0.45], [15, -4, 9]);   // warm fill
   panel(34, 34, [0.4, 0.29, 0.23], [0, -15, 0], new THREE.Vector3(0, 10, 0)); // floor bounce
   panel(26, 11, [0.44, 0.4, 0.5], [0, 14, -11]);    // a cool sliver overhead, for separation
@@ -384,13 +384,13 @@ const T = {
   rotY:   track([[0, 0], [2.2, -0.60], [3.6, -0.42], [5.6, -0.21], [7.4, -0.075], [END, 0]]),
   rotX:   track([[0, 0], [2.2, 0.052], [5.6, 0.026], [END, 0]]),
   // a Gucci rectangular lens, but only as wide as a face can be held in
-  hw:     track([[5.6, 0.665], [7.4, 1.055]]),
-  hh:     track([[5.6, 0.995], [7.4, 0.915]]),
+  hw:     track([[5.6, 0.665], [7.4, 1.12]]),
+  hh:     track([[5.6, 0.995], [7.4, 0.985]]),
   rad:    track([[2.2, 0.055], [3.6, 0.155], [5.6, 0.155], [7.4, 0.30]]),
   halfT:  track([[5.6, 0.075], [7.4, 0.061]]),
-  bevel:  track([[2.2, 0.05], [3.6, 0.078], [7.4, 0.055]]),
-  rough:  track([[2.2, 0.058], [3.6, 0.032], [7.4, 0.048]]),
-  disp:   track([[2.2, 0.1], [3.6, 0.22], [7.4, 0.14]]),
+  bevel:  track([[2.2, 0.062], [3.6, 0.09], [7.4, 0.07]]),
+  rough:  track([[2.2, 0.014], [3.6, 0.008], [7.4, 0.012]]),
+  disp:   track([[2.2, 0.025], [3.6, 0.05], [7.4, 0.03]]),
   // 04 — the selfie sinks: it recedes, shrinks and loses light, the way a layer
   // set deeper into a block of glass does. The portrait rises the other way.
   zoomA:  track([[3.6, 1], [5.6, 0.915], [9.0, 0.88]]),
@@ -426,7 +426,10 @@ export function boot(host, opts) {
      instead of clipping flat. */
   renderer.toneMapping = THREE.NoToneMapping;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.transmissionResolutionScale = small ? 0.5 : 0.65;   // where the cost is
+  /* Full resolution. The refraction buffer was running at 0.65 and everything
+     seen through the glass was being upsampled from it — that alone was most of
+     the softness. The cost comes back out of the geometry rebuild instead. */
+  renderer.transmissionResolutionScale = small ? 0.85 : 1;
   host.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
@@ -504,7 +507,7 @@ export function boot(host, opts) {
   for (const t of [texA, texB]) {
     t.colorSpace = THREE.SRGBColorSpace;
     t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping;
-    t.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), 8);
+    t.anisotropy = renderer.capabilities.getMaxAnisotropy();
   }
 
   /* One opaque surface holds both layers. It has to be opaque: three renders
@@ -576,14 +579,20 @@ export function boot(host, opts) {
 
   /* the crystal */
   const glassGeo = makeSlab();
+  /* Optical glass, not frosted glass. Roughness on a transmissive material
+     picks a blurrier mip of the refraction buffer, thickness hazes and tints
+     what passes through it, dispersion smears it chromatically, and a normal
+     map perturbs the refraction across the entire face — every one of those was
+     set high enough to soften the photograph. They are all now at the level
+     where they shape the bevel and leave the middle of the pane clear. */
   const glass = new THREE.Mesh(glassGeo, new THREE.MeshPhysicalMaterial({
     color: 0xffffff,
-    metalness: 0, roughness: 0.058,
-    transmission: 1, thickness: 1.15, ior: 1.52, dispersion: 0.1,
-    attenuationColor: new THREE.Color(0xf4e6d4), attenuationDistance: 3.4,
-    clearcoat: 1, clearcoatRoughness: 0.055,
-    specularIntensity: 1, envMapIntensity: 1.3,
-    normalMap: scratchTexture(), normalScale: new THREE.Vector2(0.045, 0.045),
+    metalness: 0, roughness: 0.012,
+    transmission: 1, thickness: 0.35, ior: 1.5, dispersion: 0.025,
+    attenuationColor: new THREE.Color(0xf8efe2), attenuationDistance: 9,
+    clearcoat: 1, clearcoatRoughness: 0.02,
+    specularIntensity: 1, envMapIntensity: 1.7,
+    normalMap: scratchTexture(), normalScale: new THREE.Vector2(0.008, 0.008),
   }));
   glass.renderOrder = 3;
   scene.add(glass);
@@ -636,8 +645,11 @@ export function boot(host, opts) {
   /* Pull back only as far as the current silhouette needs — the camera move is
      a consequence of the object growing, never a separate effect. */
   function fit(hw, hh, armK) {
-    const reach = hw + (armK || 0) * 0.42;         // the temple is part of the object
-    const need = Math.max(hh * 1.09, (reach * 1.02) / camera.aspect);
+    /* The margins are what the mask needs, not what the object needs: the canvas
+       edges dissolve into the hero rather than matching it, so the object is
+       held inside the solid part of that fade. */
+    const reach = hw + (armK || 0) * (small ? 0.18 : 0.3);   // the temple is part of it
+    const need = Math.max(hh * 1.4, (reach * (small ? 1.06 : 1.2)) / camera.aspect);
     return need / Math.tan((FOV * Math.PI) / 360);
   }
 
@@ -704,7 +716,7 @@ export function boot(host, opts) {
     /* the body */
     glass.material.roughness = T.rough(t);
     glass.material.dispersion = T.disp(t);
-    glass.material.clearcoatRoughness = 0.04 + T.rough(t) * 0.3;
+    glass.material.clearcoatRoughness = 0.014 + T.rough(t) * 0.3;
 
     /* the two layers inside it */
     photo.position.z = T.pZ(t);
@@ -793,8 +805,9 @@ export function boot(host, opts) {
     px = ((e.clientX - r.left) / r.width - 0.5) * 2;
     py = ((e.clientY - r.top) / r.height - 0.5) * 2;
   }
-  host.addEventListener("pointermove", onMove);
-  host.addEventListener("pointerleave", () => { px = 0; py = 0; });
+  const pointerZone = opts.pointerZone || host;
+  pointerZone.addEventListener("pointermove", onMove);
+  pointerZone.addEventListener("pointerleave", () => { px = 0; py = 0; });
 
   /* A lost context — a backgrounded tab on a phone, memory pressure, a driver
      reset — would otherwise leave a blank rectangle where the hero was, because
