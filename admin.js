@@ -49,6 +49,32 @@
     toastTimer = setTimeout(() => { t.hidden = true; }, kind === "bad" ? 9000 : 3800);
   }
 
+  /* Deleting a collection takes thirteen pieces with it, and a confirm box is
+     not a safety net — it is a speed bump you learn to click through. Every
+     destructive action puts the whole shape on a stack first. */
+  const history = [];
+  function remember(label) {
+    history.push({ label: label, snap: JSON.stringify({ brands: state.brands, ranges: state.ranges, site: state.site }) });
+    if (history.length > 30) history.shift();
+    return label;
+  }
+  function undo() {
+    const last = history.pop();
+    if (!last) { toast("Nothing to undo.", "bad"); return; }
+    const s = JSON.parse(last.snap);
+    state.brands = s.brands; state.ranges = s.ranges; state.site = s.site;
+    if (view.kind === "collection" && !range(view.key)) {
+      view = { kind: "collection", key: state.ranges[0] ? state.ranges[0].key : null };
+    }
+    touched(); renderNav(); renderView();
+    toast("Undone: " + last.label + ".", "good");
+  }
+  function undoable(label, fn) {
+    remember(label);
+    fn();
+    toast(label + " — press ⌘Z, or Ctrl+Z, to undo.", "good");
+  }
+
   function touched() {
     state.dirty = true;
     save(DRAFT, { brands: state.brands, ranges: state.ranges, images: state.images, site: state.site });
@@ -137,7 +163,12 @@
     addEventListener("beforeunload", (e) => {
       if (state && state.dirty) { e.preventDefault(); e.returnValue = ""; }
     });
-    addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("#sheet").hidden) closeSheet(); });
+    addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !$("#sheet").hidden) return closeSheet();
+      const cmd = e.metaKey || e.ctrlKey;
+      if (cmd && e.key.toLowerCase() === "z") { e.preventDefault(); undo(); }
+      if (cmd && e.key.toLowerCase() === "s") { e.preventDefault(); publish(); }
+    });
   }
 
   function renderNav() {
@@ -150,11 +181,9 @@
       b.onclick = () => { view = { kind: "collection", key: r.key }; renderNav(); renderView(); };
       li.appendChild(b);
       /* the order here is the order on the vitrine wall and in the footer */
-      const ord = el("span");
-      ord.style.cssText = "display:flex;gap:3px;padding:0 10px 6px";
+      const ord = el("span", "ord");
       [["↑", -1], ["↓", 1]].forEach(([t, d]) => {
         const mv = el("button", "btn ghost small", t);
-        mv.style.padding = "2px 8px";
         mv.onclick = (ev) => {
           ev.stopPropagation();
           const i = state.ranges.indexOf(r), j = i + d;
@@ -312,7 +341,9 @@
     }
     acts.appendChild(el("span", "sp"));
     const d = el("button", "btn danger small", "Delete");
-    d.onclick = () => { if (confirm("Delete “" + (p.note || p.name) + "”?")) { r.items.splice(i, 1); touched(); renderNav(); renderView(); } };
+    d.onclick = () => undoable("Deleted “" + (p.note || p.name || "piece") + "”", () => {
+      r.items.splice(i, 1); touched(); renderNav(); renderView();
+    });
     acts.appendChild(d);
     c.appendChild(acts);
     return c;
@@ -352,10 +383,12 @@
   }
 
   function deleteCollection(r) {
-    if (!confirm("Delete “" + r.title + "” and its " + r.items.length + " pieces?\n\nAny link pointing at it will stop working.")) return;
-    state.ranges = state.ranges.filter((x) => x !== r);
-    view = { kind: "collection", key: state.ranges[0] ? state.ranges[0].key : null };
-    touched(); renderNav(); renderView();
+    if (!confirm("Delete “" + r.title + "” and its " + r.items.length + " pieces?\n\nAny link pointing at it will stop working. This can be undone until you publish.")) return;
+    undoable("Deleted “" + r.title + "”", () => {
+      state.ranges = state.ranges.filter((x) => x !== r);
+      view = { kind: "collection", key: state.ranges[0] ? state.ranges[0].key : null };
+      touched(); renderNav(); renderView();
+    });
   }
 
   /* -------------------------------------------------------- piece editor */
@@ -957,8 +990,32 @@
       const head = el("div", "variant-head");
       head.appendChild(el("h2", null, esc(name)));
       const sp = el("span"); sp.style.flex = "1"; head.appendChild(sp);
+      /* Renaming has to carry the pieces with it. A house is joined to its
+         pieces by the name written on them and nothing else, so renaming it
+         here alone would silently orphan every one of them. */
+      const ren = el("button", "btn ghost small", "Rename");
+      ren.onclick = () => {
+        const next = prompt("Rename this house. Every piece written “" + name + "” will be updated too.", name);
+        if (!next || next === name) return;
+        if (state.brands[next]) { toast("A house called “" + next + "” already exists.", "bad"); return; }
+        undoable("Renamed “" + name + "” to “" + next + "”", () => {
+          const out = {};
+          Object.keys(state.brands).forEach((k) => { out[k === name ? next : k] = state.brands[k]; });
+          state.brands = out;
+          let moved = 0;
+          state.ranges.forEach((r) => r.items.forEach((p) => { if (p.name === name) { p.name = next; moved++; } }));
+          touched(); renderView();
+          if (moved) toast(moved + " piece" + (moved > 1 ? "s" : "") + " updated with the new name.", "good");
+        });
+      };
+      head.appendChild(ren);
       const del = el("button", "btn danger small", "Remove");
-      del.onclick = () => { if (confirm("Remove the house “" + name + "”?")) { delete state.brands[name]; touched(); renderView(); } };
+      del.onclick = () => {
+        const used = state.ranges.reduce((a, r) => a + r.items.filter((p) => p.name === name).length, 0);
+        if (!confirm("Remove the house “" + name + "”?" +
+          (used ? "\n\n" + used + " piece" + (used > 1 ? "s" : "") + " still name it — they will keep the name but lose the panel behind it." : ""))) return;
+        undoable("Removed the house “" + name + "”", () => { delete state.brands[name]; touched(); renderView(); });
+      };
       head.appendChild(del);
       box.appendChild(head);
       const two = el("div", "row");

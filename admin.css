@@ -73,6 +73,8 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .
   border: 1px dashed var(--gold-soft); border-radius: 2px; color: var(--dim); cursor: pointer;
   font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
 .side-add:hover { border-color: var(--gold); color: var(--gold); }
+.ord { display: flex; gap: 3px; padding: 0 10px 6px; }
+.ord .btn { padding: 2px 8px; }
 .side-foot { margin-top: 26px; padding: 0 6px; font-size: 11px; line-height: 1.6; color: var(--faint); }
 
 .work { padding: 30px 34px 90px; max-width: 1100px; }
@@ -165,10 +167,45 @@ h3 { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: va
   color: var(--dim); line-height: 1.6; margin-bottom: 20px; }
 
 @media (max-width: 880px) {
+  /* On a phone the sidebar stacked above the work and pushed it nine hundred
+     pixels down the page — you opened the panel and saw only a menu. It is a
+     scrolling strip of chips under the bar instead, and the work starts at the
+     top of the screen where it belongs. */
   .shell { grid-template-columns: 1fr; }
-  .side { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
-  .work { padding: 22px 18px 80px; }
+  .side {
+    position: sticky; top: 52px; z-index: 20; height: auto;
+    display: flex; gap: 8px; align-items: center; overflow-x: auto; overflow-y: hidden;
+    padding: 10px 14px; border-right: 0; border-bottom: 1px solid var(--line);
+    background: rgba(20,14,15,.96); backdrop-filter: blur(14px);
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  }
+  .side::-webkit-scrollbar { display: none; }
+  .side-label, .side-foot { display: none; }
+  .side-list { display: flex; gap: 8px; }
+  .side-list li { display: flex; align-items: center; }
+  .side-item {
+    width: auto; white-space: nowrap; padding: 8px 13px; border-radius: 999px;
+    border: 1px solid var(--line); gap: 6px;
+  }
+  .side-item.on { box-shadow: none; border-color: var(--gold); color: var(--gold); }
+  .side-item span:empty { display: none; }
+  .ord { display: none; }              /* the reorder arrows need room a chip strip has not got */
+  .side-add { width: auto; margin: 0; white-space: nowrap; border-radius: 999px; padding: 8px 13px; }
+
+  .bar { padding: 9px 14px; gap: 10px; }
+  .bar .mark em { display: none; }
+  .bar-mid { display: none; }
+  .btn { padding: 8px 12px; }
+  .work { padding: 20px 14px 90px; }
   .row, .row-3 { grid-template-columns: 1fr; }
-  .bar { flex-wrap: wrap; }
-  .bar-mid { order: 3; flex-basis: 100%; }
+  .cards { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .card-acts { gap: 4px; }
+  .sheet-panel { width: 100%; }
+  .sheet-head { padding: 12px 14px; position: sticky; top: 0; background: var(--bg); z-index: 2; }
+  .sheet-body { padding: 18px 14px 80px; }
+  .shot { width: 88px; height: 88px; }
+  h1 { font-size: 27px; }
+}
+@media (max-width: 430px) {
+  .cards { grid-template-columns: 1fr; }
 }
