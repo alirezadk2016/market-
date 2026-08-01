@@ -170,11 +170,18 @@
     document.querySelectorAll(".side-item[data-view]").forEach((b) => {
       b.classList.toggle("on", view.kind === b.dataset.view);
     });
+    const h = $('.side-item[data-view="health"] span');
+    if (h) {
+      const found = audit(), bad = found.filter((f) => f.bad).length;
+      h.textContent = found.length ? (bad ? bad + " · " + found.length : String(found.length)) : "";
+      h.style.color = bad ? "var(--danger)" : "var(--faint)";
+    }
   }
 
   function renderView() {
     const w = $("#work");
     w.innerHTML = "";
+    if (view.kind === "health") return renderHealth(w);
     if (view.kind === "site") return renderSite(w);
     if (view.kind === "markers") return renderMarkers(w);
     if (view.kind === "advisory") return renderAdvisory(w);
@@ -233,9 +240,33 @@
 
     if (!r.items.length) { w.appendChild(el("div", "empty", "Nothing in this collection yet.")); return; }
 
+    /* thirteen pieces is already too many to scan */
+    const find = el("div", "field");
+    const fi = el("input"); fi.type = "text"; fi.placeholder = "Filter by house, model or badge…";
+    find.appendChild(fi);
+    w.appendChild(find);
+
     const grid = el("div", "cards");
-    r.items.forEach((p, i) => grid.appendChild(pieceCard(r, p, i)));
     w.appendChild(grid);
+    const count = el("p", "hint", "");
+    count.style.marginTop = "12px";
+    w.appendChild(count);
+
+    function paint() {
+      const q = fi.value.trim().toLowerCase();
+      grid.innerHTML = "";
+      let shown = 0;
+      r.items.forEach((p, i) => {
+        const hay = [p.name, p.note, p.tag].join(" ").toLowerCase();
+        if (q && hay.indexOf(q) < 0) return;
+        shown++;
+        grid.appendChild(pieceCard(r, p, i));
+      });
+      count.textContent = q ? shown + " of " + r.items.length + " shown" : "";
+      if (q && !shown) grid.appendChild(el("div", "empty", "Nothing matches “" + esc(q) + "”."));
+    }
+    fi.oninput = paint;
+    paint();
   }
 
   function pieceCard(r, p, i) {
@@ -261,6 +292,24 @@
     acts.appendChild(cp);
     const up = el("button", "btn ghost small", "↑"); up.onclick = () => move(r.items, i, -1); acts.appendChild(up);
     const dn = el("button", "btn ghost small", "↓"); dn.onclick = () => move(r.items, i, 1); acts.appendChild(dn);
+    /* a piece filed in the wrong collection is a normal mistake */
+    if (state.ranges.length > 1) {
+      const mv = el("select");
+      mv.style.cssText = "background:transparent;border:1px solid var(--gold-soft);border-radius:2px;color:var(--dim);font-size:9px;letter-spacing:.1em;padding:5px 6px;text-transform:uppercase;cursor:pointer";
+      const first = el("option", null, "Move to…"); first.value = ""; mv.appendChild(first);
+      state.ranges.forEach((o) => {
+        if (o === r) return;
+        const op = el("option", null, esc(o.title)); op.value = o.key; mv.appendChild(op);
+      });
+      mv.onchange = () => {
+        const to = state.ranges.find((o) => o.key === mv.value);
+        if (!to) return;
+        to.items.push(r.items.splice(i, 1)[0]);
+        touched(); renderNav(); renderView();
+        toast("Moved to " + to.title + ".", "good");
+      };
+      acts.appendChild(mv);
+    }
     acts.appendChild(el("span", "sp"));
     const d = el("button", "btn danger small", "Delete");
     d.onclick = () => { if (confirm("Delete “" + (p.note || p.name) + "”?")) { r.items.splice(i, 1); touched(); renderNav(); renderView(); } };
@@ -376,6 +425,32 @@
       const sw = el("input", "swatch"); sw.type = "color"; sw.value = /^#[0-9a-f]{6}$/i.test(v.hex || "") ? v.hex : "#1c1c1c";
       sw.oninput = () => { v.hex = sw.value; touched(); };
       head.appendChild(sw);
+      /* the swatch is the piece's colour — so read it off the piece */
+      if ((v.shots || []).length) {
+        const eye = el("button", "btn ghost small", "From photo");
+        eye.title = "Choose the swatch from the colours in the first photograph";
+        const strip = el("div");
+        strip.style.cssText = "display:none;gap:5px;margin-left:8px";
+        eye.onclick = async () => {
+          if (strip.style.display === "flex") { strip.style.display = "none"; return; }
+          eye.disabled = true;
+          try {
+            const cols = await palette(resolve(v.shots[0]));
+            strip.innerHTML = "";
+            cols.forEach((hex) => {
+              const dot = el("button");
+              dot.title = hex;
+              dot.style.cssText = "width:26px;height:26px;border-radius:50%;cursor:pointer;border:1px solid var(--line);background:" + hex;
+              dot.onclick = () => { v.hex = hex; sw.value = hex; touched(); strip.style.display = "none"; };
+              strip.appendChild(dot);
+            });
+            strip.style.display = "flex";
+          } catch (e) { toast("Could not read that photograph.", "bad"); }
+          eye.disabled = false;
+        };
+        head.appendChild(eye);
+        head.appendChild(strip);
+      }
       const nameF = textField("Colour", v.color, (val) => { v.color = val; touched(); });
       nameF.style.cssText = "flex:1;margin:0";
       head.appendChild(nameF);
@@ -395,6 +470,80 @@
       }));
       wrap.appendChild(box);
     });
+  }
+
+  /* --------------------------------------------------------------- health */
+  /* What a second pair of eyes would catch before the site went out: a piece
+     with no photograph, a House written on a piece that has no panel behind it,
+     two collections answering on the same address, a link that goes nowhere.
+     Counted in the sidebar so it is seen without being looked for. */
+  function audit() {
+    const out = [];
+    const houses = Object.keys(state.brands);
+    const keys = {};
+
+    state.ranges.forEach((r) => {
+      if (keys[r.key]) out.push({ bad: true, where: r.title, msg: "Two collections answer on /" + r.key + " — one of them is unreachable." });
+      keys[r.key] = 1;
+      if (!r.title.trim()) out.push({ bad: true, where: r.key, msg: "The collection has no title." });
+      if (!r.cover) out.push({ where: r.title, msg: "No photograph for its niche on the vitrine wall." });
+      if (!r.items.length) out.push({ where: r.title, msg: "The collection is empty — it will show an empty page." });
+
+      r.items.forEach((p, i) => {
+        const at = r.title + " · " + (p.note || p.name || "piece " + (i + 1));
+        if (!p.name) out.push({ bad: true, where: at, msg: "No house — the piece will show a blank brand." });
+        else if (houses.indexOf(p.name) < 0) out.push({ where: at, msg: "“" + p.name + "” has no house panel. Add it under The Houses, spelled exactly the same." });
+        if (!p.note) out.push({ bad: true, where: at, msg: "No model name." });
+        const shots = (p.variants || []).reduce((a, v) => a + (v.shots || []).length, 0);
+        if (!shots) out.push({ bad: true, where: at, msg: "No photographs at all — the card will be empty." });
+        (p.variants || []).forEach((v, vi) => {
+          if (!v.color) out.push({ where: at, msg: "Colour " + (vi + 1) + " has no name." });
+          if (!(v.shots || []).length) out.push({ where: at, msg: "Colour “" + (v.color || vi + 1) + "” has no photograph." });
+        });
+        if (!p.story) out.push({ where: at, msg: "No story — the piece page will be thin." });
+        if (p.retailer && p.retailer.name && !p.retailer.url) out.push({ bad: true, where: at, msg: "A retailer with no link." });
+        if (p.retailer && p.retailer.url && !/^https?:\/\//.test(p.retailer.url)) out.push({ bad: true, where: at, msg: "The retailer link is not a full address." });
+      });
+    });
+
+    (state.site.markers || []).forEach((m, i) => {
+      const at = "Marker " + (i + 1) + (m.label ? " · " + m.label : "");
+      if (!m.name) out.push({ where: at, msg: "Nothing to show on its card." });
+      if (m.x < 0 || m.x > 100 || m.y < 0 || m.y > 100) out.push({ bad: true, where: at, msg: "Placed outside the photograph." });
+    });
+
+    const e = state.site.enquire || {};
+    if (!e.whatsapp && !e.instagram && !e.email) out.push({ bad: true, where: "Enquire", msg: "No way to contact you at all." });
+
+    return out;
+  }
+
+  function renderHealth(w) {
+    const found = audit();
+    const bad = found.filter((f) => f.bad);
+    w.appendChild(el("h1", null, "What needs attention"));
+    if (!found.length) {
+      w.appendChild(el("p", "lead", "Nothing. Every piece has a house, a name and a photograph; every collection has somewhere to go."));
+      return;
+    }
+    w.appendChild(el("p", "lead",
+      bad.length ? bad.length + " would show badly on the site, and " + (found.length - bad.length) + " are worth a look."
+                 : found.length + " worth a look. Nothing here breaks the site."));
+    const list = el("div", "rowlist");
+    found.forEach((f) => {
+      const r = el("div", "rowitem");
+      r.style.borderColor = f.bad ? "rgba(217,138,126,.42)" : "var(--line)";
+      r.appendChild(el("b", null, f.bad ? "●" : "○"));
+      r.firstChild.style.color = f.bad ? "var(--danger)" : "var(--faint)";
+      const g = el("div", "grow");
+      g.appendChild(el("div", null, esc(f.msg)));
+      const where = el("small", null, esc(f.where));
+      where.style.cssText = "color:var(--faint);font-size:11px";
+      g.appendChild(where);
+      r.appendChild(g);
+      list.appendChild(r);
+    });
+    w.appendChild(list);
   }
 
   /* ------------------------------------------------------- words & pictures */
@@ -969,6 +1118,26 @@
     shots.forEach((src, i) => {
       const s = el("div", "shot");
       s.style.backgroundImage = "url('" + resolve(src) + "')";
+      /* the first photograph is the one the card shows, so the order matters
+         enough to be worth dragging rather than nudging */
+      if (o.onMove) {
+        s.draggable = true;
+        s.ondragstart = (ev) => { ev.dataTransfer.setData("text/plain", String(i)); s.style.opacity = ".4"; };
+        s.ondragend = () => { s.style.opacity = ""; };
+        s.ondragover = (ev) => { ev.preventDefault(); s.style.outline = "2px solid var(--gold)"; };
+        s.ondragleave = () => { s.style.outline = ""; };
+        s.ondrop = (ev) => {
+          ev.preventDefault(); s.style.outline = "";
+          const from = +ev.dataTransfer.getData("text/plain");
+          if (from === i || isNaN(from)) return;
+          o.onMove(from, i - from);
+        };
+        if (i === 0) {
+          const tagEl = el("span", "pending", "cover");
+          tagEl.style.cssText += ";left:auto;right:30px;background:rgba(20,14,15,.85);color:var(--gold)";
+          s.appendChild(tagEl);
+        }
+      }
       if (state.images[src]) s.appendChild(el("span", "pending", "new"));
       const x = el("button", "x", "×"); x.title = "Remove";
       x.onclick = () => o.onRemove(i);
@@ -1030,6 +1199,51 @@
     $("#sheetSave").onclick = closeSheet;
     $("#sheetCancel").onclick = closeSheet;
     $("#sheet").hidden = false;
+  }
+
+  /* Colours read off the photograph.
+
+     Averaging cannot do this: a sand bag on a white backdrop averages to
+     near-white, and there is no threshold that separates a light object from a
+     light background reliably. So it does not guess. It quantises the middle of
+     the photograph, drops the backdrop, and offers the colours actually in it —
+     the choice belongs to whoever can see the piece. */
+  async function palette(src) {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    await new Promise((ok, no) => { img.onload = ok; img.onerror = no; img.src = src; });
+    const S = 64;
+    const c = document.createElement("canvas");
+    c.width = c.height = S;
+    const g = c.getContext("2d", { willReadFrequently: true });
+    const side = Math.min(img.naturalWidth, img.naturalHeight) * 0.7;
+    g.drawImage(img, (img.naturalWidth - side) / 2, (img.naturalHeight - side) / 2, side, side, 0, 0, S, S);
+    const d = g.getImageData(0, 0, S, S).data;
+
+    const bins = {};
+    for (let i = 0; i < d.length; i += 4) {
+      const key = ((d[i] >> 4) << 8) | ((d[i + 1] >> 4) << 4) | (d[i + 2] >> 4);
+      const b = bins[key] || (bins[key] = { n: 0, r: 0, g: 0, b: 0 });
+      b.n++; b.r += d[i]; b.g += d[i + 1]; b.b += d[i + 2];
+    }
+    let all = Object.keys(bins).map((k) => {
+      const b = bins[k];
+      const rgb = [b.r / b.n, b.g / b.n, b.b / b.n];
+      return { n: b.n, rgb: rgb, lum: (rgb[0] * 0.299 + rgb[1] * 0.587 + rgb[2] * 0.114) / 255 };
+    }).sort((a, b) => b.n - a.n);
+
+    // the backdrop is whatever is both very bright and very common
+    const total = (S * S);
+    const lit = all.filter((x) => x.lum > 0.88 && x.n / total > 0.12);
+    if (lit.length && all.length > lit.length + 2) all = all.filter((x) => lit.indexOf(x) < 0);
+
+    const out = [];
+    all.forEach((x) => {
+      if (out.length >= 6) return;
+      const far = out.every((y) => Math.abs(y.rgb[0] - x.rgb[0]) + Math.abs(y.rgb[1] - x.rgb[1]) + Math.abs(y.rgb[2] - x.rgb[2]) > 44);
+      if (far) out.push(x);
+    });
+    return out.map((x) => "#" + x.rgb.map((v) => Math.round(v).toString(16).padStart(2, "0")).join(""));
   }
 
   function pick(o) {
@@ -1217,12 +1431,37 @@
     return btoa(String.fromCharCode.apply(null, new TextEncoder().encode(str)));
   }
 
+  /* Publishing should never be a leap. This is what is about to be written. */
+  function changeSummary() {
+    const lines = [];
+    const before = state.raw ? new Function(state.raw.bags + "\n;return typeof RANGES!=='undefined'?RANGES:{};")() : {};
+    const after = {};
+    state.ranges.forEach((r) => { after[r.key] = r.items.length; });
+    Object.keys(after).forEach((k) => {
+      if (!before[k]) lines.push("New collection: " + k);
+      else if ((before[k].items || []).length !== after[k]) {
+        const d = after[k] - (before[k].items || []).length;
+        lines.push(k + ": " + (d > 0 ? "+" + d : d) + " piece" + (Math.abs(d) === 1 ? "" : "s"));
+      }
+    });
+    Object.keys(before).forEach((k) => { if (!after[k]) lines.push("Removed collection: " + k); });
+    const imgs = Object.keys(state.images).length;
+    if (imgs) lines.push(imgs + " photograph" + (imgs > 1 ? "s" : "") + " to upload");
+    if (state.raw && buildSite() !== state.raw.content) lines.push("Site copy changed");
+    if (!lines.length) lines.push("Wording and details only");
+    const problems = audit().filter((f) => f.bad).length;
+    if (problems) lines.push("⚠ " + problems + " thing" + (problems > 1 ? "s" : "") + " flagged under “What needs attention”");
+    return lines;
+  }
+
   async function publish() {
     if (!conf.token || !conf.owner || !conf.repo) {
       view = { kind: "settings", key: null }; renderNav(); renderView();
       toast("Set the repository and token first, or use Download bags.js.", "bad");
       return;
     }
+    if (!confirm("Publish to the live site?\n\n· " + changeSummary().join("\n· "))) return;
+
     const btn = $("#btnPublish");
     btn.disabled = true;
 
