@@ -71,31 +71,24 @@
     <canvas class="hero-dust" id="dust" aria-hidden="true"></canvas>
     <div class="hero-vignette" aria-hidden="true"></div>
     <div class="hero-copy">
-      <p class="hero-eyebrow reveal">A.z — Private Luxury Advisory</p>
-      <h1 class="hero-title reveal">The art of <em>choosing well.</em></h1>
+      <p class="hero-eyebrow reveal" data-site="hero.eyebrow">A.z — Private Luxury Advisory</p>
+      <h1 class="hero-title reveal" data-html="hero.title">The art of <em>choosing well.</em></h1>
       <div class="hero-rule reveal" aria-hidden="true"></div>
-      <p class="hero-sub reveal">A private advisory for luxury &amp; old-money essentials — we curate the finest, then guide you to the piece that truly suits you.</p>
+      <p class="hero-sub reveal" data-html="hero.sub">A private advisory for luxury &amp; old-money essentials — we curate the finest, then guide you to the piece that truly suits you.</p>
       <div class="hero-actions reveal">
-        <a href="#collection" class="btn btn--solid">View the Collection</a>
-        <a href="#enquire" class="btn btn--ghost">Speak to an Advisor</a>
+        <a href="#collection" class="btn btn--solid" data-site="hero.ctaOne">View the Collection</a>
+        <a href="#enquire" class="btn btn--ghost" data-site="hero.ctaTwo">Speak to an Advisor</a>
       </div>
-      <p class="hero-sign reveal">Curated personally — <em>A.z</em></p>
+      <p class="hero-sign reveal" data-html="hero.sign">Curated personally — <em>A.z</em></p>
     </div>
     <div class="hero-scene reveal">
       <div class="look-flip" id="lookFlip">
       <div class="flip-inner" id="flipInner">
       <div class="look-stage" id="lookStage">
         <div class="look-photo" id="lookPhoto">
-          <img src="images/look.webp" alt="Styled in the salon — every piece in the scene can be explored" />
+          <img src="images/look.webp" data-src="hero.photo" data-alt="hero.photoAlt" alt="Styled in the salon — every piece in the scene can be explored" />
           <span class="look-shade" aria-hidden="true"></span>
-          <button class="spot" data-piece="cap" data-label="The Cap" style="--x:47.5%; --y:21%" aria-label="View the cap"><i></i></button>
-          <button class="spot" data-piece="watch" data-label="The Timepiece" style="--x:53.5%; --y:43.5%" aria-label="View the timepiece"><i></i></button>
-          <button class="spot" data-piece="bracelets" data-label="The Wrist" style="--x:30%; --y:57.5%" aria-label="View the bracelets"><i></i></button>
-          <button class="spot" data-piece="bag" data-label="The Bag" style="--x:40%; --y:73%" aria-label="View the bag"><i></i></button>
-          <button class="spot spot--salon spot--edge-r" data-piece="parfum" data-label="The Parfum" style="--x:83%; --y:15%" aria-label="View the parfum shelf"><i></i></button>
-          <button class="spot spot--salon spot--edge-r" data-piece="shelf" data-label="The Display" style="--x:85%; --y:42%" aria-label="View the display shelf"><i></i></button>
-          <button class="spot spot--vitrine spot--edge-r" data-piece="eyewear" data-label="The Eyewear" style="--x:80%; --y:64.6%" aria-label="Enter the eyewear vitrine"><i></i></button>
-          <button class="spot spot--salon spot--edge-l" data-piece="vase" data-label="The Blossom" style="--x:10%; --y:56%" aria-label="View the blossom vase"><i></i></button>
+          <!-- markers placed from content.js -->
         </div>
         <div class="holo" id="holo" aria-hidden="true">
           <span class="holo-glow"></span>
@@ -122,15 +115,15 @@
       <!-- the reverse of the plate — the campaign portrait -->
       <div class="look-back" id="lookBack">
         <span class="lens-glass">
-          <img src="images/look-back.webp" alt="A.z campaign — the Gucci rectangular sunglasses" loading="lazy" />
+          <img src="images/look-back.webp" data-src="hero.back.photo" data-alt="hero.back.alt" alt="A.z campaign — the Gucci rectangular sunglasses" loading="lazy" />
           <span class="back-vignette" aria-hidden="true"></span>
           <span class="plate-sheen" aria-hidden="true"></span>
         </span>
-        <span class="back-edge" aria-hidden="true">The Campaign</span>
-        <a class="back-plate" href="eyewear.html">
-          <span class="bp-house">Gucci</span>
-          <span class="bp-piece">Rectangular Sunglasses</span>
-          <span class="bp-go">Enter the Eyewear <i>⟶</i></span>
+        <span class="back-edge" aria-hidden="true" data-site="hero.back.edge">The Campaign</span>
+        <a class="back-plate" href="eyewear.html" data-href="hero.back.link">
+          <span class="bp-house" data-site="hero.back.house">Gucci</span>
+          <span class="bp-piece" data-site="hero.back.piece">Rectangular Sunglasses</span>
+          <span class="bp-go"><span data-site="hero.back.go">Enter the Eyewear</span> <i>⟶</i></span>
         </a>
       </div>
       </div><!-- /.flip-inner -->
@@ -138,7 +131,7 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>
         </button>
       </div><!-- /.look-flip -->
-      <p class="scene-hint reveal"><span class="only-desktop">Scroll into the scene · </span>touch a marker<span class="hint-turn"> · turn the plate</span></p>
+      <p class="scene-hint reveal" data-site="hero.hint">Scroll into the scene · touch a marker · turn the plate</p>
     </div>
   </section>
 
@@ -150,9 +143,9 @@
   <!-- The Vitrine — the display wall, lit like the salon -->
   <section class="vitrine" id="vitrine">
     <div class="look-head">
-      <p class="look-kicker reveal">The Vitrine</p>
-      <h2 class="look-title reveal"><span id="vitCount">Four</span> collections. <em>One standard.</em></h2>
-      <p class="look-lead reveal"><span class="only-desktop">Scroll over a piece to draw it closer · </span>select a collection to explore</p>
+      <p class="look-kicker reveal" data-site="vitrine.kicker">The Vitrine</p>
+      <h2 class="look-title reveal" id="vitTitle">Four collections. <em>One standard.</em></h2>
+      <p class="look-lead reveal"><span class="only-desktop">Scroll over a piece to draw it closer · </span><span data-site="vitrine.lead">select a collection to explore</span></p>
     </div>
     <!-- built from the collection registry in bags.js, so a collection added
          in the admin panel takes its place on the wall on its own -->
@@ -162,9 +155,9 @@
   <!-- Collection -->
   <section class="collection" id="collection">
     <div class="section-head">
-      <span class="section-index reveal">I</span>
-      <h2 class="section-title reveal">The Collection</h2>
-      <p class="section-lead reveal">A sample of what we source — ask, and we advise.</p>
+      <span class="section-index reveal" data-site="collection.index">I</span>
+      <h2 class="section-title reveal" data-site="collection.title">The Collection</h2>
+      <p class="section-lead reveal" data-site="collection.lead">A sample of what we source — ask, and we advise.</p>
       <p class="swipe-hint reveal" id="swipeHint" aria-hidden="true">Swipe — <b id="swipeNow">01</b> / <span id="swipeTotal">13</span></p>
     </div>
     <div class="grid" id="grid"><!-- built by script.js --></div>
@@ -173,9 +166,9 @@
   <!-- The Service -->
   <section class="house" id="house">
     <div class="section-head">
-      <span class="section-index reveal">II</span>
-      <h2 class="section-title reveal">The Service</h2>
-      <p class="section-lead reveal">How A.z works.</p>
+      <span class="section-index reveal" data-site="service.index">II</span>
+      <h2 class="section-title reveal" data-site="service.title">The Service</h2>
+      <p class="section-lead reveal" data-site="service.lead">How A.z works.</p>
     </div>
     <div class="pillars">
       <article class="pillar reveal">
@@ -213,14 +206,10 @@
   <!-- Enquire -->
   <section class="enquire" id="enquire">
     <div class="enquire-inner">
-      <span class="section-index reveal">III</span>
-      <h2 class="enquire-title reveal">Considering a piece?<br /><em>Let us advise you.</em></h2>
-      <p class="enquire-sub reveal">Private consultations by appointment. Tell us what you are drawn to — we will guide you to the right piece and source it for you.</p>
-      <div class="enquire-links reveal">
-        <a href="#" class="chip">WhatsApp</a>
-        <a href="#" class="chip">Instagram</a>
-        <a href="mailto:alirezadk2020@gmail.com?subject=Private%20Enquiry%20%E2%80%94%20A.z" class="chip">Email</a>
-      </div>
+      <span class="section-index reveal" data-site="enquire.index">III</span>
+      <h2 class="enquire-title reveal" data-html="enquire.title">Considering a piece?<br /><em>Let us advise you.</em></h2>
+      <p class="enquire-sub reveal" data-site="enquire.sub">Private consultations by appointment. Tell us what you are drawn to — we will guide you to the right piece and source it for you.</p>
+      <div class="enquire-links reveal" id="enquireLinks"></div>
     </div>
   </section>
 
@@ -228,11 +217,11 @@
   <footer class="footer">
     <img class="footer-logo" src="images/logo.png" alt="A.z" />
     <div class="footer-rule" aria-hidden="true"></div>
-    <p class="footer-note">Private luxury advisory — curated pieces, personal guidance, discreet service. By appointment.</p>
+    <p class="footer-note" data-site="footer.note">Private luxury advisory — curated pieces, personal guidance, discreet service. By appointment.</p>
     <nav class="footer-nav" id="footerNav" aria-label="Collections">
       <a href="advisory.html">The Advisory</a>
     </nav>
-    <span class="footer-copy">© A.z — By Appointment · Curated personally, piece by piece</span>
+    <span class="footer-copy" data-site="footer.copy">© A.z — By Appointment · Curated personally, piece by piece</span>
   </footer>
 
   <!-- Lightbox viewer -->
@@ -267,6 +256,7 @@
     <button class="lb-arrow lb-next" id="lbNext" aria-label="Next view">›</button>
   </div>
 
+  <script src="content.js"></script>
   <script src="bags.js"></script>
   <script src="script.js"></script>
 

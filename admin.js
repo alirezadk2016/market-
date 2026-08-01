@@ -46,7 +46,7 @@
 
   function touched() {
     state.dirty = true;
-    save(DRAFT, { brands: state.brands, ranges: state.ranges, images: state.images });
+    save(DRAFT, { brands: state.brands, ranges: state.ranges, images: state.images, site: state.site });
     const d = $("#dirty");
     d.className = "bar-mid on";
     const n = Object.keys(state.images).length;
@@ -57,21 +57,28 @@
   /* bags.js is plain declarations, so running it in a function body and asking
      for the two names back is enough — no parser, no build step, and the file
      stays readable to anyone who opens it. */
-  async function readSource() {
-    const res = await fetch("bags.js?ts=" + Date.now(), { cache: "no-store" });
-    if (!res.ok) throw new Error("Could not read bags.js (" + res.status + ")");
+  async function grab(file, names) {
+    const res = await fetch(file + "?ts=" + Date.now(), { cache: "no-store" });
+    if (!res.ok) throw new Error("Could not read " + file + " (" + res.status + ")");
     const code = await res.text();
-    let out;
-    try {
-      out = new Function(code + "\n;return { BRANDS: typeof BRANDS!=='undefined'?BRANDS:{}, RANGES: typeof RANGES!=='undefined'?RANGES:{} };")();
-    } catch (e) {
-      throw new Error("bags.js could not be read: " + e.message);
-    }
-    return out;
+    const ret = names.map((n) => n + ": typeof " + n + "!=='undefined'?" + n + ":undefined").join(", ");
+    try { return { data: new Function(code + "\n;return {" + ret + "};")(), raw: code }; }
+    catch (e) { throw new Error(file + " could not be read: " + e.message); }
+  }
+
+  async function readSource() {
+    const a = await grab("bags.js", ["BRANDS", "RANGES"]);
+    const b = await grab("content.js", ["SITE"]);
+    return {
+      BRANDS: a.data.BRANDS || {}, RANGES: a.data.RANGES || {},
+      SITE: b.data.SITE || {}, raw: { bags: a.raw, content: b.raw },
+    };
   }
 
   function fromSource(src) {
     return {
+      site: src.SITE || {},
+      raw: src.raw,
       brands: src.BRANDS || {},
       ranges: Object.keys(src.RANGES || {}).map((k) => {
         const r = src.RANGES[k];
@@ -92,6 +99,7 @@
       const draft = load(DRAFT);
       if (draft && draft.ranges && confirmDraft(draft)) {
         state.brands = draft.brands; state.ranges = draft.ranges; state.images = draft.images || {};
+        if (draft.site) state.site = draft.site;
         state.dirty = true;
       }
     } catch (e) {
@@ -135,7 +143,24 @@
       const b = el("button", "side-item" + (view.kind === "collection" && view.key === r.key ? " on" : ""),
         "<b>" + esc(r.title) + "</b><span>" + r.items.length + "</span>");
       b.onclick = () => { view = { kind: "collection", key: r.key }; renderNav(); renderView(); };
-      li.appendChild(b); ul.appendChild(li);
+      li.appendChild(b);
+      /* the order here is the order on the vitrine wall and in the footer */
+      const ord = el("span");
+      ord.style.cssText = "display:flex;gap:3px;padding:0 10px 6px";
+      [["↑", -1], ["↓", 1]].forEach(([t, d]) => {
+        const mv = el("button", "btn ghost small", t);
+        mv.style.padding = "2px 8px";
+        mv.onclick = (ev) => {
+          ev.stopPropagation();
+          const i = state.ranges.indexOf(r), j = i + d;
+          if (j < 0 || j >= state.ranges.length) return;
+          state.ranges.splice(j, 0, state.ranges.splice(i, 1)[0]);
+          touched(); renderNav(); renderView();
+        };
+        ord.appendChild(mv);
+      });
+      li.appendChild(ord);
+      ul.appendChild(li);
     });
     document.querySelectorAll(".side-item[data-view]").forEach((b) => {
       b.classList.toggle("on", view.kind === b.dataset.view);
@@ -145,6 +170,8 @@
   function renderView() {
     const w = $("#work");
     w.innerHTML = "";
+    if (view.kind === "site") return renderSite(w);
+    if (view.kind === "markers") return renderMarkers(w);
     if (view.kind === "houses") return renderHouses(w);
     if (view.kind === "settings") return renderSettings(w);
     return renderCollection(w);
@@ -217,6 +244,14 @@
       " · " + (p.variants || []).reduce((a, v) => a + (v.shots || []).length, 0) + " photos</small>"));
     const acts = el("div", "card-acts");
     const e = el("button", "btn ghost small", "Edit"); e.onclick = () => editPiece(r, i); acts.appendChild(e);
+    const cp = el("button", "btn ghost small", "Duplicate");
+    cp.onclick = () => {
+      const copy = JSON.parse(JSON.stringify(p));
+      copy.note = (copy.note || "Piece") + " (copy)";
+      r.items.splice(i + 1, 0, copy);
+      touched(); renderNav(); renderView();
+    };
+    acts.appendChild(cp);
     const up = el("button", "btn ghost small", "↑"); up.onclick = () => move(r.items, i, -1); acts.appendChild(up);
     const dn = el("button", "btn ghost small", "↓"); dn.onclick = () => move(r.items, i, 1); acts.appendChild(dn);
     acts.appendChild(el("span", "sp"));
@@ -343,6 +378,7 @@
       box.appendChild(head);
       box.appendChild(shotStrip(v.shots || (v.shots = []), {
         name: slug(p.name + "-" + p.note) || r.key,
+        reopen: () => editPiece(r, r.items.indexOf(p)),
         onAdd: (paths) => { v.shots.push.apply(v.shots, paths); touched(); renderVariants(wrap, r, p); },
         onRemove: (k) => { v.shots.splice(k, 1); touched(); renderVariants(wrap, r, p); },
         onMove: (k, d) => {
@@ -351,6 +387,237 @@
         },
       }));
       wrap.appendChild(box);
+    });
+  }
+
+  /* ------------------------------------------------------- words & pictures */
+  /* Reaches into SITE by path so a field is one line, and a missing branch is
+     created on the way rather than throwing. */
+  function siteGet(path) {
+    return path.split(".").reduce((o, k) => (o == null ? o : o[k]), state.site);
+  }
+  function siteSet(path, v) {
+    const keys = path.split(".");
+    let o = state.site;
+    for (let i = 0; i < keys.length - 1; i++) o = o[keys[i]] || (o[keys[i]] = {});
+    o[keys[keys.length - 1]] = v;
+    touched();
+  }
+  function sField(label, path, hint) {
+    return textField(label, siteGet(path), (v) => siteSet(path, v), hint);
+  }
+  function sArea(label, path, hint) {
+    const f = areaField(label, siteGet(path), (v) => siteSet(path, v));
+    if (hint) f.appendChild(el("p", "hint", hint));
+    return f;
+  }
+
+  function renderSite(w) {
+    w.appendChild(el("h1", null, "Words &amp; pictures"));
+    w.appendChild(el("p", "lead", "Everything written on the home page, and the two photographs on the plate. Anything left empty keeps what the page already says."));
+    w.appendChild(el("div", "warn",
+      "A few of these carry markup on purpose: <code>&lt;em&gt;…&lt;/em&gt;</code> sets the italic second line of a headline and " +
+      "<code>&lt;br&gt;</code> breaks it. <code>{n}</code> in the vitrine headline becomes the number of collections, in words."));
+
+    w.appendChild(el("h3", null, "The hero"));
+    w.appendChild(sField("Eyebrow", "hero.eyebrow"));
+    w.appendChild(sField("Headline", "hero.title", "The part inside &lt;em&gt; is the italic gold line."));
+    w.appendChild(sArea("Paragraph", "hero.sub"));
+    const c = el("div", "row");
+    c.appendChild(sField("First button", "hero.ctaOne"));
+    c.appendChild(sField("Second button", "hero.ctaTwo"));
+    w.appendChild(c);
+    w.appendChild(sField("Signature", "hero.sign"));
+    w.appendChild(sField("Line under the plate", "hero.hint"));
+
+    w.appendChild(el("h3", null, "The photograph on the plate"));
+    w.appendChild(picker("hero.photo", "hero"));
+    w.appendChild(sField("What it shows", "hero.photoAlt", "Read aloud by screen readers, and shown if the photograph fails to load."));
+
+    w.appendChild(el("h3", null, "The photograph on the reverse"));
+    w.appendChild(picker("hero.back.photo", "hero-back"));
+    w.appendChild(sField("What it shows", "hero.back.alt"));
+    const bk = el("div", "row-3");
+    bk.appendChild(sField("Edge label", "hero.back.edge"));
+    bk.appendChild(sField("House", "hero.back.house"));
+    bk.appendChild(sField("Piece", "hero.back.piece"));
+    w.appendChild(bk);
+    const bk2 = el("div", "row");
+    bk2.appendChild(sField("Link text", "hero.back.go"));
+    bk2.appendChild(sField("Link goes to", "hero.back.link"));
+    w.appendChild(bk2);
+
+    w.appendChild(el("hr", "hr"));
+    w.appendChild(el("h3", null, "The vitrine"));
+    const v = el("div", "row-3");
+    v.appendChild(sField("Kicker", "vitrine.kicker"));
+    v.appendChild(sField("Headline", "vitrine.title"));
+    v.appendChild(sField("Line beneath", "vitrine.lead"));
+    w.appendChild(v);
+
+    [["collection", "The collection section"], ["service", "The service section"]].forEach(([k, name]) => {
+      w.appendChild(el("h3", null, name));
+      const g = el("div", "row-3");
+      g.appendChild(sField("Numeral", k + ".index"));
+      g.appendChild(sField("Heading", k + ".title"));
+      g.appendChild(sField("Line beneath", k + ".lead"));
+      w.appendChild(g);
+    });
+
+    w.appendChild(el("hr", "hr"));
+    w.appendChild(el("h3", null, "Enquire"));
+    const e1 = el("div", "row");
+    e1.appendChild(sField("Numeral", "enquire.index"));
+    e1.appendChild(sField("Heading", "enquire.title", "&lt;br&gt; breaks the line, &lt;em&gt; sets the italic."));
+    w.appendChild(e1);
+    w.appendChild(sArea("Paragraph", "enquire.sub"));
+    const e2 = el("div", "row-3");
+    e2.appendChild(sField("WhatsApp", "enquire.whatsapp", "A number or a full link. Empty hides the chip."));
+    e2.appendChild(sField("Instagram", "enquire.instagram", "A handle or a full link."));
+    e2.appendChild(sField("Email", "enquire.email"));
+    w.appendChild(e2);
+
+    w.appendChild(el("hr", "hr"));
+    w.appendChild(el("h3", null, "The footer"));
+    w.appendChild(sArea("Note", "footer.note"));
+    w.appendChild(sField("Copyright line", "footer.copy"));
+
+    w.appendChild(el("h3", null, "What search engines see"));
+    w.appendChild(sField("Page title", "meta.title"));
+    w.appendChild(sArea("Description", "meta.description"));
+  }
+
+  /* ------------------------------------------------------------- markers */
+  /* Placed by clicking the photograph itself. Typing coordinates into two
+     number fields and reloading the site to check them is not a way to work. */
+  function renderMarkers(w) {
+    const list = state.site.markers || (state.site.markers = []);
+    w.appendChild(el("h1", null, "Scene markers"));
+    w.appendChild(el("p", "lead", "The points a visitor can touch on the salon photograph. Click anywhere on the photograph below to move the marker you have selected, or to place a new one."));
+
+    const stage = el("div");
+    stage.style.cssText = "position:relative;width:min(420px,100%);margin-bottom:22px;border:1px solid var(--line);border-radius:3px;overflow:hidden;cursor:crosshair";
+    const img = el("img");
+    img.src = resolve(siteGet("hero.photo") || "images/look.webp");
+    img.style.cssText = "display:block;width:100%";
+    stage.appendChild(img);
+
+    let sel = 0;
+    function dots() {
+      stage.querySelectorAll(".mk").forEach((n) => n.remove());
+      list.forEach((m, i) => {
+        const d = el("span", "mk");
+        d.style.cssText = "position:absolute;left:" + m.x + "%;top:" + m.y + "%;width:16px;height:16px;margin:-8px;" +
+          "border-radius:50%;border:2px solid " + (i === sel ? "#c9a879" : "rgba(255,255,255,.75)") +
+          ";background:" + (i === sel ? "rgba(201,168,121,.55)" : "rgba(0,0,0,.35)") + ";pointer-events:none";
+        stage.appendChild(d);
+      });
+    }
+    stage.onclick = (ev) => {
+      const r = img.getBoundingClientRect();
+      const x = +(((ev.clientX - r.left) / r.width) * 100).toFixed(1);
+      const y = +(((ev.clientY - r.top) / r.height) * 100).toFixed(1);
+      if (!list.length) return;
+      list[sel].x = x; list[sel].y = y;
+      touched(); dots(); refreshRows();
+    };
+    w.appendChild(stage);
+    dots();
+
+    const rows = el("div", "rowlist");
+    w.appendChild(rows);
+
+    function refreshRows() {
+      rows.innerHTML = "";
+      list.forEach((m, i) => {
+        const r = el("div", "rowitem");
+        r.style.cursor = "pointer";
+        if (i === sel) r.style.borderColor = "var(--gold)";
+        r.onclick = (ev) => { if (ev.target === r || ev.target.tagName === "B") { sel = i; dots(); refreshRows(); } };
+        r.appendChild(el("b", null, "&nbsp;" + (i + 1) + "&nbsp;"));
+        const lab = el("input"); lab.className = "grow"; lab.value = m.label || ""; lab.placeholder = "Label";
+        lab.oninput = () => { m.label = lab.value; touched(); };
+        r.appendChild(lab);
+        const pos = el("span"); pos.style.cssText = "color:var(--faint);font-size:11px;white-space:nowrap";
+        pos.textContent = m.x + "% · " + m.y + "%";
+        r.appendChild(pos);
+        const ed = el("button", "btn ghost small", "Open"); ed.onclick = () => editMarker(m, refreshRows, dots);
+        r.appendChild(ed);
+        const del = el("button", "btn danger small", "×");
+        del.onclick = () => { list.splice(i, 1); if (sel >= list.length) sel = Math.max(0, list.length - 1); touched(); dots(); refreshRows(); };
+        r.appendChild(del);
+        rows.appendChild(r);
+      });
+      const add = el("button", "btn ghost small", "+ Add a marker");
+      add.onclick = () => {
+        list.push({ key: "m" + Date.now().toString(36).slice(-4), label: "New marker", x: 50, y: 50, zoom: 2.6, kicker: "", name: "", note: "" });
+        sel = list.length - 1; touched(); dots(); refreshRows();
+      };
+      rows.appendChild(add);
+    }
+    refreshRows();
+  }
+
+  function editMarker(m, redraw, dots) {
+    $("#sheetTitle").textContent = m.label || "Marker";
+    const b = $("#sheetBody");
+    b.innerHTML = "";
+    const t = el("div", "row");
+    t.appendChild(textField("Label on the photograph", m.label, (v) => { m.label = v; touched(); }));
+    t.appendChild(textField("Kicker on the card", m.kicker, (v) => { m.kicker = v; touched(); }));
+    b.appendChild(t);
+    b.appendChild(textField("Name on the card", m.name, (v) => { m.name = v; touched(); }));
+    b.appendChild(areaField("Note", m.note, (v) => { m.note = v; touched(); }));
+    const g = el("div", "row-3");
+    g.appendChild(textField("Across (%)", m.x, (v) => { m.x = +v || 0; touched(); }));
+    g.appendChild(textField("Down (%)", m.y, (v) => { m.y = +v || 0; touched(); }));
+    g.appendChild(textField("Zoom", m.zoom, (v) => { m.zoom = +v || 2.6; touched(); }));
+    b.appendChild(g);
+    b.appendChild(textField("Goes to", m.link || "", (v) => { m.link = v; touched(); },
+      "A piece page, a collection, or empty for a marker that only tells its story."));
+    const st = el("div", "row");
+    st.appendChild(selectField("Size", m.small ? "small" : m.vitrine ? "vitrine" : "full",
+      [["full", "Full point — a worn piece"], ["small", "Fine point — an objet"], ["vitrine", "Vitrine point — a lit niche"]],
+      (v) => { m.small = v === "small"; m.vitrine = v === "vitrine"; touched(); }));
+    st.appendChild(selectField("Label sits", m.edge === "l" ? "l" : m.edge === "r" ? "r" : "",
+      [["", "Centred"], ["l", "To the left"], ["r", "To the right"]],
+      (v) => { m.edge = v; touched(); }));
+    b.appendChild(st);
+
+    b.appendChild(el("h3", null, "Photograph on the card"));
+    b.appendChild(shotStrip([m.img].filter(Boolean), {
+      single: true, name: "marker-" + (m.key || "x"),
+      reopen: () => editMarker(m, redraw, dots),
+      onAdd: (paths) => { m.img = paths[0]; touched(); editMarker(m, redraw, dots); },
+      onRemove: () => { m.img = ""; touched(); editMarker(m, redraw, dots); },
+    }));
+
+    $("#sheetSave").onclick = () => { closeSheet(); redraw(); dots(); };
+    $("#sheetCancel").onclick = () => { closeSheet(); redraw(); dots(); };
+    $("#sheet").hidden = false;
+  }
+
+  function selectField(label, value, options, onChange) {
+    const f = el("div", "field");
+    f.appendChild(el("label", null, esc(label)));
+    const sel = el("select");
+    options.forEach(([v, t]) => {
+      const o = el("option", null, esc(t)); o.value = v;
+      if (v === value) o.selected = true;
+      sel.appendChild(o);
+    });
+    sel.onchange = () => onChange(sel.value);
+    f.appendChild(sel);
+    return f;
+  }
+
+  /* a single photograph, chosen from disk or from what the site already has */
+  function picker(path, name) {
+    const cur = siteGet(path);
+    return shotStrip(cur ? [cur] : [], {
+      single: true, name: name, reopen: () => { closeSheet(); renderView(); },
+      onAdd: (paths) => { siteSet(path, paths[0]); renderView(); },
+      onRemove: () => { siteSet(path, ""); renderView(); },
     });
   }
 
@@ -553,8 +820,51 @@
       const add = el("div", "shot new", "＋<br>Add photo");
       add.onclick = () => pick(o);
       wrap.appendChild(add);
+      const reuse = el("div", "shot new", "↺<br>Use one<br>already here");
+      reuse.onclick = () => library(o);
+      wrap.appendChild(reuse);
     }
     return wrap;
+  }
+
+  /* Every photograph the site already uses, so a piece can borrow one without
+     uploading it a second time. */
+  function known() {
+    const set = {};
+    state.ranges.forEach((r) => {
+      if (r.cover) set[r.cover] = 1;
+      r.items.forEach((p) => (p.variants || []).forEach((v) => (v.shots || []).forEach((sh) => { set[sh] = 1; })));
+    });
+    (state.site.markers || []).forEach((m) => { if (m.img) set[m.img] = 1; });
+    ["hero.photo", "hero.back.photo"].forEach((k) => { const v = siteGet(k); if (v) set[v] = 1; });
+    Object.keys(state.images).forEach((k) => { set[k] = 1; });
+    return Object.keys(set).sort();
+  }
+
+  function library(o) {
+    const all = known();
+    $("#sheetTitle").textContent = "Photographs already on the site";
+    const b = $("#sheetBody");
+    b.innerHTML = "";
+    b.appendChild(el("p", "lead", all.length + " in use. Choose one to add it here as well — it is not uploaded twice."));
+    const grid = el("div", "shots");
+    all.forEach((src) => {
+      const t = el("div", "shot");
+      t.style.backgroundImage = "url('" + resolve(src) + "')";
+      t.style.cursor = "pointer";
+      t.title = src;
+      if (state.images[src]) t.appendChild(el("span", "pending", "new"));
+      t.onclick = () => {
+        o.onAdd([src]);
+        // hand the editor back rather than dropping the visitor on the page
+        if (o.reopen) o.reopen(); else closeSheet();
+      };
+      grid.appendChild(t);
+    });
+    b.appendChild(grid);
+    $("#sheetSave").onclick = closeSheet;
+    $("#sheetCancel").onclick = closeSheet;
+    $("#sheet").hidden = false;
   }
 
   function pick(o) {
@@ -632,6 +942,24 @@
     ].join("\n");
   }
 
+  function buildSite() {
+    const stamp = new Date().toISOString().slice(0, 16).replace("T", " ");
+    return [
+      "/* ------------------------------------------------------------------",
+      "   The A.z site copy.",
+      "",
+      "   Written by the control panel at /admin on " + stamp + " UTC.",
+      "",
+      "   Everything written on the home page lives here — the headlines, the",
+      "   section text, the contact chips, the two photographs on the hero",
+      "   plate, and the markers placed on the salon photograph. Anything left",
+      "   empty keeps whatever the page already says.",
+      "------------------------------------------------------------------- */",
+      "const SITE = " + JSON.stringify(state.site, null, 2) + ";",
+      "",
+    ].join("\n");
+  }
+
   function sortedBrands() {
     const out = {};
     Object.keys(state.brands).forEach((k) => {
@@ -663,15 +991,20 @@
     return o;
   }
 
-  function download() {
-    const blob = new Blob([build()], { type: "text/javascript" });
+  function saveAs(name, text) {
+    const blob = new Blob([text], { type: "text/javascript" });
     const a = el("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "bags.js";
+    a.download = name;
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  }
+
+  function download() {
+    saveAs("bags.js", build());
+    setTimeout(() => saveAs("content.js", buildSite()), 400);
     const n = Object.keys(state.images).length;
-    toast(n ? "Downloaded. " + n + " new photo" + (n > 1 ? "s" : "") + " still need uploading — publish with a token to send them too."
+    toast(n ? "Downloaded both files. " + n + " new photo" + (n > 1 ? "s" : "") + " still need uploading — publish with a token to send them too."
             : "Downloaded. Replace bags.js in the repository with it.", n ? "bad" : "good");
   }
 
@@ -735,8 +1068,17 @@
         const data = state.images[paths[i]];
         await put(paths[i], data.slice(data.indexOf(",") + 1), "Add " + paths[i]);
       }
+      btn.textContent = "Checking…";
+      const now = await readSource();
+      if (now.raw.bags !== state.raw.bags || now.raw.content !== state.raw.content) {
+        if (!confirm("The published files have changed since this page was opened — someone edited the site elsewhere, or a deploy landed.\n\nPublishing now replaces their version with yours. Continue?")) {
+          throw new Error("Nothing was published.");
+        }
+      }
       btn.textContent = "Saving…";
       await put("bags.js", b64(build()), "Update the collection from the control panel");
+      await put("content.js", b64(buildSite()), "Update the site copy from the control panel");
+      state.raw = { bags: build(), content: buildSite() };
 
       // uploaded images are part of the site now, so stop carrying them
       state.images = {};
