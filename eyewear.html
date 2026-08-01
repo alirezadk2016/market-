@@ -280,7 +280,7 @@
     }
   </style>
 </head>
-<body>
+<body data-meta="eyewear.meta">
   <header class="topbar" id="topbar">
     <a href="index.html" class="brand" aria-label="A.z — home"><img class="brand-logo" src="images/logo-ink.png" alt="A.z" /></a>
     <nav class="nav">
@@ -298,19 +298,14 @@
 
     <div class="room-grid">
       <div class="room-copy">
-        <p class="room-kicker">The Eyewear</p>
-        <h1 class="room-title">Seen through,<br /><em>never seen trying.</em></h1>
+        <p class="room-kicker" data-site="eyewear.kicker">The Eyewear</p>
+        <h1 class="room-title" data-html="eyewear.title">Seen through,<br /><em>never seen trying.</em></h1>
         <div class="room-rule" aria-hidden="true"></div>
-        <p class="room-sub">Two shapes, one house. Black acetate cut in Italy and Japan, a whisper of
-          gold at the temple, and lenses dark enough to keep your own counsel.</p>
-        <div class="room-meta">
-          <div><span>House</span><b>Gucci</b></div>
-          <div><span>Lenses</span><b>Category 3 — full UV protection</b></div>
-          <div><span>Frames</span><b>Polished acetate, interlocking G</b></div>
-        </div>
+        <p class="room-sub" data-site="eyewear.sub">Two shapes, one house. Black acetate cut in Italy and Japan, a whisper of gold at the temple, and lenses dark enough to keep your own counsel.</p>
+        <div class="room-meta" id="ewMeta"></div>
         <div class="room-actions">
-          <a class="btn btn--solid" href="#pieces">View the Pieces</a>
-          <a class="btn btn--ghost" href="index.html#enquire">Speak to an Advisor</a>
+          <a class="btn btn--solid" href="#pieces" data-site="eyewear.ctaOne">View the Pieces</a>
+          <a class="btn btn--ghost" href="index.html#enquire" data-site="eyewear.ctaTwo">Speak to an Advisor</a>
         </div>
       </div>
 
@@ -325,7 +320,7 @@
         <!-- the rim holds the glass -->
         <div class="lens-frame">
           <div class="lens-body">
-            <img src="images/look.webp" alt="Seen through the A.z lens — the salon" />
+            <img src="images/look.webp" data-src="eyewear.photo" alt="Seen through the A.z lens — the salon" />
             <span class="tint" aria-hidden="true"></span>
             <span class="gleam" aria-hidden="true"></span>
           </div>
@@ -334,7 +329,7 @@
         <span class="lens-mirror" aria-hidden="true">
           <span class="mirror-frame"><img src="images/look.webp" alt="" /></span>
         </span>
-        <span class="lens-caption" id="dragHint"><i></i>Drag to rotate</span>
+        <span class="lens-caption" id="dragHint"><i></i><span data-site="eyewear.dragHint">Drag to rotate</span></span>
       </div>
     </div>
     <span class="room-scroll" aria-hidden="true">The Collection</span>
@@ -343,9 +338,9 @@
   <!-- the collection opens beneath -->
   <section class="ew-collection" id="pieces">
     <div class="ew-head">
-      <p class="ew-kicker">The Vitrine</p>
-      <h2 class="ew-title">Two shapes. <em>Discretion, and declaration.</em></h2>
-      <p class="ew-lead">Select a piece to open its sheet</p>
+      <p class="ew-kicker" data-site="eyewear.gridKicker">The Vitrine</p>
+      <h2 class="ew-title" data-html="eyewear.gridTitle">Two shapes. <em>Discretion, and declaration.</em></h2>
+      <p class="ew-lead" data-site="eyewear.gridLead">Select a piece to open its sheet</p>
     </div>
     <div class="grid grid--objects" id="ewGrid"></div>
   </section>
@@ -362,6 +357,8 @@
     <span class="footer-copy">© A.z — By Appointment</span>
   </footer>
 
+  <script src="content.js"></script>
+  <script src="fill.js"></script>
   <script src="bags.js"></script>
   <script>
   (function () {

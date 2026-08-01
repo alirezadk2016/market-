@@ -67,9 +67,72 @@ const SITE = {
     email: "alirezadk2020@gmail.com",
   },
 
+  /* the three columns under "The Service" */
+  pillars: [
+    { num: "i", title: "Curated, Not Sold",
+      text: "We select the finest across the great houses — you receive taste and honesty, never a sales pitch." },
+    { num: "ii", title: "Personal Guidance",
+      text: "Speak with an advisor who learns your life and wardrobe, and points you to what genuinely suits you." },
+    { num: "iii", title: "By Appointment",
+      text: "A discreet, old-money sensibility and time taken for you. Bags today; footwear and fragrance to follow." },
+  ],
+  houseCta: "How We Help — The Full Method",
+
+  word: {
+    kicker: "A Word from the Curator",
+    text: "\u201c I open every box myself. If a piece does not make me pause, it never reaches you. That is the whole method — <em>taste, patience, and refusal.</em> \u201d",
+    role: "Founder &amp; Curator",
+  },
+
   footer: {
     note: "Private luxury advisory — curated pieces, personal guidance, discreet service. By appointment.",
     copy: "© A.z — By Appointment · Curated personally, piece by piece",
+  },
+
+  /* --------------------------------------------------------- the advisory */
+  advisory: {
+    metaTitle: "A.z — The Advisory · How We Help",
+    kicker: "The Advisory",
+    title: "Style is not what you wear.<br /><em>It is who you are.</em>",
+    lead: "How we help — quietly, personally, piece by piece",
+    manifesto: [
+      "A person's style is their <em>character</em> — worn where the world can see it. Before you say a word, it has already spoken for you.",
+      "Most wardrobes are full, and still say nothing. That was never a shopping problem — it is a <em>choosing</em> problem.",
+      "So we do not begin with product. We begin with <em>you</em> — your days, the rooms you walk into, and what should be understood about you before you speak.",
+    ],
+    methodKicker: "The Method",
+    methodTitle: "Three quiet steps. <em>No noise.</em>",
+    steps: [
+      { num: "i.", title: "The Conversation",
+        text: "A private exchange, at your pace. We listen to how you live — your work, your evenings, the character you carry — until we understand what your wardrobe should be saying on your behalf." },
+      { num: "ii.", title: "The Curation",
+        text: "We walk the great houses for you and return with a shortlist measured against one thing only: your character. Never a trend, never a sales target — pieces that will still be right in ten years." },
+      { num: "iii.", title: "The Companionship",
+        text: "We stay beside you through the purchase and after it — trusted retailers, honest pricing counsel, care of the piece, and the next piece only when it truly belongs. You are advised for life, not for a sale." },
+    ],
+    quote: "\u201c You will not leave with more things.<br /><em>You will leave with the right ones.</em> \u201d",
+    role: "Founder &amp; Curator",
+    cta: "Begin the Conversation",
+  },
+
+  /* ------------------------------------------------------ the eyewear room */
+  eyewear: {
+    metaTitle: "A.z — The Eyewear",
+    kicker: "The Eyewear",
+    title: "Seen through,<br /><em>never seen trying.</em>",
+    sub: "Two shapes, one house. Black acetate cut in Italy and Japan, a whisper of gold at the temple, and lenses dark enough to keep your own counsel.",
+    meta: [
+      { label: "House", value: "Gucci" },
+      { label: "Lenses", value: "Category 3 — full UV protection" },
+      { label: "Frames", value: "Polished acetate, interlocking G" },
+    ],
+    ctaOne: "View the Pieces",
+    ctaTwo: "Speak to an Advisor",
+    dragHint: "Drag to rotate",
+    gridKicker: "The Vitrine",
+    gridTitle: "Two shapes. <em>Discretion, and declaration.</em>",
+    gridLead: "Select a piece to open its sheet",
+    photo: "images/look.webp",
   },
 
   /* The markers on the salon photograph.

@@ -1,10 +1,15 @@
 /* =============================================================================
    A.z — CONTROL PANEL
 
-   Everything the site shows lives in bags.js. This edits that file: collections,
-   the pieces inside them, their photographs, and the houses behind them — then
-   writes it back, together with any new images, straight into the repository.
-   Vercel picks the commit up and the site is live a minute later.
+   Everything the site shows lives in two files, and this edits both:
+
+     bags.js     the collections, the pieces inside them, their photographs
+                 and the houses behind them
+     content.js  every word on the site — the home page, the advisory page and
+                 the eyewear room — plus the markers on the salon photograph
+
+   It writes them back, together with any new images, straight into the
+   repository. Vercel picks the commit up and the site is live a minute later.
 
    Two ways to save, and it will use whichever is set up:
      · GitHub  — paste a token once under Publishing and it commits for you.
@@ -172,6 +177,8 @@
     w.innerHTML = "";
     if (view.kind === "site") return renderSite(w);
     if (view.kind === "markers") return renderMarkers(w);
+    if (view.kind === "advisory") return renderAdvisory(w);
+    if (view.kind === "eyewear") return renderEyewear(w);
     if (view.kind === "houses") return renderHouses(w);
     if (view.kind === "settings") return renderSettings(w);
     return renderCollection(w);
@@ -478,6 +485,20 @@
     w.appendChild(e2);
 
     w.appendChild(el("hr", "hr"));
+    w.appendChild(el("h3", null, "The three columns"));
+    w.appendChild(blockEditor(state.site.pillars || (state.site.pillars = []), [
+      { key: "title", label: "Heading" }, { key: "num", label: "Numeral", hint: "i, ii, iii" },
+      { key: "text", label: "Text", area: true },
+    ], { addLabel: "Add a column" }));
+    w.appendChild(sField("Button under them", "houseCta"));
+
+    w.appendChild(el("hr", "hr"));
+    w.appendChild(el("h3", null, "A word from the curator"));
+    w.appendChild(sField("Kicker", "word.kicker"));
+    w.appendChild(sArea("The words", "word.text"));
+    w.appendChild(sField("Role", "word.role"));
+
+    w.appendChild(el("hr", "hr"));
     w.appendChild(el("h3", null, "The footer"));
     w.appendChild(sArea("Note", "footer.note"));
     w.appendChild(sField("Copyright line", "footer.copy"));
@@ -485,6 +506,150 @@
     w.appendChild(el("h3", null, "What search engines see"));
     w.appendChild(sField("Page title", "meta.title"));
     w.appendChild(sArea("Description", "meta.description"));
+  }
+
+  /* A list of small records — the three pillars, the method steps, the
+     specification rows on the eyewear page. One shape, three uses. */
+  function blockEditor(arr, fields, opts) {
+    const wrap = el("div");
+    function draw() {
+      wrap.innerHTML = "";
+      arr.forEach((item, i) => {
+        const box = el("div", "variant");
+        const head = el("div", "variant-head");
+        head.appendChild(el("h2", null, esc(item[fields[0].key] || fields[0].label) + ""));
+        const sp = el("span"); sp.style.flex = "1"; head.appendChild(sp);
+        [["↑", -1], ["↓", 1]].forEach(([t, d]) => {
+          const mv = el("button", "btn ghost small", t);
+          mv.onclick = () => {
+            const j = i + d; if (j < 0 || j >= arr.length) return;
+            arr.splice(j, 0, arr.splice(i, 1)[0]); touched(); draw();
+          };
+          head.appendChild(mv);
+        });
+        const del = el("button", "btn danger small", "Remove");
+        del.onclick = () => { arr.splice(i, 1); touched(); draw(); };
+        head.appendChild(del);
+        box.appendChild(head);
+        fields.forEach((f) => {
+          box.appendChild(f.area
+            ? areaField(f.label, item[f.key], (v) => { item[f.key] = v; touched(); })
+            : textField(f.label, item[f.key], (v) => { item[f.key] = v; touched(); }, f.hint));
+        });
+        wrap.appendChild(box);
+      });
+      const add = el("button", "btn ghost", "+ " + (opts && opts.addLabel ? opts.addLabel : "Add"));
+      add.onclick = () => {
+        const blank = {};
+        fields.forEach((f) => { blank[f.key] = ""; });
+        arr.push(blank); touched(); draw();
+      };
+      wrap.appendChild(add);
+    }
+    draw();
+    return wrap;
+  }
+
+  /* a list of plain lines that may carry <em> — the manifesto */
+  function lineEditor(arr, onChange) {
+    const wrap = el("div", "rowlist");
+    function draw() {
+      wrap.innerHTML = "";
+      arr.forEach((v, i) => {
+        const r = el("div", "rowitem");
+        r.style.alignItems = "flex-start";
+        const t = el("textarea"); t.value = v;
+        t.style.cssText = "flex:1;min-height:64px;background:transparent;border:0;outline:none;resize:vertical;line-height:1.6";
+        t.oninput = () => { arr[i] = t.value; onChange(); };
+        r.appendChild(t);
+        const col = el("div"); col.style.cssText = "display:flex;flex-direction:column;gap:4px";
+        [["↑", -1], ["↓", 1]].forEach(([lab, d]) => {
+          const mv = el("button", "btn ghost small", lab);
+          mv.onclick = () => { const j = i + d; if (j < 0 || j >= arr.length) return; arr.splice(j, 0, arr.splice(i, 1)[0]); onChange(); draw(); };
+          col.appendChild(mv);
+        });
+        const x = el("button", "btn danger small", "×");
+        x.onclick = () => { arr.splice(i, 1); onChange(); draw(); };
+        col.appendChild(x);
+        r.appendChild(col);
+        wrap.appendChild(r);
+      });
+      const add = el("button", "btn ghost small", "+ Add a line");
+      add.onclick = () => { arr.push(""); onChange(); draw(); };
+      wrap.appendChild(add);
+    }
+    draw();
+    return wrap;
+  }
+
+  /* ------------------------------------------------------- the advisory page */
+  function renderAdvisory(w) {
+    const a = state.site.advisory || (state.site.advisory = {});
+    w.appendChild(el("h1", null, "The Advisory page"));
+    w.appendChild(el("p", "lead", "The page reached from “How We Help”. Every word on it is here."));
+
+    w.appendChild(el("h3", null, "The opening"));
+    w.appendChild(sField("Kicker", "advisory.kicker"));
+    w.appendChild(sField("Headline", "advisory.title", "&lt;br&gt; breaks the line, &lt;em&gt; sets the italic."));
+    w.appendChild(sField("Line beneath", "advisory.lead"));
+
+    w.appendChild(el("hr", "hr"));
+    w.appendChild(el("h3", null, "The belief"));
+    w.appendChild(el("p", "lead", "Spoken lines, one thought each. A ✦ is drawn between them automatically."));
+    w.appendChild(lineEditor(a.manifesto || (a.manifesto = []), () => touched()));
+
+    w.appendChild(el("hr", "hr"));
+    w.appendChild(el("h3", null, "The method"));
+    const m = el("div", "row");
+    m.appendChild(sField("Kicker", "advisory.methodKicker"));
+    m.appendChild(sField("Headline", "advisory.methodTitle"));
+    w.appendChild(m);
+    w.appendChild(blockEditor(a.steps || (a.steps = []), [
+      { key: "title", label: "Step" }, { key: "num", label: "Numeral" }, { key: "text", label: "Text", area: true },
+    ], { addLabel: "Add a step" }));
+
+    w.appendChild(el("hr", "hr"));
+    w.appendChild(el("h3", null, "The closing"));
+    w.appendChild(sField("Quote", "advisory.quote"));
+    const c = el("div", "row-3");
+    c.appendChild(sField("Role", "advisory.role"));
+    c.appendChild(sField("Button", "advisory.cta"));
+    c.appendChild(sField("Page title", "advisory.metaTitle"));
+    w.appendChild(c);
+  }
+
+  /* ------------------------------------------------------ the eyewear room */
+  function renderEyewear(w) {
+    const e = state.site.eyewear || (state.site.eyewear = {});
+    w.appendChild(el("h1", null, "The Eyewear room"));
+    w.appendChild(el("p", "lead", "The page the eyewear collection opens into — its own designed room."));
+
+    w.appendChild(sField("Kicker", "eyewear.kicker"));
+    w.appendChild(sField("Headline", "eyewear.title"));
+    w.appendChild(sArea("Paragraph", "eyewear.sub"));
+
+    w.appendChild(el("h3", null, "The photograph inside the lens"));
+    w.appendChild(picker("eyewear.photo", "eyewear-lens"));
+
+    w.appendChild(el("h3", null, "The specification beside it"));
+    w.appendChild(blockEditor(e.meta || (e.meta = []), [
+      { key: "label", label: "Label" }, { key: "value", label: "Value" },
+    ], { addLabel: "Add a row" }));
+
+    const b = el("div", "row-3");
+    b.appendChild(sField("First button", "eyewear.ctaOne"));
+    b.appendChild(sField("Second button", "eyewear.ctaTwo"));
+    b.appendChild(sField("Caption under the lens", "eyewear.dragHint"));
+    w.appendChild(b);
+
+    w.appendChild(el("hr", "hr"));
+    w.appendChild(el("h3", null, "The pieces below"));
+    const g = el("div", "row-3");
+    g.appendChild(sField("Kicker", "eyewear.gridKicker"));
+    g.appendChild(sField("Headline", "eyewear.gridTitle"));
+    g.appendChild(sField("Line beneath", "eyewear.gridLead"));
+    w.appendChild(g);
+    w.appendChild(sField("Page title", "eyewear.metaTitle"));
   }
 
   /* ------------------------------------------------------------- markers */

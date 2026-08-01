@@ -56,7 +56,7 @@
     }
   </style>
 </head>
-<body>
+<body data-meta="advisory.meta">
   <header class="topbar scrolled" id="topbar">
     <a href="index.html" class="brand" aria-label="A.z — home"><img class="brand-logo" src="images/logo-ink.png" alt="A.z" /></a>
     <nav class="nav">
@@ -68,52 +68,26 @@
 
   <main class="adv">
     <header class="adv-hero">
-      <p class="adv-kicker">The Advisory</p>
-      <h1 class="adv-title">Style is not what you wear.<br /><em>It is who you are.</em></h1>
-      <p class="adv-lead">How we help — quietly, personally, piece by piece</p>
+      <p class="adv-kicker" data-site="advisory.kicker">The Advisory</p>
+      <h1 class="adv-title" data-html="advisory.title">Style is not what you wear.<br /><em>It is who you are.</em></h1>
+      <p class="adv-lead" data-site="advisory.lead">How we help — quietly, personally, piece by piece</p>
     </header>
 
-    <section class="adv-manifesto" aria-label="Our belief">
-      <p class="m-line">A person's style is their <em>character</em> — worn where the world can see it. Before you say a word, it has already spoken for you.</p>
-      <span class="m-sep" aria-hidden="true">✦</span>
-      <p class="m-line">Most wardrobes are full, and still say nothing. That was never a shopping problem — it is a <em>choosing</em> problem.</p>
-      <span class="m-sep" aria-hidden="true">✦</span>
-      <p class="m-line">So we do not begin with product. We begin with <em>you</em> — your days, the rooms you walk into, and what should be understood about you before you speak.</p>
-    </section>
+    <section class="adv-manifesto" id="advManifesto" aria-label="Our belief"></section>
 
     <section class="adv-method" aria-label="The method">
       <div class="method-head">
-        <p class="adv-kicker">The Method</p>
-        <h2>Three quiet steps. <em>No noise.</em></h2>
+        <p class="adv-kicker" data-site="advisory.methodKicker">The Method</p>
+        <h2 data-html="advisory.methodTitle">Three quiet steps. <em>No noise.</em></h2>
       </div>
-      <div class="step">
-        <span class="step-num">i.</span>
-        <div>
-          <h3>The Conversation</h3>
-          <p>A private exchange, at your pace. We listen to how you live — your work, your evenings, the character you carry — until we understand what your wardrobe should be saying on your behalf.</p>
-        </div>
-      </div>
-      <div class="step">
-        <span class="step-num">ii.</span>
-        <div>
-          <h3>The Curation</h3>
-          <p>We walk the great houses for you and return with a shortlist measured against one thing only: your character. Never a trend, never a sales target — pieces that will still be right in ten years.</p>
-        </div>
-      </div>
-      <div class="step">
-        <span class="step-num">iii.</span>
-        <div>
-          <h3>The Companionship</h3>
-          <p>We stay beside you through the purchase and after it — trusted retailers, honest pricing counsel, care of the piece, and the next piece only when it truly belongs. You are advised for life, not for a sale.</p>
-        </div>
-      </div>
+      <div id="advSteps"></div>
     </section>
 
     <section class="adv-close" aria-label="A closing word">
-      <p class="quote">“ You will not leave with more things.<br /><em>You will leave with the right ones.</em> ”</p>
+      <p class="quote" data-html="advisory.quote">“ You will not leave with more things.<br /><em>You will leave with the right ones.</em> ”</p>
       <img src="images/logo-ink.png" alt="A.z" />
-      <span class="role">Founder &amp; Curator</span>
-      <div><a class="btn btn--solid" href="index.html#enquire">Begin the Conversation</a></div>
+      <span class="role" data-html="advisory.role">Founder &amp; Curator</span>
+      <div><a class="btn btn--solid" href="index.html#enquire" data-site="advisory.cta">Begin the Conversation</a></div>
     </section>
   </main>
 
@@ -122,5 +96,7 @@
     <div class="footer-rule" aria-hidden="true"></div>
     <span class="footer-copy">© A.z — By Appointment</span>
   </footer>
+  <script src="content.js"></script>
+  <script src="fill.js"></script>
 </body>
 </html>

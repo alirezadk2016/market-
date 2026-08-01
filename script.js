@@ -42,64 +42,10 @@
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
-  /* ---- Every string on the page comes from content.js ----
-     Elements carry the path they want: data-site fills text, data-html fills
-     markup (the italic second lines), data-src / data-href / data-alt fill
-     attributes. An empty or missing value leaves the page as authored, so a
-     half-filled content file can never blank the site. ---- */
   const dig = (path) => {
     if (typeof SITE === "undefined") return undefined;
     return path.split(".").reduce((o, k) => (o == null ? o : o[k]), SITE);
   };
-  (function () {
-    if (typeof SITE === "undefined") return;
-    const put = (attr, apply) => document.querySelectorAll("[" + attr + "]").forEach((n) => {
-      const v = dig(n.getAttribute(attr));
-      if (v != null && v !== "") apply(n, v);
-    });
-    put("data-site", (n, v) => { n.textContent = v; });
-    put("data-html", (n, v) => { n.innerHTML = v; });
-    put("data-src", (n, v) => { n.src = v; });
-    put("data-href", (n, v) => { n.href = v; });
-    put("data-alt", (n, v) => { n.alt = v; });
-
-    if (SITE.meta) {
-      if (SITE.meta.title) document.title = SITE.meta.title;
-      const d = document.querySelector('meta[name="description"]');
-      if (d && SITE.meta.description) d.setAttribute("content", SITE.meta.description);
-    }
-
-    /* the contact chips — only the ones actually filled in are shown */
-    const links = document.getElementById("enquireLinks");
-    if (links && SITE.enquire) {
-      const e = SITE.enquire;
-      const chips = [];
-      if (e.whatsapp) chips.push(["WhatsApp", /^https?:/.test(e.whatsapp) ? e.whatsapp
-        : "https://wa.me/" + String(e.whatsapp).replace(/[^0-9]/g, "")]);
-      if (e.instagram) chips.push(["Instagram", /^https?:/.test(e.instagram) ? e.instagram
-        : "https://instagram.com/" + String(e.instagram).replace(/^@/, "")]);
-      if (e.email) chips.push(["Email", "mailto:" + e.email + "?subject=Private%20Enquiry%20%E2%80%94%20A.z"]);
-      links.innerHTML = chips.map(([t, h]) =>
-        '<a href="' + h + '" class="chip"' + (/^http/.test(h) ? ' target="_blank" rel="noopener"' : "") + ">" + t + "</a>").join("");
-    }
-
-    /* the markers on the salon photograph */
-    const photo = document.getElementById("lookPhoto");
-    if (photo && SITE.markers) {
-      SITE.markers.forEach((m) => {
-        const b = document.createElement("button");
-        b.className = "spot" + (m.small ? " spot--salon" : "") + (m.vitrine ? " spot--vitrine" : "") +
-          (m.edge === "r" ? " spot--edge-r" : m.edge === "l" ? " spot--edge-l" : "");
-        b.dataset.piece = m.key;
-        b.dataset.label = m.label || "";
-        b.style.setProperty("--x", m.x + "%");
-        b.style.setProperty("--y", m.y + "%");
-        b.setAttribute("aria-label", m.label || m.key);
-        b.innerHTML = "<i></i>";
-        photo.appendChild(b);
-      });
-    }
-  })();
 
   /* ---- The vitrine wall, the footer links and the count all come from the
           collection registry, so nothing has to be edited by hand when a

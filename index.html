@@ -170,36 +170,20 @@
       <h2 class="section-title reveal" data-site="service.title">The Service</h2>
       <p class="section-lead reveal" data-site="service.lead">How A.z works.</p>
     </div>
-    <div class="pillars">
-      <article class="pillar reveal">
-        <span class="pillar-num">i</span>
-        <h3>Curated, Not Sold</h3>
-        <p>We select the finest across the great houses — you receive taste and honesty, never a sales pitch.</p>
-      </article>
-      <article class="pillar reveal">
-        <span class="pillar-num">ii</span>
-        <h3>Personal Guidance</h3>
-        <p>Speak with an advisor who learns your life and wardrobe, and points you to what genuinely suits you.</p>
-      </article>
-      <article class="pillar reveal">
-        <span class="pillar-num">iii</span>
-        <h3>By Appointment</h3>
-        <p>A discreet, old-money sensibility and time taken for you. Bags today; footwear and fragrance to follow.</p>
-      </article>
-    </div>
+    <div class="pillars" id="pillars"></div>
     <div class="house-cta reveal">
-      <a class="btn btn--ghost" href="advisory.html">How We Help — The Full Method</a>
+      <a class="btn btn--ghost" href="advisory.html" data-site="houseCta">How We Help — The Full Method</a>
     </div>
   </section>
 
   <!-- A word from the curator — the personal signature of the house -->
   <section class="word">
     <div class="word-inner">
-      <span class="word-kicker reveal">A Word from the Curator</span>
-      <p class="word-text reveal">“ I open every box myself. If a piece does not make me pause,
+      <span class="word-kicker reveal" data-site="word.kicker">A Word from the Curator</span>
+      <p class="word-text reveal" data-html="word.text">“ I open every box myself. If a piece does not make me pause,
         it never reaches you. That is the whole method — <em>taste, patience, and refusal.</em> ”</p>
       <img class="word-sign reveal" src="images/logo-ink.png" alt="A.z" />
-      <span class="word-role reveal">Founder &amp; Curator</span>
+      <span class="word-role reveal" data-html="word.role">Founder &amp; Curator</span>
     </div>
   </section>
 
@@ -257,6 +241,7 @@
   </div>
 
   <script src="content.js"></script>
+  <script src="fill.js"></script>
   <script src="bags.js"></script>
   <script src="script.js"></script>
 
