@@ -151,27 +151,12 @@
   <section class="vitrine" id="vitrine">
     <div class="look-head">
       <p class="look-kicker reveal">The Vitrine</p>
-      <h2 class="look-title reveal">Four collections. <em>One standard.</em></h2>
+      <h2 class="look-title reveal"><span id="vitCount">Four</span> collections. <em>One standard.</em></h2>
       <p class="look-lead reveal"><span class="only-desktop">Scroll over a piece to draw it closer · </span>select a collection to explore</p>
     </div>
-    <div class="vit-wall reveal">
-      <a class="vit-niche" href="range.html?c=bags" aria-label="The Bags — view the collection">
-        <img src="images/bag-cut.webp" alt="" loading="lazy" />
-        <span class="vit-cap"><i>The Bags</i><b>Thirteen curated pieces</b></span>
-      </a>
-      <a class="vit-niche" href="range.html?c=watches" aria-label="The Timepieces — view the collection">
-        <img src="images/vit-watch.webp" alt="" loading="lazy" />
-        <span class="vit-cap"><i>The Timepieces</i><b>View the collection</b></span>
-      </a>
-      <a class="vit-niche" href="range.html?c=headwear" aria-label="The Headwear — view the collection">
-        <img src="images/vit-hat.webp" alt="" loading="lazy" />
-        <span class="vit-cap"><i>The Headwear</i><b>View the collection</b></span>
-      </a>
-      <a class="vit-niche" href="eyewear.html" aria-label="The Eyewear — view the collection">
-        <img src="images/vit-gg.webp" alt="" loading="lazy" />
-        <span class="vit-cap"><i>The Eyewear</i><b>View the collection</b></span>
-      </a>
-    </div>
+    <!-- built from the collection registry in bags.js, so a collection added
+         in the admin panel takes its place on the wall on its own -->
+    <div class="vit-wall reveal" id="vitWall"></div>
   </section>
 
   <!-- Collection -->
@@ -244,11 +229,7 @@
     <img class="footer-logo" src="images/logo.png" alt="A.z" />
     <div class="footer-rule" aria-hidden="true"></div>
     <p class="footer-note">Private luxury advisory — curated pieces, personal guidance, discreet service. By appointment.</p>
-    <nav class="footer-nav" aria-label="Collections">
-      <a href="range.html?c=bags">Bags</a><span>·</span>
-      <a href="range.html?c=watches">Timepieces</a><span>·</span>
-      <a href="range.html?c=headwear">Headwear</a><span>·</span>
-      <a href="range.html?c=eyewear">Eyewear</a><span>·</span>
+    <nav class="footer-nav" id="footerNav" aria-label="Collections">
       <a href="advisory.html">The Advisory</a>
     </nav>
     <span class="footer-copy">© A.z — By Appointment · Curated personally, piece by piece</span>

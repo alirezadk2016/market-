@@ -42,6 +42,41 @@
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
+  /* ---- The vitrine wall, the footer links and the count all come from the
+          collection registry, so nothing has to be edited by hand when a
+          collection is added or removed ---- */
+  (function () {
+    if (typeof RANGES === "undefined") return;
+    const keys = Object.keys(RANGES);
+    const href = (k) => RANGES[k].href || ("range.html?c=" + k);
+    const short = (k) => RANGES[k].title.replace(/^The /, "");
+
+    const wall = document.getElementById("vitWall");
+    if (wall) {
+      wall.innerHTML = keys.map((k) => {
+        const r = RANGES[k];
+        const cover = r.cover || (r.items && r.items[0] && r.items[0].variants
+          && r.items[0].variants[0] && r.items[0].variants[0].shots[0]) || "";
+        return `<a class="vit-niche" href="${href(k)}" aria-label="${r.title} — view the collection">
+          ${cover ? `<img src="${cover}" alt="" loading="lazy" />` : ""}
+          <span class="vit-cap"><i>${r.title}</i><b>${r.blurb || "View the collection"}</b></span>
+        </a>`;
+      }).join("");
+    }
+
+    const nav = document.getElementById("footerNav");
+    if (nav) {
+      const advisory = nav.innerHTML;
+      nav.innerHTML = keys.map((k) => `<a href="${href(k)}">${short(k)}</a><span>·</span>`).join("") + advisory;
+    }
+
+    const count = document.getElementById("vitCount");
+    if (count) {
+      const words = ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
+      count.textContent = words[keys.length] || String(keys.length);
+    }
+  })();
+
   /* ---- Build gallery ---- */
   const grid = document.getElementById("grid");
 

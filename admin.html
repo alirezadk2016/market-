@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>A.z — Control Panel</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23130d0e'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-style='italic' font-size='30' fill='%23c9a879' text-anchor='middle'%3EAZ%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <div class="boot" id="boot"><span>Loading the collection…</span></div>
+
+  <header class="bar">
+    <span class="mark">A.z <em>Control Panel</em></span>
+    <span class="bar-mid" id="dirty"></span>
+    <div class="bar-actions">
+      <a class="btn ghost" href="index.html" target="_blank" rel="noopener">View site ↗</a>
+      <button class="btn ghost" id="btnDownload">Download bags.js</button>
+      <button class="btn solid" id="btnPublish">Publish</button>
+    </div>
+  </header>
+
+  <div class="shell">
+    <nav class="side">
+      <p class="side-label">Collections</p>
+      <ul class="side-list" id="navCollections"></ul>
+      <button class="side-add" id="btnAddCollection">+ New collection</button>
+      <p class="side-label">Site</p>
+      <ul class="side-list">
+        <li><button class="side-item" data-view="houses">The Houses</button></li>
+        <li><button class="side-item" data-view="settings">Publishing</button></li>
+      </ul>
+      <p class="side-foot">Everything here writes to <code>bags.js</code>. Nothing is live until you publish.</p>
+    </nav>
+
+    <main class="work" id="work"></main>
+  </div>
+
+  <!-- editing a piece happens over the top of everything -->
+  <div class="sheet" id="sheet" hidden>
+    <div class="sheet-panel" role="dialog" aria-modal="true" aria-label="Edit piece">
+      <header class="sheet-head">
+        <h2 id="sheetTitle">Piece</h2>
+        <div>
+          <button class="btn ghost" id="sheetCancel">Cancel</button>
+          <button class="btn solid" id="sheetSave">Done</button>
+        </div>
+      </header>
+      <div class="sheet-body" id="sheetBody"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

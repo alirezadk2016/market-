@@ -452,10 +452,33 @@ const EYEWEAR = [
   ]},
 ];
 
-/* collection registry — range.html and piece.html read this */
+/* ------------------------------------------------------------------
+   The collection registry. This is the single source of truth: the
+   vitrine wall on the home page, the tabs on the collection page, the
+   footer links and every piece page are all built from it, so a
+   collection added here appears everywhere on its own.
+
+   `cover` is the photograph shown in the vitrine niche.
+   `href`  is optional — a collection with its own designed page
+           (the eyewear room) points at it instead of range.html.
+   Edited by the admin panel at /admin.
+------------------------------------------------------------------- */
 const RANGES = {
-  bags:     { title: "The Bags",       lead: "Thirteen curated pieces — ask, and we advise.", items: BAGS },
-  watches:  { title: "The Timepieces", lead: "Kept close, wound privately.",                  items: WATCHES },
-  headwear: { title: "The Headwear",   lead: "Worn low, chosen well.",                        items: HATS },
-  eyewear:  { title: "The Eyewear",    lead: "Two shapes — discretion, and declaration.",     items: EYEWEAR },
+  bags: {
+    title: "The Bags", lead: "Thirteen curated pieces — ask, and we advise.",
+    blurb: "Thirteen curated pieces", cover: "images/bag-cut.webp", items: BAGS,
+  },
+  watches: {
+    title: "The Timepieces", lead: "Kept close, wound privately.",
+    blurb: "View the collection", cover: "images/vit-watch.webp", items: WATCHES,
+  },
+  headwear: {
+    title: "The Headwear", lead: "Worn low, chosen well.",
+    blurb: "View the collection", cover: "images/vit-hat.webp", items: HATS,
+  },
+  eyewear: {
+    title: "The Eyewear", lead: "Two shapes — discretion, and declaration.",
+    blurb: "View the collection", cover: "images/vit-gg.webp",
+    href: "eyewear.html", items: EYEWEAR,
+  },
 };
