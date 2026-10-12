@@ -27,7 +27,7 @@
   <style>
     /* ---------- Piece page ---------- */
     .piece { max-width: 1180px; margin: 0 auto; padding: 128px clamp(18px, 4.5vw, 48px) 40px; }
-    .crumb { display: inline-block; font-size: 10.5px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); transition: color .3s; }
+    .crumb { display: inline-block; font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); transition: color .3s; }
     .crumb:hover { color: var(--gold-2); }
     .piece-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(28px, 4.5vw, 64px); margin-top: 26px; }
     /* the gallery follows the reader, so the left column never sits empty */
@@ -49,11 +49,11 @@
     /* The subject of the page is the piece. The house is its provenance —
        named first, quietly, the way a label is read before the object. */
     .p-house { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-top: 14px;
-      font-size: 11px; letter-spacing: .26em; text-transform: uppercase; color: var(--gold-2); }
+      font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-2); }
     .p-house .brand-hint { display: inline; margin-top: 0; font-size: 8.5px; }
     .p-name { font-family: var(--serif); font-weight: 500; font-size: clamp(32px, 4.4vw, 50px); line-height: 1.08; margin-top: 8px; }
     .piece-info .swatches { margin-top: 22px; }
-    .p-color-name { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-top: 8px; }
+    .p-color-name { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-top: 8px; }
     .p-story { font-family: var(--serif); font-size: 17.5px; line-height: 1.95; color: var(--ink-2); margin-top: 26px; }
 
     .p-advisor { margin-top: 34px; text-align: center; padding: 30px 24px 24px; border: 1px solid var(--line);
@@ -63,7 +63,7 @@
     .p-specs { margin-top: 34px; border-top: 1px solid var(--line-2); }
     .p-specs .row { display: flex; gap: 18px; justify-content: space-between; align-items: baseline;
       padding: 12px 2px; border-bottom: 1px solid var(--line-2); }
-    .p-specs dt { flex: 0 0 auto; font-size: 9.5px; letter-spacing: .22em; text-transform: uppercase; color: var(--gold-2); padding-top: 2px; }
+    .p-specs dt { flex: 0 0 auto; font-size: 9.5px; letter-spacing: .13em; text-transform: uppercase; color: var(--gold-2); padding-top: 2px; }
     .p-specs dd { margin: 0; font-size: 13.5px; color: var(--ink-2); text-align: right; line-height: 1.7; }
 
     /* A.z Recommendation — trusted retailer */
@@ -73,7 +73,7 @@
       background: radial-gradient(120% 130% at 50% 0%, rgba(122,44,61,.1), transparent 72%);
     }
     .p-retail-kicker {
-      display: inline-block; font-size: 9.5px; letter-spacing: .34em; text-transform: uppercase;
+      display: inline-block; font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase;
       color: var(--gold); padding: 0 14px; background: var(--bg);
       position: relative; top: -40px; margin-bottom: -26px;
     }
@@ -83,10 +83,10 @@
       padding: 15px 38px; color: #ffffff;
       background: linear-gradient(180deg, #883349, #6d2337); border: 1px solid #6d2337;
       box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 14px 30px -12px rgba(93,31,46,.5);
-      font-size: 11px; letter-spacing: .24em; text-transform: uppercase;
+      font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
       transition: background .35s var(--ease), letter-spacing .35s var(--ease), box-shadow .35s var(--ease);
     }
-    .p-retail-btn:hover { background: linear-gradient(180deg, #96394f, #7a2c3d); letter-spacing: .3em;
+    .p-retail-btn:hover { background: linear-gradient(180deg, #96394f, #7a2c3d); letter-spacing: .16em;
       box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 18px 36px -12px rgba(93,31,46,.6); }
     .p-retail-arrow { font-size: 13px; }
     .p-retail-note { margin-top: 16px; font-size: 11px; color: var(--muted); letter-spacing: .06em; }
@@ -95,14 +95,14 @@
 
     .p-assure { margin-top: 34px; display: grid; gap: 14px; }
     .assure { border: 1px solid var(--line-2); padding: 18px 20px; }
-    .assure h4 { font-size: 10px; letter-spacing: .26em; text-transform: uppercase; color: var(--gold-2); font-weight: 400; }
+    .assure h4 { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-2); font-weight: 400; }
     .assure p { margin-top: 8px; font-size: 13.5px; line-height: 1.8; color: var(--ink-2); }
 
     .p-cta { margin-top: 32px; display: flex; gap: 14px; flex-wrap: wrap; }
 
     /* ---------- Share ---------- */
     .share { text-align: center; padding: clamp(40px, 6vw, 64px) 24px 6px; border-top: 1px solid var(--line-2); }
-    .share-kicker { font-size: 10px; letter-spacing: .34em; text-transform: uppercase; color: var(--gold); }
+    .share-kicker { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
     .share-copy { font-family: var(--serif); font-size: 17px; color: var(--ink-2); margin-top: 12px; }
     .share-row { display: flex; justify-content: center; gap: 14px; margin-top: 24px; flex-wrap: wrap; }
     .share-btn {
@@ -145,7 +145,7 @@
     .rev-file label {
       display: inline-block; cursor: pointer; padding: 0 0 4px; border: 0;
       border-bottom: 1px solid rgba(43,34,38,.2);
-      font-size: 9.5px; letter-spacing: .26em; text-transform: uppercase; color: var(--muted);
+      font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
       transition: color .3s, border-color .3s;
     }
     .rev-file label:hover { color: var(--gold-2); border-color: var(--gold); }
@@ -155,9 +155,9 @@
       padding: 15px 42px; color: #ffffff;
       background: linear-gradient(180deg, #883349, #6d2337); border: 1px solid #6d2337;
       box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 14px 30px -14px rgba(93,31,46,.5);
-      font-family: var(--sans); font-size: 11px; letter-spacing: .26em; text-transform: uppercase;
+      font-family: var(--sans); font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
       transition: background .35s var(--ease), letter-spacing .35s var(--ease); }
-    .rev-submit:hover { background: linear-gradient(180deg, #96394f, #7a2c3d); letter-spacing: .32em; }
+    .rev-submit:hover { background: linear-gradient(180deg, #96394f, #7a2c3d); letter-spacing: .16em; }
     .rev-note { text-align: center; margin-top: 12px; font-size: 10.5px; color: var(--muted); letter-spacing: .08em; }
 
     .rev-list { margin-top: 44px; display: grid; gap: 18px; }

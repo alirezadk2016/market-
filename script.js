@@ -83,7 +83,7 @@
         const cover = r.cover || (r.items && r.items[0] && r.items[0].variants
           && r.items[0].variants[0] && r.items[0].variants[0].shots[0]) || "";
         return `<a class="vit-niche" href="${href(k)}" aria-label="${r.title} — view the collection">
-          ${cover ? `<img src="${cover}" alt="" loading="lazy" />` : ""}
+          <span class="vit-shot">${cover ? `<img src="${cover}" alt="" loading="lazy" />` : ""}</span>
           <span class="vit-cap"><i>${r.title}</i><b>${caption(r)}</b></span>
         </a>`;
       }).join("");
@@ -370,37 +370,27 @@
     }, { passive: true });
   })();
 
-  /* ---- The Vitrine — wheel over a piece to draw it closer ---- */
+  /* ---- The Vitrine ----
+     The wheel used to zoom a niche, which meant the page stopped scrolling
+     whenever the pointer crossed one. A piece comes forward on approach
+     instead, and the page is never taken hostage. */
   document.querySelectorAll(".vit-niche").forEach((niche) => {
     const img = niche.querySelector("img");
     if (!img) return;
-    let z = 1, target = 1, raf = 0;
-    const loop = () => {
-      z += (target - z) * 0.16;
-      img.style.setProperty("--z", z.toFixed(3));
-      img.style.transform = "translateX(-50%) scale(" + z.toFixed(3) + ")";
-      if (Math.abs(target - z) > 0.002) raf = requestAnimationFrame(loop);
-      else raf = 0;
-    };
-    const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
-    niche.addEventListener("wheel", (e) => {
-      e.preventDefault();
-      target = Math.max(1, Math.min(2.7, target + (e.deltaY < 0 ? 0.22 : -0.22)));
-      niche.classList.toggle("zoomed", target > 1.06);
-      kick();
-    }, { passive: false });
-    /* the zoom leans toward wherever the pointer rested before it began
-       (img sits centred at 72% width, 29%–87% height of the niche) */
-    niche.addEventListener("pointermove", (e) => {
-      if (target > 1.01) return;
-      const r = niche.getBoundingClientRect();
-      const nx = (e.clientX - r.left) / r.width, ny = (e.clientY - r.top) / r.height;
-      const ox = Math.max(0, Math.min(100, (nx - 0.14) / 0.72 * 100));
-      const oy = Math.max(0, Math.min(100, (ny - 0.29) / 0.58 * 100));
-      img.style.transformOrigin = ox.toFixed(1) + "% " + oy.toFixed(1) + "%";
+    niche.addEventListener("pointerenter", () => {
+      niche.classList.add("zoomed");
+      img.style.setProperty("--z", "1.06");
     });
-    niche.addEventListener("mouseleave", () => {
-      target = 1; niche.classList.remove("zoomed"); kick();
+    niche.addEventListener("pointermove", (e) => {
+      const r = niche.getBoundingClientRect();
+      const ox = Math.max(0, Math.min(100, ((e.clientX - r.left) / r.width) * 100));
+      const oy = Math.max(0, Math.min(100, ((e.clientY - r.top) / r.height) * 100));
+      img.style.setProperty("--ox", ox.toFixed(1) + "%");
+      img.style.setProperty("--oy", oy.toFixed(1) + "%");
+    });
+    niche.addEventListener("pointerleave", () => {
+      niche.classList.remove("zoomed");
+      img.style.setProperty("--z", "1");
     });
   });
 

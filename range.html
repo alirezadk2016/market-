@@ -26,12 +26,18 @@
   <link rel="stylesheet" href="styles.css" />
   <style>
     /* ---------- Collection page ---------- */
-    .range { max-width: 1180px; margin: 0 auto; padding: 128px clamp(18px, 4.5vw, 48px) 90px; }
-    .range-head { text-align: center; margin-bottom: 8px; }
-    .range-kicker { font-size: 10px; letter-spacing: .34em; text-transform: uppercase; color: var(--gold); }
-    .range-title { font-family: var(--serif); font-weight: 500; font-size: clamp(38px, 5.5vw, 62px); color: var(--ink); margin-top: 14px; }
-    .range-lead { margin-top: 12px; font-size: 10.5px; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); }
-    .range .grid { margin-top: 48px; }
+    .range { max-width: 1320px; margin: 0 auto; padding: 140px clamp(18px, 5vw, 60px) 90px; }
+    /* headed to the left, on a rule, as every other page is */
+    .range-head { margin-bottom: 8px; padding-top: 26px; border-top: 1px solid var(--line-2);
+      display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 20px; }
+    .range-head .range-kicker { grid-column: 2; grid-row: 1 / span 2; align-self: start; padding-top: 8px; }
+    .range-head .range-title, .range-head .range-lead { grid-column: 1; }
+    .range-head .range-nav { grid-column: 1 / -1; }
+    .range-kicker { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
+    .range-title { font-family: var(--serif); font-weight: 500; font-size: clamp(44px, 6.4vw, 86px);
+      line-height: .98; letter-spacing: -.028em; color: var(--ink); margin-top: 16px; }
+    .range-lead { margin-top: 18px; font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+    .range .grid { margin-top: 52px; max-width: none; }
     /* cut-out objects (watches, hats…) sit whole in the frame, never cropped */
     .grid--objects .card-media img { object-fit: contain; padding: 14% 12%; }
     /* an empty collection is an appointment, not an absence */
@@ -42,11 +48,13 @@
     .range-soon .btn { margin-top: 30px; }
     /* The collections are read as a line of words, separated by hairlines and
        marked by a fine rule — four boxed buttons looked like a toolbar. */
-    .range-nav { display: flex; justify-content: center; align-items: center;
-      flex-wrap: wrap; margin-top: 40px;
+    .range-nav { display: flex; justify-content: flex-start; align-items: center;
+      flex-wrap: wrap; margin-top: 44px;
       border-block: 1px solid rgba(43,34,38,.1); padding: 4px 0; }
+    .range-nav a:first-child { padding-left: 0; }
+    .range-nav a:first-child::after { left: 0; }
     .range-nav a { position: relative; padding: 14px clamp(16px, 2.4vw, 30px);
-      font-size: 10px; letter-spacing: .26em; text-transform: uppercase; color: var(--muted);
+      font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
       transition: color .35s var(--ease); }
     .range-nav a + a::before {
       content: ""; position: absolute; left: 0; top: 50%; width: 1px; height: 12px; margin-top: -6px;

@@ -75,31 +75,27 @@
 
     /* ---- the copy ---- */
     .room-copy { max-width: 420px; }
-    .room-kicker { font-size: 10px; letter-spacing: .34em; text-transform: uppercase; color: #c9a879; }
+    .room-kicker { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: #c9a879; }
     .room-title {
-      font-family: var(--serif); font-weight: 500; line-height: 1.04;
-      font-size: clamp(38px, 5vw, 66px); color: #f0e8dc; margin-top: 18px;
+      font-family: var(--serif); font-weight: 500; line-height: 1;
+      font-size: clamp(40px, 5.6vw, 76px); letter-spacing: -.026em;
+      color: #f0e8dc; margin-top: 20px;
     }
     .room-title em { color: #c9a879; }
-    .room-rule { position: relative; width: 150px; height: 1px; margin: 26px 0 24px;
-      background: linear-gradient(90deg, transparent 0, rgba(201,168,121,.5) 26%, rgba(201,168,121,.5) 40%, transparent 44%,
-        transparent 56%, rgba(201,168,121,.5) 60%, rgba(201,168,121,.5) 74%, transparent 100%); }
-    .room-rule::after { content: "\2726"; position: absolute; left: 50%; top: 50%;
-      transform: translate(-50%,-50%); color: #c9a879; font-size: 12px; line-height: 1; }
+    .room-rule { width: 64px; height: 1px; margin: 32px 0 30px; background: rgba(201,168,121,.7); }
     .room-sub { color: rgba(240,232,220,.66); font-size: 15.5px; line-height: 1.95; }
     .room-meta { margin-top: 30px; display: grid; gap: 11px; }
     .room-meta div { display: flex; gap: 14px; align-items: baseline; font-size: 12px; }
-    .room-meta span { flex: 0 0 96px; font-size: 9px; letter-spacing: .28em; text-transform: uppercase; color: rgba(201,168,121,.8); }
+    .room-meta span { flex: 0 0 96px; font-size: 9px; letter-spacing: .15em; text-transform: uppercase; color: rgba(201,168,121,.8); }
     .room-meta b { font-weight: 400; color: rgba(240,232,220,.78); }
     .room-actions { margin-top: 34px; display: flex; gap: 12px; flex-wrap: wrap; }
     .room-actions .btn { padding: 15px 26px; }
-    .room-actions .btn--solid {
-      background: linear-gradient(180deg, #d6b98e, #bd9c6c); color: #1a1216; border: 1px solid rgba(255,255,255,.16);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 16px 34px -12px rgba(0,0,0,.6);
-    }
-    .room-actions .btn--solid:hover { background: linear-gradient(180deg, #e1c79f, #caa877); letter-spacing: .3em; }
-    .room-actions .btn--ghost { border: 1px solid rgba(240,232,220,.34); color: #f0e8dc; }
-    .room-actions .btn--ghost:hover { border-color: #c9a879; color: #c9a879; letter-spacing: .3em; }
+    .room-actions .btn--solid { background: #e8dbc4; color: #1a1216; border-color: #e8dbc4; }
+    .room-actions .btn--solid::before { background: #fff3dd; }
+    .room-actions .btn--solid:hover { border-color: #fff3dd; }
+    .room-actions .btn--ghost { border-color: rgba(240,232,220,.3); color: #f0e8dc; }
+    .room-actions .btn--ghost::before { background: #f0e8dc; }
+    .room-actions .btn--ghost:hover { color: #130d0e; border-color: #f0e8dc; }
 
     /* ---- the campaign plate ---- */
     .campaign {
@@ -153,7 +149,7 @@
       display: flex; align-items: baseline; justify-content: flex-end; gap: 12px; flex-wrap: wrap;
       margin-top: 30px; transform: translateZ(18px);
     }
-    .camp-cap .cc-house { font-size: 9.5px; letter-spacing: .34em; text-transform: uppercase; color: #c9a879; }
+    .camp-cap .cc-house { font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; color: #c9a879; }
     .camp-cap .cc-piece { font-family: var(--serif); font-style: italic; font-size: 19px; color: rgba(240,232,220,.8); }
 
     /* the object itself, set on paper against the dark — campaign and piece,
@@ -174,22 +170,27 @@
     .cp-shot img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 64%;
       display: block; transform: scale(1.62); filter: saturate(.96) contrast(1.05); }
     .cp-txt { display: flex; flex-direction: column; gap: 3px; }
-    .cp-txt b { font-weight: 400; font-size: 8.5px; letter-spacing: .28em; text-transform: uppercase; color: #8a6a3a; }
+    .cp-txt b { font-weight: 400; font-size: 8.5px; letter-spacing: .15em; text-transform: uppercase; color: #8a6a3a; }
     .cp-txt i { font-family: var(--serif); font-style: italic; font-size: 16px; color: #2b2226; }
 
     /* ---- the collection, opening below ---- */
     .room-scroll {
       position: absolute; left: 0; right: 0; bottom: 26px; z-index: 4; text-align: center;
-      font-size: 9.5px; letter-spacing: .3em; text-transform: uppercase; color: rgba(240,232,220,.42);
+      font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; color: rgba(240,232,220,.42);
     }
     .room-scroll::after { content: ""; display: block; width: 1px; height: 28px;
       background: linear-gradient(#c9a879, transparent); margin: 12px auto 0; }
-    .ew-collection { padding: clamp(70px, 9vw, 110px) clamp(18px, 4.5vw, 48px) 90px; max-width: 1180px; margin: 0 auto; }
-    .ew-head { text-align: center; margin-bottom: 50px; }
-    .ew-head .adv-kicker, .ew-kicker { font-size: 10px; letter-spacing: .34em; text-transform: uppercase; color: var(--gold); }
-    .ew-title { font-family: var(--serif); font-weight: 500; font-size: clamp(30px, 4.6vw, 46px); color: var(--ink); margin-top: 14px; }
+    .ew-collection { padding: clamp(70px, 9vw, 110px) clamp(18px, 5vw, 60px) 90px; max-width: 1320px; margin: 0 auto; }
+    /* headed to the left, on a rule, as every other section is */
+    .ew-head { margin-bottom: 50px; padding-top: 26px; border-top: 1px solid var(--line-2);
+      display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 20px; }
+    .ew-head .ew-kicker { grid-column: 2; grid-row: 1 / span 2; align-self: start; padding-top: 8px; }
+    .ew-head .ew-title, .ew-head .ew-lead { grid-column: 1; }
+    .ew-head .adv-kicker, .ew-kicker { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
+    .ew-title { font-family: var(--serif); font-weight: 500; font-size: clamp(34px, 5vw, 58px);
+      line-height: 1; letter-spacing: -.022em; color: var(--ink); margin-top: 14px; }
     .ew-title em { color: var(--gold-2); }
-    .ew-lead { margin-top: 12px; font-size: 10.5px; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); }
+    .ew-lead { margin-top: 12px; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
     .grid--objects .card-media img { object-fit: contain; padding: 14% 12%; }
 
     @media (max-width: 940px) {

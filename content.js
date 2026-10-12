@@ -57,19 +57,19 @@ const SITE = {
   },
 
   collection: {
-    index: "I",
+    index: "01",
     title: "The Collection",
     lead: "A sample of what we source.",
   },
 
   service: {
-    index: "II",
+    index: "02",
     title: "The Service",
     lead: "How A.z works.",
   },
 
   enquire: {
-    index: "III",
+    index: "03",
     title: "Considering a piece?<br /><em>Let us advise you.</em>",
     sub: "Private consultations by appointment. Tell us what you are drawn to — we will guide you to the right piece and source it for you.",
     whatsapp: "",
@@ -79,11 +79,11 @@ const SITE = {
 
   /* the three columns under "The Service" */
   pillars: [
-    { num: "i", title: "Curated, Not Sold",
+    { num: "01", title: "Curated, Not Sold",
       text: "We select the finest across the great houses — you receive taste and honesty, never a sales pitch." },
-    { num: "ii", title: "Personal Guidance",
+    { num: "02", title: "Personal Guidance",
       text: "Speak with an advisor who learns your life and wardrobe, and points you to what genuinely suits you." },
-    { num: "iii", title: "By Appointment",
+    { num: "03", title: "By Appointment",
       text: "A discreet, old-money sensibility and time taken for you. Bags today; footwear and fragrance to follow." },
   ],
   houseCta: "How We Help — The Full Method",
@@ -113,11 +113,11 @@ const SITE = {
     methodKicker: "The Method",
     methodTitle: "Three quiet steps. <em>No noise.</em>",
     steps: [
-      { num: "i.", title: "The Conversation",
+      { num: "01", title: "The Conversation",
         text: "A private exchange, at your pace. We listen to how you live — your work, your evenings, the character you carry — until we understand what your wardrobe should be saying on your behalf." },
-      { num: "ii.", title: "The Curation",
+      { num: "02", title: "The Curation",
         text: "We walk the great houses for you and return with a shortlist measured against one thing only: your character. Never a trend, never a sales target — pieces that will still be right in ten years." },
-      { num: "iii.", title: "The Companionship",
+      { num: "03", title: "The Companionship",
         text: "We stay beside you through the purchase and after it — trusted retailers, honest pricing counsel, care of the piece, and the next piece only when it truly belongs. You are advised for life, not for a sale." },
     ],
     quote: "\u201c You will not leave with more things.<br /><em>You will leave with the right ones.</em> \u201d",
