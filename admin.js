@@ -34,7 +34,10 @@
 
   let state = null;          // { brands, ranges: [...], images: { path: dataURL } }
   let view = { kind: "collection", key: null };
-  let conf = load(CONF) || { owner: "", repo: "", branch: "", token: "" };
+  /* the repository this panel belongs to — filled in so the only thing
+     left to supply is the token */
+  const REPO = { owner: "alirezadk2016", repo: "market-", branch: "", token: "" };
+  let conf = Object.assign({}, REPO, load(CONF) || {});
 
   function load(k) { try { return JSON.parse(localStorage.getItem(k) || "null"); } catch (e) { return null; } }
   function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
@@ -53,11 +56,15 @@
      not a safety net — it is a speed bump you learn to click through. Every
      destructive action puts the whole shape on a stack first. */
   const history = [];
-  function remember(label) {
-    history.push({ label: label, snap: JSON.stringify({ brands: state.brands, ranges: state.ranges, site: state.site }) });
+  function snapNow() {
+    return JSON.stringify({ brands: state.brands, ranges: state.ranges, site: state.site });
+  }
+  function push(label, snap) {
+    history.push({ label: label, snap: snap });
     if (history.length > 30) history.shift();
     return label;
   }
+  function remember(label) { return push(label, snapNow()); }
   function undo() {
     const last = history.pop();
     if (!last) { toast("Nothing to undo.", "bad"); return; }
@@ -175,13 +182,14 @@
     const ul = $("#navCollections");
     ul.innerHTML = "";
     state.ranges.forEach((r) => {
-      const li = el("li");
+      const li = el("li", "nav-row");
       const b = el("button", "side-item" + (view.kind === "collection" && view.key === r.key ? " on" : ""),
         "<b>" + esc(r.title) + "</b><span>" + r.items.length + "</span>");
       b.onclick = () => { view = { kind: "collection", key: r.key }; renderNav(); renderView(); };
       li.appendChild(b);
       /* the order here is the order on the vitrine wall and in the footer */
       const ord = el("span", "ord");
+      ord.title = "Move this collection up or down the vitrine wall";
       [["↑", -1], ["↓", 1]].forEach(([t, d]) => {
         const mv = el("button", "btn ghost small", t);
         mv.onclick = (ev) => {
@@ -261,13 +269,27 @@
     const add = el("button", "btn solid", "+ Add a piece");
     add.onclick = () => { r.items.push(blankPiece()); touched(); renderNav(); renderView(); editPiece(r, r.items.length - 1); };
     acts.appendChild(add);
-    const del = el("button", "btn danger", "Delete collection");
-    del.onclick = () => deleteCollection(r);
-    acts.appendChild(del);
     head.appendChild(acts);
     w.appendChild(head);
 
-    if (!r.items.length) { w.appendChild(el("div", "empty", "Nothing in this collection yet.")); return; }
+    /* kept to the foot of the page: a collection is deleted perhaps once,
+       and a piece is added every week — they should not sit side by side */
+    const dangerZone = () => {
+      const zone = el("div", "danger-zone");
+      zone.appendChild(el("p", null,
+        "<b>Delete this collection.</b> " + r.items.length + " piece" +
+        (r.items.length === 1 ? "" : "s") + " would go with it, and every link to " +
+        "<code>" + esc(r.key) + "</code> would stop working. Nothing is live until you publish."));
+      const del = el("button", "btn danger", "Delete collection");
+      del.onclick = () => deleteCollection(r);
+      zone.appendChild(del);
+      w.appendChild(zone);
+    };
+
+    if (!r.items.length) {
+      w.appendChild(el("div", "empty", "Nothing in this collection yet."));
+      dangerZone(); return;
+    }
 
     /* thirteen pieces is already too many to scan */
     const find = el("div", "field");
@@ -296,6 +318,7 @@
     }
     fi.oninput = paint;
     paint();
+    dangerZone();
   }
 
   function pieceCard(r, p, i) {
@@ -556,7 +579,18 @@
     const bad = found.filter((f) => f.bad);
     w.appendChild(el("h1", null, "What needs attention"));
     if (!found.length) {
-      w.appendChild(el("p", "lead", "Nothing. Every piece has a house, a name and a photograph; every collection has somewhere to go."));
+      /* an all-clear should read as a confirmation, not as an empty page */
+      const ok = el("div", "all-clear");
+      ok.appendChild(el("span", "ac-mark", "\u2726"));
+      ok.appendChild(el("h2", null, "Nothing to attend to"));
+      ok.appendChild(el("p", null,
+        "Every piece carries a house, a name and a photograph. Every collection has "
+        + "somewhere to go, every house a panel, and there is a way to reach you. "
+        + "The site is ready to publish."));
+      const go = el("button", "btn solid", "Publish");
+      go.onclick = () => $("#btnPublish").click();
+      ok.appendChild(go);
+      w.appendChild(ok);
       return;
     }
     w.appendChild(el("p", "lead",
@@ -842,8 +876,12 @@
     w.appendChild(el("h1", null, "Scene markers"));
     w.appendChild(el("p", "lead", "The points a visitor can touch on the salon photograph. Click anywhere on the photograph below to move the marker you have selected, or to place a new one."));
 
-    const stage = el("div");
-    stage.style.cssText = "position:relative;width:min(420px,100%);margin-bottom:22px;border:1px solid var(--line);border-radius:3px;overflow:hidden;cursor:crosshair";
+    /* the photograph and the list stand side by side: the point of placing a
+       marker by eye is to see the list change as you move it */
+    const split = el("div", "mk-split");
+    w.appendChild(split);
+
+    const stage = el("div", "mk-stage");
     const img = el("img");
     img.src = resolve(siteGet("hero.photo") || "images/look.webp");
     img.style.cssText = "display:block;width:100%";
@@ -868,11 +906,11 @@
       list[sel].x = x; list[sel].y = y;
       touched(); dots(); refreshRows();
     };
-    w.appendChild(stage);
+    split.appendChild(stage);
     dots();
 
     const rows = el("div", "rowlist");
-    w.appendChild(rows);
+    split.appendChild(rows);
 
     function refreshRows() {
       rows.innerHTML = "";
@@ -986,15 +1024,22 @@
 
     Object.keys(state.brands).forEach((name) => {
       const h = state.brands[name];
-      const box = el("div", "variant");
-      const head = el("div", "variant-head");
+      /* Nine houses laid open at once made this page five thousand pixels
+         long. Each is folded shut until it is wanted, and says enough while
+         closed to be recognised. */
+      const box = el("details", "variant fold");
+      const head = el("summary", "variant-head");
       head.appendChild(el("h2", null, esc(name)));
+      const sum = el("span", "fold-sum",
+        [h.founded, h.origin].filter(Boolean).map(esc).join(" · "));
+      head.appendChild(sum);
       const sp = el("span"); sp.style.flex = "1"; head.appendChild(sp);
       /* Renaming has to carry the pieces with it. A house is joined to its
          pieces by the name written on them and nothing else, so renaming it
          here alone would silently orphan every one of them. */
       const ren = el("button", "btn ghost small", "Rename");
-      ren.onclick = () => {
+      ren.onclick = (ev) => {
+        ev.preventDefault(); ev.stopPropagation();
         const next = prompt("Rename this house. Every piece written “" + name + "” will be updated too.", name);
         if (!next || next === name) return;
         if (state.brands[next]) { toast("A house called “" + next + "” already exists.", "bad"); return; }
@@ -1010,7 +1055,8 @@
       };
       head.appendChild(ren);
       const del = el("button", "btn danger small", "Remove");
-      del.onclick = () => {
+      del.onclick = (ev) => {
+        ev.preventDefault(); ev.stopPropagation();
         const used = state.ranges.reduce((a, r) => a + r.items.filter((p) => p.name === name).length, 0);
         if (!confirm("Remove the house “" + name + "”?" +
           (used ? "\n\n" + used + " piece" + (used > 1 ? "s" : "") + " still name it — they will keep the name but lose the panel behind it." : ""))) return;
@@ -1045,7 +1091,7 @@
     two.appendChild(textField("Repository", conf.repo, (v) => { conf.repo = v.trim(); save(CONF, conf); }));
     g.appendChild(two);
     g.appendChild(textField("Branch", conf.branch, (v) => { conf.branch = v.trim(); save(CONF, conf); }, "The branch Vercel deploys from. Leave empty to use the repository's default."));
-    g.appendChild(textField("Token", conf.token, (v) => { conf.token = v.trim(); save(CONF, conf); },
+    g.appendChild(secretField("Token", conf.token, (v) => { conf.token = v.trim(); save(CONF, conf); },
       "A fine-grained personal access token: github.com → Settings → Developer settings → Fine-grained tokens."));
     w.appendChild(g);
 
@@ -1067,15 +1113,38 @@
     w.appendChild(el("p", "lead",
       state.dirty ? "There are unpublished changes" + (n ? ", including " + n + " photograph" + (n > 1 ? "s" : "") + " not yet uploaded" : "") + "."
                   : "Everything here matches what is published."));
-    const reset = el("button", "btn danger", "Discard the draft and reload from the site");
+    const zone = el("div", "danger-zone");
+    zone.appendChild(el("p", null,
+      "<b>Discard the draft.</b> Everything edited here since the last publish is " +
+      "thrown away and the panel reloads from the live site. There is no undo for this one."));
+    const reset = el("button", "btn danger", "Discard the draft");
     reset.onclick = () => {
       if (!confirm("Throw away every unpublished change?")) return;
       localStorage.removeItem(DRAFT); location.reload();
     };
-    w.appendChild(reset);
+    zone.appendChild(reset);
+    w.appendChild(zone);
   }
 
   /* --------------------------------------------------------------- fields */
+  /* One undo step per visit to a field, not one per keystroke: the stack is
+     armed when you arrive and spent on the first character you change, so
+     ⌘Z puts back what the field said before you touched it. */
+  function trackEdits(node, label) {
+    /* the snapshot is taken on arrival, not on the first keystroke: the
+       field's own handler has already written that character into the state
+       by the time this one runs, and the undo would land one letter short */
+    let before = null;
+    node.addEventListener("focus", () => { before = snapNow(); });
+    node.addEventListener("input", () => {
+      if (before === null) return;
+      push("Edit to " + label, before);
+      before = null;
+    });
+    node.addEventListener("blur", () => { before = null; });
+    return node;
+  }
+
   /* `commit` fields apply when you leave them, not on every keystroke — for the
      ones whose handler re-renders the page and would otherwise pull the field
      out from under you halfway through a word. */
@@ -1085,7 +1154,28 @@
     const i = el("input"); i.type = "text"; i.value = value == null ? "" : value;
     if (commit) i.onchange = () => onInput(i.value);
     else i.oninput = () => onInput(i.value);
-    f.appendChild(i);
+    f.appendChild(trackEdits(i, label));
+    if (hint) f.appendChild(el("p", "hint", hint));
+    return f;
+  }
+
+  /* a token should not sit in plain sight over someone's shoulder */
+  function secretField(label, value, onInput, hint) {
+    const f = el("div", "field secret");
+    f.appendChild(el("label", null, esc(label)));
+    const wrap = el("div", "secret-wrap");
+    const i = el("input"); i.type = "password"; i.autocomplete = "off"; i.spellcheck = false;
+    i.value = value == null ? "" : value;
+    i.oninput = () => onInput(i.value);
+    const eye = el("button", "secret-eye", "Show");
+    eye.type = "button";
+    eye.onclick = () => {
+      const shown = i.type === "text";
+      i.type = shown ? "password" : "text";
+      eye.textContent = shown ? "Show" : "Hide";
+    };
+    wrap.appendChild(i); wrap.appendChild(eye);
+    f.appendChild(wrap);
     if (hint) f.appendChild(el("p", "hint", hint));
     return f;
   }
@@ -1095,7 +1185,7 @@
     f.appendChild(el("label", null, esc(label)));
     const t = el("textarea"); t.value = value == null ? "" : value;
     t.oninput = () => onInput(t.value);
-    f.appendChild(t);
+    f.appendChild(trackEdits(t, label));
     return f;
   }
 
