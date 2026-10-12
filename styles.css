@@ -98,20 +98,23 @@ p { text-wrap: pretty; }
   transition: opacity .5s var(--ease), visibility .5s;
 }
 .intro.done { opacity: 0; visibility: hidden; }
+/* A second visit in the same session walks straight in — the overture is a
+   greeting, not a toll gate. */
+html.no-overture .intro { display: none; }
 /* CSS safety net: hide the curtain even if JS never runs */
-.intro { animation: introFail 1ms linear 3.9s forwards; }
+.intro { animation: introFail 1ms linear 2.3s forwards; }
 @keyframes introFail { to { opacity: 0; visibility: hidden; } }
 .intro.done { animation: none; }
 .intro-word { display: block; font-family: var(--serif); font-weight: 500; font-size: clamp(38px, 7.5vw, 74px); letter-spacing: .34em; padding-inline-start: .34em; color: var(--ink);
-  opacity: 0; animation: introIn 1s var(--ease) .15s forwards; }
-.intro-line { display: block; width: 0; height: 1px; background: #c9a879; margin: 22px auto 18px; animation: introLine 1s var(--ease) 2.2s forwards; }
-.intro-sub { display: block; font-size: 11px; color: #c9a879; opacity: 0; animation: introIn .9s var(--ease) 2.35s forwards; }
+  opacity: 0; animation: introIn 1s var(--ease) .1s forwards; }
+.intro-line { display: block; width: 0; height: 1px; background: #c9a879; margin: 22px auto 18px; animation: introLine .7s var(--ease) .72s forwards; }
+.intro-sub { display: block; font-size: 11px; color: #c9a879; opacity: 0; animation: introIn .7s var(--ease) .82s forwards; }
 @keyframes introIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 @keyframes introLine { from{width:0} to{width:120px} }
 
 /* The signature draws itself on, as if being signed by hand */
 .intro-sig { position: relative; display: inline-block; line-height: 0; }
-.intro-logo { position: relative; z-index: 1; clip-path: inset(0 100% 0 0); animation: inkReveal 1.8s linear .3s both; }
+.intro-logo { position: relative; z-index: 1; clip-path: inset(0 100% 0 0); animation: inkReveal 1.05s linear .12s both; }
 /* faint ghost of the finished signature — so the strokes are visible (dark) before they light up */
 .intro-logo-ghost { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .2; z-index: 0; }
 
@@ -121,7 +124,7 @@ p { text-wrap: pretty; }
   margin: -15px 0 0 -15px; border-radius: 50%; z-index: 2;
   pointer-events: none; opacity: 0; mix-blend-mode: screen;
   background: radial-gradient(circle, rgba(224,196,142,.95) 0%, rgba(201,168,121,.5) 36%, transparent 70%);
-  animation: nibPath 1.8s linear .3s both;
+  animation: nibPath 1.05s linear .12s both;
 }
 /* Glow travels along the signature strokes, lighting them dark to bright */
 @keyframes nibPath {
@@ -261,17 +264,22 @@ p { text-wrap: pretty; }
     radial-gradient(116% 80% at 50% 41%, #3a2329 0%, #211416 45%, #130d0e 76%),
     #130d0e;
 }
-/* melt the stage into the cream body below */
+/* Melt the stage into the cream body below. A straight ramp over this much
+   height reads as grey fog laid on the dark; the stops hold the stage almost
+   untouched and let the cream arrive late, so the two rooms meet cleanly. */
 .hero::after {
-  content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 13%; z-index: 4;
-  background: linear-gradient(180deg, transparent, var(--bg)); pointer-events: none;
+  content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 10%; z-index: 4;
+  background: linear-gradient(180deg,
+    rgba(245,239,232,0) 0%, rgba(245,239,232,.015) 48%, rgba(245,239,232,.07) 68%,
+    rgba(245,239,232,.26) 83%, rgba(245,239,232,.62) 93%, var(--bg) 100%);
+  pointer-events: none;
 }
 /* spotlight pooled behind the piece */
 .hero-glow {
   position: absolute; left: 50%; top: 46%; width: 96vmin; height: 96vmin; z-index: 0;
   transform: translate(-50%, -50%) translate(calc(var(--mx) * 12px), calc(var(--my) * 10px));
   background: radial-gradient(circle, rgba(216,178,126,.26) 0%, rgba(133,52,66,.14) 32%, transparent 64%);
-  pointer-events: none; animation: glowIn 2.6s var(--ease) 2.9s both;
+  pointer-events: none; animation: glowIn 2.2s var(--ease) calc(var(--overture) + .1s) both;
 }
 @keyframes glowIn { from { opacity: 0; } to { opacity: 1; } }
 /* soft edges around the typographic stage */
@@ -300,7 +308,6 @@ p { text-wrap: pretty; }
 
 /* the scene — the salon photograph, explorable */
 .hero-scene { position: relative; z-index: 5; }
-.hero .hero-scene { animation-delay: 3.4s; }
 .hero-scene .look-flip { width: clamp(250px, 27vw, 370px); }
 .hero-scene .look-stage {
   box-shadow: 0 46px 100px rgba(0,0,0,.55), 0 8px 24px rgba(0,0,0,.3);
@@ -308,7 +315,6 @@ p { text-wrap: pretty; }
 }
 .scene-hint { margin-top: 38px; text-align: center; font-size: 9.5px; letter-spacing: .28em;
   text-transform: uppercase; color: rgba(240,232,220,.42); }
-.hero .scene-hint { animation-delay: 3.9s; }
 /* base buttons on paper (collection pages, invitations) */
 .btn { display: inline-block; padding: 15px 38px; font-size: 11px; letter-spacing: .24em; text-transform: uppercase;
   transition: background .45s var(--ease), color .45s var(--ease), letter-spacing .45s var(--ease), border-color .45s; }
@@ -331,16 +337,21 @@ p { text-wrap: pretty; }
 .hero-scroll { position: absolute; inset-block-end: 26px; left: 0; right: 0; z-index: 5; text-align: center; font-size: 9.5px; color: rgba(43,34,38,.5); }
 .hero-scroll::after { content: ""; display: block; width: 1px; height: 26px; background: linear-gradient(rgba(122,44,61,.6), transparent); margin: 10px auto 0; }
 
-/* Hero entrance — pure CSS so copy can never stay hidden, even if JS misfires */
-.hero .reveal { animation: heroRise 1.1s var(--ease) both; }
-.hero .hero-eyebrow { animation-delay: 3.05s; }
-.hero .hero-title   { animation-delay: 3.18s; }
-.hero .hero-rule    { animation-delay: 3.5s; }
-.hero .hero-sub     { animation-delay: 3.6s; }
-.hero .hero-actions { animation-delay: 3.7s; }
-.hero .hero-scene   { animation-delay: 3.45s; }
-.hero .scene-hint   { animation-delay: 3.95s; }
-.hero .hero-scroll  { animation-delay: 3.9s; }
+/* Hero entrance — pure CSS so copy can never stay hidden, even if JS misfires.
+   --overture is how long the curtain is still in front of the stage; when the
+   curtain is skipped it falls to zero and the hero opens immediately. */
+.hero { --overture: 1.12s; }
+html.no-overture .hero { --overture: 0s; }
+.hero .reveal { animation: heroRise 1.05s var(--ease) both; }
+.hero .hero-eyebrow { animation-delay: calc(var(--overture) + .04s); }
+.hero .hero-title   { animation-delay: calc(var(--overture) + .14s); }
+.hero .hero-rule    { animation-delay: calc(var(--overture) + .40s); }
+.hero .hero-sub     { animation-delay: calc(var(--overture) + .48s); }
+.hero .hero-actions { animation-delay: calc(var(--overture) + .58s); }
+.hero .hero-sign    { animation-delay: calc(var(--overture) + .70s); }
+.hero .hero-scene   { animation-delay: calc(var(--overture) + .26s); }
+.hero .scene-hint   { animation-delay: calc(var(--overture) + .74s); }
+.hero .hero-scroll  { animation-delay: calc(var(--overture) + .80s); }
 @keyframes heroRise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
 
 /* ---------- Hero gold dust ---------- */
@@ -474,27 +485,42 @@ p { text-wrap: pretty; }
 /* markers — a white point in a slow gold breath */
 .spot { position: absolute; left: var(--x); top: var(--y); width: 44px; height: 44px; margin: -22px; padding: 0; border: 0; background: none; cursor: pointer; z-index: 3; transition: opacity .5s var(--ease); }
 .spot i { position: absolute; inset: 0; display: block; }
+/* A marker is a pearl set in gold, not a white dot: flat white at this size
+   reads as dust on the print. The core carries a highlight, the ring is warm,
+   and the halo breathes in gold rather than flashing in white. */
 .spot i::before {
-  content: ""; position: absolute; left: 50%; top: 50%; width: 9px; height: 9px; margin: -4.5px;
-  border-radius: 50%; background: #fff;
-  box-shadow: 0 0 0 1px rgba(201,168,121,.9), 0 2px 10px rgba(0,0,0,.45);
-  transition: background .35s var(--ease);
+  content: ""; position: absolute; left: 50%; top: 50%; width: 7.5px; height: 7.5px; margin: -3.75px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fffdf8 0%, #f6ead6 52%, #e2cba6 100%);
+  box-shadow: 0 0 0 1px rgba(201,168,121,.85), 0 0 10px rgba(201,168,121,.35), 0 2px 8px rgba(0,0,0,.42);
+  transition: transform .4s var(--ease), box-shadow .4s var(--ease);
 }
 .spot i::after {
-  content: ""; position: absolute; left: 50%; top: 50%; width: 36px; height: 36px; margin: -18px;
-  border-radius: 50%; border: 1px solid rgba(255,255,255,.9);
-  animation: spotPulse 2.8s var(--ease) infinite;
+  content: ""; position: absolute; left: 50%; top: 50%; width: 34px; height: 34px; margin: -17px;
+  border-radius: 50%; border: 1px solid rgba(214,185,142,.75);
+  animation: spotPulse 3.4s var(--ease) infinite;
 }
-.spot:nth-of-type(2) i::after { animation-delay: .9s; }
-.spot:nth-of-type(3) i::after { animation-delay: 1.8s; }
-@keyframes spotPulse { 0% { transform: scale(.5); opacity: .95; } 75% { transform: scale(1.18); opacity: 0; } 100% { transform: scale(1.18); opacity: 0; } }
-.spot:hover i::before { background: #c9a879; }
+/* the points breathe out of step, so the scene never blinks all at once */
+.spot:nth-of-type(2) i::after { animation-delay: .42s; }
+.spot:nth-of-type(3) i::after { animation-delay: .84s; }
+.spot:nth-of-type(4) i::after { animation-delay: 1.26s; }
+.spot:nth-of-type(5) i::after { animation-delay: 1.68s; }
+.spot:nth-of-type(6) i::after { animation-delay: 2.1s; }
+.spot:nth-of-type(7) i::after { animation-delay: 2.52s; }
+.spot:nth-of-type(8) i::after { animation-delay: 2.94s; }
+@keyframes spotPulse { 0% { transform: scale(.52); opacity: .62; } 72% { transform: scale(1.22); opacity: 0; } 100% { transform: scale(1.22); opacity: 0; } }
+.spot:hover i::before, .spot:focus-visible i::before {
+  transform: scale(1.28);
+  box-shadow: 0 0 0 1px rgba(226,203,166,1), 0 0 18px rgba(201,168,121,.8), 0 2px 8px rgba(0,0,0,.42);
+}
 /* the vitrine niche — a doorway, so its point holds a slow gold pulse */
 .spot--vitrine i::before { background: #f3dcb4; box-shadow: 0 0 0 1px rgba(201,168,121,.95), 0 0 14px rgba(201,168,121,.65); }
 .spot--vitrine i::after { border-color: rgba(201,168,121,.9); animation-duration: 3.4s; }
 /* salon objets — smaller, quieter points */
-.spot--salon i::before { width: 7px; height: 7px; margin: -3.5px; background: rgba(255,248,236,.85); }
-.spot--salon i::after { width: 26px; height: 26px; margin: -13px; opacity: .7; }
+.spot--salon i::before { width: 5.5px; height: 5.5px; margin: -2.75px;
+  background: radial-gradient(circle at 35% 30%, rgba(255,253,248,.92) 0%, rgba(235,219,196,.8) 100%);
+  box-shadow: 0 0 0 1px rgba(201,168,121,.5), 0 1px 6px rgba(0,0,0,.4); }
+.spot--salon i::after { width: 24px; height: 24px; margin: -12px; opacity: .5; }
 /* each point announces itself on approach */
 .spot::before {
   content: attr(data-label); position: absolute; bottom: calc(100% + 2px); left: 50%;
@@ -560,7 +586,9 @@ p { text-wrap: pretty; }
 
 /* the turn control — a small brass key at the corner of the plate */
 .flip-btn {
-  position: absolute; z-index: 6; right: -16px; bottom: -16px; width: 46px; height: 46px;
+  /* set just inside the plate: hung off the corner it reads as a sticker
+     stuck to the photograph rather than a control belonging to it */
+  position: absolute; z-index: 6; right: 12px; bottom: 12px; width: 42px; height: 42px;
   display: grid; place-items: center; border-radius: 50%; cursor: pointer;
   border: 1px solid rgba(201,168,121,.55);
   background: linear-gradient(180deg, rgba(38,24,28,.94), rgba(20,13,15,.94));
@@ -910,7 +938,7 @@ p { text-wrap: pretty; }
 /* framed product plate */
 .card-media {
   position: relative; aspect-ratio: 4 / 5; overflow: hidden;
-  background: #ffffff;
+  background: #fdfaf6;
   box-shadow: 0 1px 2px rgba(43,34,38,.05), 0 12px 28px rgba(43,34,38,.06), 0 40px 80px -22px rgba(43,34,38,.13);
   display: grid; place-items: center;
   transition: box-shadow .5s var(--ease), transform .6s var(--ease);
@@ -931,13 +959,13 @@ p { text-wrap: pretty; }
 .card:hover .card-media::after { border-color: rgba(122,44,61,.30); }
 .card-media img {
   width: 100%; height: 100%; object-fit: contain; padding: 26px 22px 30px;
-  display: block; filter: saturate(.94) contrast(1.02);
+  display: block; filter: saturate(.95) contrast(1.02) sepia(.07) hue-rotate(-8deg);
   transition: transform 1.2s var(--ease);
 }
 .card:hover .card-media img { transform: scale(1.05); }
 
 .card-ph { position: absolute; inset: 0; display: grid; place-items: center; text-align: center;
-  background: linear-gradient(168deg, #eceff2, #dde1e7); color: var(--muted); }
+  background: linear-gradient(168deg, #f4eee6, #e7ddd1); color: var(--muted); }
 .card-ph span { font-family: var(--serif); font-size: 42px; opacity: .5; }
 .card-ph small { display:block; margin-top:6px; font-size: 9.5px; letter-spacing: .22em; text-transform: uppercase; opacity:.7; }
 
@@ -968,13 +996,13 @@ p { text-wrap: pretty; }
 .thumbs { display: flex; gap: 9px; margin-top: 15px; flex-wrap: wrap; }
 .thumb {
   width: 46px; height: 54px; padding: 0; cursor: pointer; overflow: hidden;
-  background: linear-gradient(168deg, #f4f6f8, #e0e4e9);
-  border: 1px solid var(--line-2);
+  background: linear-gradient(168deg, #f8f4ee, #e8e0d6);
+  border: 1px solid rgba(43,34,38,.09);
   transition: border-color .3s var(--ease), transform .3s var(--ease);
 }
 .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .thumb:hover { transform: translateY(-2px); border-color: var(--line); }
-.thumb.active { border-color: var(--gold-2); }
+.thumb.active { border-color: rgba(122,44,61,.55); }
 
 /* a lone final card centres itself instead of leaving the row empty */
 @media (min-width: 941px) { .grid .card:last-child:nth-child(3n+1) { grid-column: 2; } }
@@ -1052,16 +1080,21 @@ p { text-wrap: pretty; }
 @media (max-width: 560px) {
   /* declutter: phone shows only the essentials */
   .houses, .hero-scroll, .card .thumbs, .only-desktop { display: none; }
-  /* phones: the headline moves into the top bar — the photograph opens the page */
-  .topbar-title { display: block; }
-  .hero { padding: 90px 22px 64px; gap: 20px; }
-  .hero-sub, .hero-eyebrow, .hero-title { display: none; }
+  /* Phones open the way the page does: the house speaks first, then shows.
+     The headline is the brand — it is never demoted to a line in the top bar. */
+  .topbar-title { display: none; }
+  .hero { padding: 84px 22px 54px; gap: 0; }
   .hero-copy { display: contents; }
-  .hero-rule { order: 2; position: relative; z-index: 5; margin: 0 auto; }
-  .hero-scene { order: 3; }
-  .hero-actions { order: 4; position: relative; z-index: 5; margin-top: 6px; margin-inline: auto; }
-  .hero-sign { order: 5; position: relative; z-index: 5; margin-top: 0; text-align: center; }
-  .hero-scene .look-flip { width: min(78vw, 330px); }
+  .hero-eyebrow { order: 1; margin: 0 auto 12px; font-size: 9.5px; letter-spacing: .34em; }
+  .hero-title   { order: 2; position: relative; z-index: 5; margin: 0 auto; }
+  .hero-rule    { order: 3; position: relative; z-index: 5; margin: 16px auto 20px; }
+  .hero-scene   { order: 4; }
+  .hero-sub     { order: 5; position: relative; z-index: 5;
+                  margin: 20px auto 0; max-width: 300px; text-align: center;
+                  font-size: 13.5px; line-height: 1.75; }
+  .hero-actions { order: 6; position: relative; z-index: 5; margin: 22px auto 0; }
+  .hero-sign    { display: none; }
+  .hero-scene .look-flip { width: min(70vw, 296px); }
   /* finer marker points on small screens */
   .spot i::before { width: 7px; height: 7px; margin: -3.5px; }
   .spot i::after { width: 28px; height: 28px; margin: -14px; }
@@ -1096,8 +1129,8 @@ p { text-wrap: pretty; }
   .card-info { padding: 22px 6px 4px; text-align: center; }
   .swatches, .thumbs { justify-content: center; }
 
-  /* one quiet line on phones */
-  .hero-title { font-size: clamp(20px, 6.8vw, 27px); white-space: nowrap; letter-spacing: .01em; }
+  /* the headline fills the width it is given, in two lines */
+  .hero-title { font-size: clamp(29px, 8.7vw, 40px); line-height: 1.07; letter-spacing: -.005em; text-align: center; }
   .hero-actions { flex-direction: column; gap: 10px; width: 100%; max-width: 250px; }
   .btn { width: 100%; text-align: center; padding: 14px; }
   .hero .btn { padding: 12px 16px; font-size: 10px; letter-spacing: .2em; }

@@ -26,7 +26,7 @@ const SITE = {
     ctaOne: "View the Collection",
     ctaTwo: "Speak to an Advisor",
     sign: "Curated personally — <em>A.z</em>",
-    hint: "Scroll into the scene · touch a marker · turn the plate",
+    hint: "Touch a marker · turn the plate",
     photo: "images/look.webp",
     photoAlt: "Styled in the salon — every piece in the scene can be explored",
     back: {
@@ -40,16 +40,26 @@ const SITE = {
     },
   },
 
+  /* The navigation, used by the top bar and the full-screen phone menu on
+     every page. An href that starts with "#" points at a section of the home
+     page: on any other page it is rewritten to index.html#… automatically. */
+  nav: [
+    { label: "Collection", href: "#collection" },
+    { label: "The Eyewear", href: "eyewear.html" },
+    { label: "The Advisory", href: "advisory.html" },
+    { label: "Enquire", href: "#enquire" },
+  ],
+
   vitrine: {
     kicker: "The Vitrine",
     title: "{n} collections. <em>One standard.</em>",
-    lead: "Select a collection to explore",
+    lead: "Select a collection",
   },
 
   collection: {
     index: "I",
     title: "The Collection",
-    lead: "A sample of what we source — ask, and we advise.",
+    lead: "A sample of what we source.",
   },
 
   service: {
@@ -131,7 +141,7 @@ const SITE = {
     dragHint: "Drag to rotate",
     gridKicker: "The Vitrine",
     gridTitle: "Two shapes. <em>Discretion, and declaration.</em>",
-    gridLead: "Select a piece to open its sheet",
+    gridLead: "Select a piece",
     photo: "images/look.webp",
   },
 

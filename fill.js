@@ -29,13 +29,79 @@
   put("data-href", (n, v) => { n.href = v; });
   put("data-alt", (n, v) => { n.alt = v; });
 
-  /* the title and description this page asked for */
-  const meta = document.body.getAttribute("data-meta") || "meta";
-  const title = dig(meta + ".title") || dig(meta + "Title");
+  /* the title and description this page asked for — a page that names no
+     section (a piece sheet, a range) writes its own title and is left alone */
+  const meta = document.body.getAttribute("data-meta");
+  const title = meta && (dig(meta + ".title") || dig(meta + "Title"));
   if (has(title)) document.title = title;
-  const desc = dig(meta + ".description");
+  const desc = meta && dig(meta + ".description");
   const tag = document.querySelector('meta[name="description"]');
   if (tag && has(desc)) tag.setAttribute("content", desc);
+
+  /* ---------------------------------------------------- the site chrome
+     One navigation, written once, on every page. A page that already carries
+     a top bar has its links filled in; a page without a phone menu is given
+     one, wired here so the menu can never be missing on a small screen. */
+  (function chrome() {
+    const bar = document.querySelector(".topbar");
+    if (!bar || !Array.isArray(SITE.nav) || !SITE.nav.length) return;
+
+    /* a home-page anchor is only an anchor when that section is on this page */
+    const href = (h) => (h.charAt(0) === "#" && !document.querySelector(h) ? "index.html" + h : h);
+    const here = location.pathname.split("/").pop() || "index.html";
+    const draw = (n) => SITE.nav.map((l) => {
+      const h = href(l.href);
+      const on = h === here || (h.charAt(0) !== "#" && h.split("#")[0] === here);
+      return '<a href="' + h + '"' + (on ? ' aria-current="page"' : "") + ">" + l.label + "</a>";
+    }).join(n);
+
+    let nav = bar.querySelector(".nav");
+    if (!nav) {
+      nav = document.createElement("nav");
+      nav.className = "nav";
+      bar.appendChild(nav);
+    }
+    nav.innerHTML = draw("");
+
+    let menu = document.querySelector(".menu");
+    let toggle = bar.querySelector(".menu-toggle");
+    const mine = !toggle;                       /* did this page already wire one? */
+
+    if (!menu) {
+      menu = document.createElement("div");
+      menu.className = "menu";
+      menu.id = menu.id || "menu";
+      menu.setAttribute("aria-hidden", "true");
+      menu.innerHTML = '<nav class="menu-nav"></nav><span class="menu-foot">A.z — By Appointment</span>';
+      document.body.appendChild(menu);
+    }
+    const mnav = menu.querySelector(".menu-nav");
+    if (mnav) mnav.innerHTML = draw("");
+
+    if (!toggle) {
+      toggle = document.createElement("button");
+      toggle.className = "menu-toggle";
+      toggle.setAttribute("aria-label", "Open menu");
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.innerHTML = "<span></span><span></span>";
+      bar.appendChild(toggle);
+    }
+
+    if (mine) {
+      const set = (open) => {
+        menu.classList.toggle("open", open);
+        toggle.classList.toggle("open", open);
+        toggle.setAttribute("aria-expanded", open ? "true" : "false");
+        menu.setAttribute("aria-hidden", open ? "false" : "true");
+        document.body.classList.toggle("menu-open", open);
+        document.body.style.overflow = open ? "hidden" : "";
+      };
+      toggle.addEventListener("click", () => set(!menu.classList.contains("open")));
+      menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => set(false)));
+      addEventListener("keydown", (e) => { if (e.key === "Escape") set(false); });
+      addEventListener("resize", () => { if (innerWidth > 820) set(false); });
+    }
+  })();
 
   /* a list rendered into a container, when both exist */
   function list(id, items, draw) {

@@ -465,20 +465,20 @@ const EYEWEAR = [
 ------------------------------------------------------------------- */
 const RANGES = {
   bags: {
-    title: "The Bags", lead: "Thirteen curated pieces — ask, and we advise.",
-    blurb: "Thirteen curated pieces", cover: "images/bag-cut.webp", items: BAGS,
+    title: "The Bags", lead: "Thirteen curated pieces.",
+    blurb: "", cover: "images/bag-cut.webp", items: BAGS,
   },
   watches: {
     title: "The Timepieces", lead: "Kept close, wound privately.",
-    blurb: "View the collection", cover: "images/vit-watch.webp", items: WATCHES,
+    blurb: "", cover: "images/vit-watch.webp", items: WATCHES,
   },
   headwear: {
     title: "The Headwear", lead: "Worn low, chosen well.",
-    blurb: "View the collection", cover: "images/vit-hat.webp", items: HATS,
+    blurb: "", cover: "images/vit-hat.webp", items: HATS,
   },
   eyewear: {
     title: "The Eyewear", lead: "Two shapes — discretion, and declaration.",
-    blurb: "View the collection", cover: "images/vit-gg.webp",
+    blurb: "", cover: "images/vit-gg.webp",
     href: "eyewear.html", items: EYEWEAR,
   },
 };

@@ -11,8 +11,13 @@
   function dismissIntro() {
     if (intro) intro.classList.add("done");
   }
-  // Let the signature light up along its strokes (~2.1s) + the tagline settle, then lift.
-  setTimeout(dismissIntro, 2900);
+  // The signature writes itself (~1.2s), the tagline settles, and the curtain
+  // lifts. Any gesture lifts it at once — a greeting, never a toll gate.
+  if (intro && !document.documentElement.classList.contains("no-overture")) {
+    setTimeout(dismissIntro, 1560);
+    ["pointerdown", "wheel", "touchstart", "keydown"].forEach((ev) =>
+      addEventListener(ev, dismissIntro, { once: true, passive: true }));
+  }
 
   /* ---- Mobile menu ---- */
   const menu = document.getElementById("menu");
@@ -56,6 +61,21 @@
     const href = (k) => RANGES[k].href || ("range.html?c=" + k);
     const short = (k) => RANGES[k].title.replace(/^The /, "");
 
+    /* A niche says something, never "view the collection": when no blurb is
+       written it names the house it keeps — or counts them, if it keeps
+       several. A caption that carries a name reads like a vitrine label. */
+    const words = ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven",
+                   "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen"];
+    const num = (n) => words[n] || String(n);
+    const caption = (r) => {
+      if (r.blurb) return r.blurb;
+      const houses = [...new Set((r.items || []).map((i) => i.name).filter(Boolean))];
+      if (houses.length === 1) return houses[0];
+      if (houses.length > 1) return num(houses.length) + " houses";
+      const n = (r.items || []).length;
+      return n ? num(n) + (n === 1 ? " piece" : " pieces") : "In preparation";
+    };
+
     const wall = document.getElementById("vitWall");
     if (wall) {
       wall.innerHTML = keys.map((k) => {
@@ -64,7 +84,7 @@
           && r.items[0].variants[0] && r.items[0].variants[0].shots[0]) || "";
         return `<a class="vit-niche" href="${href(k)}" aria-label="${r.title} — view the collection">
           ${cover ? `<img src="${cover}" alt="" loading="lazy" />` : ""}
-          <span class="vit-cap"><i>${r.title}</i><b>${r.blurb || "View the collection"}</b></span>
+          <span class="vit-cap"><i>${r.title}</i><b>${caption(r)}</b></span>
         </a>`;
       }).join("");
     }
@@ -77,8 +97,7 @@
 
     const title = document.getElementById("vitTitle");
     if (title && typeof SITE !== "undefined" && SITE.vitrine && SITE.vitrine.title) {
-      const words = ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
-      title.innerHTML = SITE.vitrine.title.replace("{n}", words[keys.length] || String(keys.length));
+      title.innerHTML = SITE.vitrine.title.replace("{n}", num(keys.length));
     }
   })();
 

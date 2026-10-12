@@ -7,7 +7,9 @@
   <meta name="description" content="A.z — a private advisory for luxury and old-money essentials. Curated pieces and personal purchase guidance, by appointment. Bags today; footwear and fragrance to follow." />
   <meta name="theme-color" content="#f5efe8" />
   <!-- Critical: paint dark immediately so there is never a white flash before styles.css loads -->
-  <style>html,body{margin:0;background:#f5efe8}#intro{position:fixed;inset:0;background:#130d0e;z-index:9999}</style>
+  <style>html,body{margin:0;background:#f5efe8}#intro{position:fixed;inset:0;background:#130d0e;z-index:9999}html.no-overture #intro{display:none}</style>
+  <!-- The overture plays once a session: a returning visitor walks straight in. -->
+  <script>try{var k="az.overture";if(sessionStorage.getItem(k)){document.documentElement.className+=" no-overture";}else{sessionStorage.setItem(k,"1");}}catch(e){}</script>
 
   <!-- Favicon (gold monogram) -->
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23f5efe8'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-style='italic' font-size='30' fill='%237a2c3d' text-anchor='middle'%3EAZ%3C/text%3E%3C/svg%3E" />
@@ -24,7 +26,7 @@
 
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
+<body data-meta="meta">
   <!-- Intro curtain -->
   <div class="intro" id="intro">
     <div class="intro-inner">
@@ -47,7 +49,8 @@
     <span class="topbar-title" aria-hidden="true">The art of <em>choosing well.</em></span>
     <nav class="nav">
       <a href="#collection">Collection</a>
-      <a href="#house">The House</a>
+      <a href="eyewear.html">The Eyewear</a>
+      <a href="advisory.html">The Advisory</a>
       <a href="#enquire">Enquire</a>
     </nav>
     <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
@@ -59,7 +62,8 @@
   <div class="menu" id="menu" aria-hidden="true">
     <nav class="menu-nav">
       <a href="#collection">Collection</a>
-      <a href="#house">The House</a>
+      <a href="eyewear.html">The Eyewear</a>
+      <a href="advisory.html">The Advisory</a>
       <a href="#enquire">Enquire</a>
     </nav>
     <span class="menu-foot">A.z — By Appointment</span>
@@ -145,7 +149,7 @@
     <div class="look-head">
       <p class="look-kicker reveal" data-site="vitrine.kicker">The Vitrine</p>
       <h2 class="look-title reveal" id="vitTitle">Four collections. <em>One standard.</em></h2>
-      <p class="look-lead reveal"><span class="only-desktop">Scroll over a piece to draw it closer · </span><span data-site="vitrine.lead">select a collection to explore</span></p>
+      <p class="look-lead reveal" data-site="vitrine.lead">Select a collection</p>
     </div>
     <!-- built from the collection registry in bags.js, so a collection added
          in the admin panel takes its place on the wall on its own -->
