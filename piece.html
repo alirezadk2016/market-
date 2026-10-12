@@ -5,8 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>A.z — The Piece</title>
   <meta name="theme-color" content="#f5efe8" />
+  <meta name="description" content="A single piece, examined — its house, its making, and whether it belongs in your wardrobe. Advised personally." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="A.z — The Piece" />
+  <meta property="og:description" content="A single piece, examined — its house, its making, and whether it belongs in your wardrobe. Advised personally." />
+  <meta property="og:image" content="images/og.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="A.z — The Piece" />
+  <meta name="twitter:description" content="A single piece, examined — its house, its making, and whether it belongs in your wardrobe. Advised personally." />
+  <meta name="twitter:image" content="images/og.png" />
+
   <style>html,body{margin:0;background:#f5efe8}</style>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23f5efe8'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-style='italic' font-size='30' fill='%237a2c3d' text-anchor='middle'%3EAZ%3C/text%3E%3C/svg%3E" />
+  <!-- The page is led by its type and by one photograph: both are fetched
+       with the stylesheet rather than after it, so the headline is never
+       first drawn in a fallback face. -->
+  <link rel="preload" as="font" type="font/woff2" href="fonts/cormorant-500.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="fonts/cormorant-500-italic.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="fonts/jost-300.woff2" crossorigin />
   <link rel="stylesheet" href="styles.css" />
   <style>
     /* ---------- Piece page ---------- */
@@ -236,22 +252,22 @@
     <span class="share-kicker">Share This Piece</span>
     <p class="share-copy">Seen it for someone? Send it to them directly.</p>
     <div class="share-row" id="shareRow">
-      <button type="button" class="share-btn" id="shNative" title="Share…" style="display:none">
+      <button type="button" class="share-btn" id="shNative" aria-label="Share" title="Share…" style="display:none">
         <svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>
       </button>
-      <a class="share-btn" id="shWa" target="_blank" rel="noopener" title="WhatsApp">
+      <a class="share-btn" id="shWa" aria-label="Share on WhatsApp" target="_blank" rel="noopener" title="WhatsApp">
         <svg viewBox="0 0 24 24"><path d="M12 3a8.5 8.5 0 0 0-7.3 12.8L3 21l5.2-1.5A8.5 8.5 0 1 0 12 3z"/><path d="M9.2 9.1c.4 2.1 2.1 3.8 4.2 4.2l1.2-1.2c.2-.2.5-.3.8-.1l1.6.8"/></svg>
       </a>
-      <a class="share-btn" id="shTg" target="_blank" rel="noopener" title="Telegram">
+      <a class="share-btn" id="shTg" aria-label="Share on Telegram" target="_blank" rel="noopener" title="Telegram">
         <svg viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
       </a>
-      <a class="share-btn" id="shFb" target="_blank" rel="noopener" title="Facebook">
+      <a class="share-btn" id="shFb" aria-label="Share on Facebook" target="_blank" rel="noopener" title="Facebook">
         <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
       </a>
-      <a class="share-btn" id="shX" target="_blank" rel="noopener" title="X">
+      <a class="share-btn" id="shX" aria-label="Share on X" target="_blank" rel="noopener" title="X">
         <svg viewBox="0 0 24 24"><path d="M5 4l14 16"/><path d="M19 4 5 20"/></svg>
       </a>
-      <button type="button" class="share-btn" id="shCopy" title="Copy link">
+      <button type="button" class="share-btn" id="shCopy" aria-label="Copy link" title="Copy link">
         <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
       </button>
     </div>
@@ -269,7 +285,7 @@
     <form class="rev-form" id="revForm">
       <h3>Leave your impression</h3>
       <div class="star-input" id="starInput" aria-label="Your rating">
-        <button type="button" data-s="1">★</button><button type="button" data-s="2">★</button><button type="button" data-s="3">★</button><button type="button" data-s="4">★</button><button type="button" data-s="5">★</button>
+        <button type="button" data-s="1" aria-label="One star">★</button><button type="button" data-s="2" aria-label="Two stars">★</button><button type="button" data-s="3" aria-label="Three stars">★</button><button type="button" data-s="4" aria-label="Four stars">★</button><button type="button" data-s="5" aria-label="Five stars">★</button>
       </div>
       <input type="text" id="revName" placeholder="Your name" maxlength="40" />
       <textarea id="revText" placeholder="How does the piece live with you?" maxlength="900"></textarea>
@@ -377,6 +393,8 @@
         var b = document.createElement("button");
         b.className = "thumb" + (k === 0 ? " active" : ""); b.type = "button";
         var im = document.createElement("img"); im.src = s; im.alt = ""; im.loading = "lazy";
+        im.width = 58; im.height = 68;
+        b.setAttribute("aria-label", "View " + (k + 1) + (bag.note ? " of " + bag.note : ""));
         b.appendChild(im);
         b.addEventListener("click", function () {
           thumbs.querySelectorAll(".thumb").forEach(function (x) { x.classList.remove("active"); });

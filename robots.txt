@@ -1,0 +1,7 @@
+# A.z — Private Luxury Advisory
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin.html
+
+Sitemap: https://market-web-mak.vercel.app/sitemap.xml

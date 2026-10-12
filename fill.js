@@ -44,7 +44,39 @@
      one, wired here so the menu can never be missing on a small screen. */
   (function chrome() {
     const bar = document.querySelector(".topbar");
-    if (!bar || !Array.isArray(SITE.nav) || !SITE.nav.length) return;
+    if (!bar) return;
+
+    /* a way past the scenery for anyone arriving on the keyboard */
+    const target = document.querySelector("#collection, #pieces, main")
+      || [...document.querySelectorAll("body > section")][1];
+    if (target && !document.querySelector(".skip")) {
+      if (!target.id) target.id = "main";
+      const skip = document.createElement("a");
+      skip.className = "skip";
+      skip.href = "#" + target.id;
+      skip.textContent = "Skip to the collection";
+      document.body.insertBefore(skip, document.body.firstChild);
+    }
+
+    /* the bar steps aside while you read down, and comes back on the way up */
+    (function tuck() {
+      let last = scrollY, ticking = false;
+      const apply = () => {
+        const y = scrollY;
+        const past = y > 160;
+        const down = y > last + 6;
+        const up = y < last - 6;
+        if (past && down) bar.classList.add("tucked");
+        else if (up || !past) bar.classList.remove("tucked");
+        if (down || up) last = y;
+        ticking = false;
+      };
+      addEventListener("scroll", () => {
+        if (!ticking) { ticking = true; requestAnimationFrame(apply); }
+      }, { passive: true });
+    })();
+
+    if (!Array.isArray(SITE.nav) || !SITE.nav.length) return;
 
     /* a home-page anchor is only an anchor when that section is on this page */
     const href = (h) => (h.charAt(0) === "#" && !document.querySelector(h) ? "index.html" + h : h);

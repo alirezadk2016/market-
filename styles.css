@@ -46,6 +46,15 @@ html { scroll-behavior: smooth; overflow-x: clip; }
 /* refined details */
 ::selection { background: rgba(122,44,61,.35); color: #ffffff; }
 :focus-visible { outline: 1px solid var(--gold); outline-offset: 3px; }
+/* out of the way until someone arrives on the keyboard and needs it */
+.skip {
+  position: fixed; z-index: 10000; top: 10px; left: 50%; transform: translate(-50%, -160%);
+  padding: 12px 24px; background: #130d0e; color: #c9a879;
+  border: 1px solid rgba(201,168,121,.5);
+  font-size: 10px; letter-spacing: .26em; text-transform: uppercase;
+  transition: transform .35s var(--ease);
+}
+.skip:focus-visible { transform: translate(-50%, 0); }
 ::-webkit-scrollbar { width: 10px; }
 ::-webkit-scrollbar-track { background: #e8e1d8; }
 ::-webkit-scrollbar-thumb { background: #ccc1bb; border-radius: 5px; }
@@ -180,9 +189,14 @@ html.no-overture .intro { display: none; }
   position: fixed; inset: 0 0 auto 0; z-index: 140;
   display: flex; align-items: center; justify-content: space-between;
   padding: 22px clamp(20px, 5vw, 60px);
-  transition: background .5s var(--ease), padding .5s var(--ease), border-color .5s;
+  transition: background .5s var(--ease), padding .5s var(--ease), border-color .5s,
+              transform .45s var(--ease);
   border-bottom: 1px solid transparent;
 }
+/* reading downward, the bar steps out of the way; the moment you look back
+   up it returns — the page keeps the whole screen while it is being read */
+.topbar.tucked { transform: translateY(-104%); }
+body.menu-open .topbar.tucked { transform: none; }
 .topbar.scrolled {
   padding: 14px clamp(20px, 5vw, 60px);
   background: rgba(242,237,229,.8);
@@ -757,10 +771,12 @@ html.no-overture .hero { --overture: 0s; }
   padding: 15px 16px 14px; text-align: left;
   background: rgba(18,11,14,.6); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
   border: 1px solid rgba(201,168,121,.28);
-  opacity: 0; transform: translateY(14px); pointer-events: none;
-  transition: opacity .6s var(--ease), transform .6s var(--ease);
+  /* hidden from the eye and from a screen reader alike: on opacity alone the
+     card's empty heading is still read out before a marker is ever touched */
+  opacity: 0; visibility: hidden; transform: translateY(14px); pointer-events: none;
+  transition: opacity .6s var(--ease), transform .6s var(--ease), visibility .6s;
 }
-.look-card.show { opacity: 1; transform: none; pointer-events: auto; }
+.look-card.show { opacity: 1; visibility: visible; transform: none; pointer-events: auto; }
 .lc-kicker { font-size: 9px; letter-spacing: .32em; text-transform: uppercase; color: #c9a879; }
 .lc-name { font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 19px; line-height: 1.3; color: #f0e8dc; margin-top: 6px; }
 .lc-note { margin-top: 8px; font-size: 12.5px; line-height: 1.8; color: rgba(240,232,220,.72); }

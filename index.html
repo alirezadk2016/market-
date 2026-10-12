@@ -24,6 +24,13 @@
   <meta name="twitter:description" content="Curated luxury & old-money essentials, with personal purchase guidance. By appointment." />
   <meta name="twitter:image" content="images/og.png" />
 
+  <!-- The page is led by its type and by one photograph: both are fetched
+       with the stylesheet rather than after it, so the headline is never
+       first drawn in a fallback face. -->
+  <link rel="preload" as="font" type="font/woff2" href="fonts/cormorant-500.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="fonts/cormorant-500-italic.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="fonts/jost-300.woff2" crossorigin />
+  <link rel="preload" as="image" href="images/look.webp" fetchpriority="high" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body data-meta="meta">
