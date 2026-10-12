@@ -43,6 +43,42 @@
   function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 
   let toastTimer = 0;
+  /* ------------------------------------------------------------- asking */
+  /* One dialog for both questions the panel asks: yes-or-no, and
+     yes-or-no-with-a-name. It resolves to null when cancelled, to a string
+     when it carried a field, and to true when it did not. */
+  let modalClose = null;
+  function ask(o) {
+    return new Promise((resolve) => {
+      const m = $("#modal"), inp = $("#modalInput");
+      $("#modalTitle").textContent = o.title || "";
+      $("#modalBody").textContent = o.body || "";
+      inp.hidden = !o.field;
+      inp.value = o.value == null ? "" : o.value;
+      inp.placeholder = o.placeholder || "";
+      $("#modalYes").textContent = o.confirm || "Continue";
+      $("#modalYes").className = "btn " + (o.danger ? "danger" : "solid");
+      $("#modalNo").textContent = o.cancel || "Cancel";
+      m.hidden = false;
+      (o.field ? inp : $("#modalYes")).focus();
+      if (o.field) inp.select();
+
+      const done = (v) => {
+        m.hidden = true;
+        modalClose = null;
+        resolve(v);
+      };
+      modalClose = () => done(null);
+      $("#modalYes").onclick = () => done(o.field ? (inp.value.trim() || null) : true);
+      $("#modalNo").onclick = () => done(null);
+      m.onclick = (ev) => { if (ev.target === m) done(null); };
+      inp.onkeydown = (ev) => { if (ev.key === "Enter") { ev.preventDefault(); $("#modalYes").click(); } };
+    });
+  }
+  const askYes = (title, body, o) => ask(Object.assign({ title: title, body: body }, o || {}));
+  const askFor = (title, body, value, o) =>
+    ask(Object.assign({ title: title, body: body, field: true, value: value }, o || {}));
+
   function toast(msg, kind) {
     const t = $("#toast");
     t.className = "toast" + (kind ? " " + kind : "");
@@ -135,7 +171,7 @@
       const src = await readSource();
       state = fromSource(src);
       const draft = load(DRAFT);
-      if (draft && draft.ranges && confirmDraft(draft)) {
+      if (draft && draft.ranges && await confirmDraft(draft)) {
         state.brands = draft.brands; state.ranges = draft.ranges; state.images = draft.images || {};
         if (draft.site) state.site = draft.site;
         state.dirty = true;
@@ -152,10 +188,107 @@
     setTimeout(() => $("#boot").remove(), 500);
   }
 
-  function confirmDraft(d) {
+  async function confirmDraft(d) {
     const n = (d.ranges || []).reduce((a, r) => a + (r.items || []).length, 0);
-    return confirm("An unpublished draft is saved in this browser (" + n + " pieces). Continue from it?\n\nCancel loads the published site instead and discards the draft.")
-      || (localStorage.removeItem(DRAFT), false);
+    const keep = await askYes("There is a draft waiting",
+      "An unpublished draft is saved in this browser, holding " + n + " piece" + (n === 1 ? "" : "s") +
+      ".\n\nContinue from it, or start again from what is live — which throws the draft away.",
+      { confirm: "Continue the draft", cancel: "Start from the live site" });
+    if (keep) return true;
+    localStorage.removeItem(DRAFT);
+    return false;
+  }
+
+  /* ------------------------------------------------------------- palette */
+  /* Thirteen pieces across four collections, nine houses and eight sections
+     is already more than a sidebar can hold in view. Everything the panel
+     can open is one keystroke and a few letters away. */
+  const SECTIONS = [
+    ["health", "What needs attention"], ["site", "Words & pictures"],
+    ["markers", "Scene markers"], ["advisory", "The Advisory page"],
+    ["eyewear", "The Eyewear room"], ["houses", "The Houses"],
+    ["settings", "Publishing"],
+  ];
+
+  function palEntries() {
+    const out = [];
+    state.ranges.forEach((r) => out.push({
+      label: r.title, kind: "Collection",
+      hay: r.title + " " + r.key,
+      go: () => { view = { kind: "collection", key: r.key }; renderNav(); renderView(); },
+    }));
+    SECTIONS.forEach(([k, label]) => out.push({
+      label: label, kind: "Section", hay: label,
+      go: () => { view = { kind: k, key: null }; renderNav(); renderView(); },
+    }));
+    state.ranges.forEach((r) => (r.items || []).forEach((p, i) => out.push({
+      label: p.note || p.name || "Untitled piece", note: p.name, kind: r.title,
+      hay: [p.note, p.name, p.tag, r.title].join(" "),
+      go: () => {
+        view = { kind: "collection", key: r.key }; renderNav(); renderView();
+        editPiece(r, i);
+      },
+    })));
+    Object.keys(state.brands).forEach((name) => out.push({
+      label: name, kind: "House", hay: name,
+      go: () => {
+        view = { kind: "houses", key: null }; renderNav(); renderView();
+        const box = [...document.querySelectorAll("details.fold")]
+          .find((d) => d.querySelector("h2") && d.querySelector("h2").textContent === name);
+        if (box) { box.open = true; box.scrollIntoView({ block: "center" }); }
+      },
+    }));
+    return out;
+  }
+
+  let palOpen = false;
+  /* named for what it does, and not after the colour palette further down —
+     two function declarations with one name, and the later wins */
+  function goTo() {
+    const box = $("#palette"), inp = $("#palInput"), list = $("#palList");
+    const all = palEntries();
+    let hits = all, at = 0;
+
+    function paint() {
+      list.innerHTML = "";
+      if (!hits.length) {
+        list.appendChild(el("li", "none", "Nothing by that name."));
+        return;
+      }
+      hits.slice(0, 40).forEach((h, i) => {
+        const li = el("li", i === at ? "on" : "",
+          "<b>" + esc(h.label) + "</b>" + (h.note && h.note !== h.label ? " " + esc(h.note) : "") +
+          "<span>" + esc(h.kind) + "</span>");
+        li.onmouseenter = () => { at = i; paint(); };
+        li.onclick = () => choose(i);
+        list.appendChild(li);
+      });
+      const on = list.querySelector(".on");
+      if (on) on.scrollIntoView({ block: "nearest" });
+    }
+    function filter() {
+      const q = inp.value.trim().toLowerCase();
+      hits = q ? all.filter((h) => h.hay.toLowerCase().indexOf(q) >= 0) : all;
+      at = 0; paint();
+    }
+    function close() { box.hidden = true; palOpen = false; }
+    function choose(i) {
+      const h = hits[i];
+      close();
+      if (h) h.go();
+    }
+
+    inp.value = ""; filter();
+    box.hidden = false; palOpen = true;
+    inp.focus();
+    inp.oninput = filter;
+    inp.onkeydown = (e) => {
+      if (e.key === "ArrowDown") { e.preventDefault(); at = Math.min(at + 1, Math.min(hits.length, 40) - 1); paint(); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); at = Math.max(at - 1, 0); paint(); }
+      else if (e.key === "Enter") { e.preventDefault(); choose(at); }
+      else if (e.key === "Escape") { e.preventDefault(); close(); }
+    };
+    box.onclick = (e) => { if (e.target === box) close(); };
   }
 
   /* --------------------------------------------------------------- shell */
@@ -170,7 +303,11 @@
     addEventListener("beforeunload", (e) => {
       if (state && state.dirty) { e.preventDefault(); e.returnValue = ""; }
     });
+    $("#btnFind").onclick = goTo;
     addEventListener("keydown", (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); return goTo(); }
+      if (e.key === "Escape" && palOpen) { e.preventDefault(); $("#palette").hidden = true; palOpen = false; return; }
+      if (e.key === "Escape" && modalClose) { e.preventDefault(); return modalClose(); }
       if (e.key === "Escape" && !$("#sheet").hidden) return closeSheet();
       const cmd = e.metaKey || e.ctrlKey;
       if (cmd && e.key.toLowerCase() === "z") { e.preventDefault(); undo(); }
@@ -327,6 +464,10 @@
     const img = el("div", "card-img");
     if (shot) img.style.backgroundImage = "url('" + resolve(shot) + "')";
     else img.appendChild(el("span", "none", "No photograph"));
+    /* the photograph is the obvious thing to reach for — it opens the piece */
+    img.title = "Open " + (p.note || p.name || "this piece");
+    img.onclick = () => editPiece(r, i);
+    img.appendChild(el("span", "card-open", "Open"));
     c.appendChild(img);
     c.appendChild(el("div", "card-body",
       "<b>" + esc(p.name || "—") + "</b><i>" + esc(p.note || "Untitled") + "</i>" +
@@ -387,8 +528,10 @@
     };
   }
 
-  function addCollection() {
-    const title = prompt("Name the collection (for example: The Fragrances)");
+  async function addCollection() {
+    const title = await askFor("A new collection",
+      "What is it called? The name appears on the vitrine wall, in the footer and at the head of its own page.",
+      "", { placeholder: "The Fragrances", confirm: "Create" });
     if (!title) return;
     let key = slug(title.replace(/^The /i, ""));
     if (state.ranges.some((r) => r.key === key)) key += "-" + Date.now().toString(36).slice(-3);
@@ -405,8 +548,12 @@
     r.key = key; view.key = key; touched(); renderNav(); renderView();
   }
 
-  function deleteCollection(r) {
-    if (!confirm("Delete “" + r.title + "” and its " + r.items.length + " pieces?\n\nAny link pointing at it will stop working. This can be undone until you publish.")) return;
+  async function deleteCollection(r) {
+    const ok = await askYes("Delete “" + r.title + "”?",
+      r.items.length + " piece" + (r.items.length === 1 ? "" : "s") + " would go with it, and any link " +
+      "pointing at it would stop working.\n\nThis can be undone until you publish.",
+      { confirm: "Delete", danger: true });
+    if (!ok) return;
     undoable("Deleted “" + r.title + "”", () => {
       state.ranges = state.ranges.filter((x) => x !== r);
       view = { kind: "collection", key: state.ranges[0] ? state.ranges[0].key : null };
@@ -728,34 +875,84 @@
      specification rows on the eyewear page. One shape, three uses. */
   function blockEditor(arr, fields, opts) {
     const wrap = el("div");
+    /* Rows of short values are a table, not a stack of cards: three
+       label/value pairs were taking seven hundred pixels and reading as
+       three separate things rather than one list. */
+    const flat = fields.every((f) => !f.area) && fields.length <= 3;
+    const cols = fields.map(() => "1fr").join(" ") + " auto";
+
+    function acts(i, redraw) {
+      const a = el("div", "pt-acts");
+      [["\u2191", -1], ["\u2193", 1]].forEach(([t, d]) => {
+        const mv = el("button", "btn ghost small", t);
+        mv.title = d < 0 ? "Move up" : "Move down";
+        mv.onclick = () => {
+          const j = i + d; if (j < 0 || j >= arr.length) return;
+          remember("Reordered");
+          arr.splice(j, 0, arr.splice(i, 1)[0]); touched(); redraw();
+        };
+        a.appendChild(mv);
+      });
+      const del = el("button", "btn danger small", "\u00d7");
+      del.title = "Remove this row";
+      del.onclick = () => {
+        remember("Removed a row");
+        arr.splice(i, 1); touched(); redraw();
+      };
+      a.appendChild(del);
+      return a;
+    }
+
     function draw() {
       wrap.innerHTML = "";
-      arr.forEach((item, i) => {
-        const box = el("div", "variant");
-        const head = el("div", "variant-head");
-        head.appendChild(el("h2", null, esc(item[fields[0].key] || fields[0].label) + ""));
-        const sp = el("span"); sp.style.flex = "1"; head.appendChild(sp);
-        [["↑", -1], ["↓", 1]].forEach(([t, d]) => {
-          const mv = el("button", "btn ghost small", t);
-          mv.onclick = () => {
-            const j = i + d; if (j < 0 || j >= arr.length) return;
-            arr.splice(j, 0, arr.splice(i, 1)[0]); touched(); draw();
-          };
-          head.appendChild(mv);
+
+      if (flat) {
+        const table = el("div", "pt");
+        const head = el("div", "pt-head");
+        head.style.gridTemplateColumns = cols;
+        fields.forEach((f) => head.appendChild(el("span", null, esc(f.label))));
+        head.appendChild(el("span"));
+        table.appendChild(head);
+
+        arr.forEach((item, i) => {
+          const row = el("div", "pt-row");
+          row.style.gridTemplateColumns = cols;
+          fields.forEach((f) => {
+            const inp = el("input"); inp.type = "text";
+            inp.value = item[f.key] == null ? "" : item[f.key];
+            inp.placeholder = f.label;
+            inp.oninput = () => { item[f.key] = inp.value; touched(); };
+            row.appendChild(trackEdits(inp, f.label));
+          });
+          row.appendChild(acts(i, draw));
+          table.appendChild(row);
         });
-        const del = el("button", "btn danger small", "Remove");
-        del.onclick = () => { arr.splice(i, 1); touched(); draw(); };
-        head.appendChild(del);
-        box.appendChild(head);
-        fields.forEach((f) => {
-          box.appendChild(f.area
-            ? areaField(f.label, item[f.key], (v) => { item[f.key] = v; touched(); })
-            : textField(f.label, item[f.key], (v) => { item[f.key] = v; touched(); }, f.hint));
+        wrap.appendChild(table);
+      } else {
+        arr.forEach((item, i) => {
+          const box = el("details", "variant fold");
+          const head = el("summary", "variant-head");
+          head.appendChild(el("h2", null, esc(item[fields[0].key] || fields[0].label) + ""));
+          const sum = el("span", "fold-sum", esc(String(item[fields[1] ? fields[1].key : fields[0].key] || "")).slice(0, 90));
+          head.appendChild(sum);
+          const sp = el("span"); sp.style.flex = "1"; head.appendChild(sp);
+          const a = acts(i, draw);
+          a.onclick = (ev) => ev.preventDefault();
+          head.appendChild(a);
+          box.appendChild(head);
+          fields.forEach((f) => {
+            box.appendChild(f.area
+              ? areaField(f.label, item[f.key], (v) => { item[f.key] = v; touched(); })
+              : textField(f.label, item[f.key], (v) => { item[f.key] = v; touched(); }, f.hint));
+          });
+          wrap.appendChild(box);
         });
-        wrap.appendChild(box);
-      });
+      }
+
       const add = el("button", "btn ghost", "+ " + (opts && opts.addLabel ? opts.addLabel : "Add"));
+      add.style.marginTop = "12px";
       add.onclick = () => {
+        remember("Added a row");
         const blank = {};
         fields.forEach((f) => { blank[f.key] = ""; });
         arr.push(blank); touched(); draw();
@@ -1025,8 +1222,10 @@
     w.appendChild(el("p", "lead", "The panel a client sees when they tap a brand name. The name here must match the House written on a piece, exactly."));
 
     const add = el("button", "btn solid", "+ Add a house");
-    add.onclick = () => {
-      const n = prompt("The house's name, exactly as it is written on its pieces");
+    add.onclick = async () => {
+      const n = await askFor("A new house",
+        "Its name, written exactly as it appears on a piece — that is the only thing joining the two.",
+        "", { placeholder: "Hermès", confirm: "Add" });
       if (!n) return;
       if (state.brands[n]) { toast("That house already exists.", "bad"); return; }
       state.brands[n] = { founded: "", origin: "", standing: "", facts: [] };
@@ -1051,9 +1250,11 @@
          pieces by the name written on them and nothing else, so renaming it
          here alone would silently orphan every one of them. */
       const ren = el("button", "btn ghost small", "Rename");
-      ren.onclick = (ev) => {
+      ren.onclick = async (ev) => {
         ev.preventDefault(); ev.stopPropagation();
-        const next = prompt("Rename this house. Every piece written “" + name + "” will be updated too.", name);
+        const next = await askFor("Rename “" + name + "”",
+          "Every piece written “" + name + "” is updated with the new name at the same time, so none is left orphaned.",
+          name, { confirm: "Rename" });
         if (!next || next === name) return;
         if (state.brands[next]) { toast("A house called “" + next + "” already exists.", "bad"); return; }
         undoable("Renamed “" + name + "” to “" + next + "”", () => {
@@ -1068,11 +1269,14 @@
       };
       head.appendChild(ren);
       const del = el("button", "btn danger small", "Remove");
-      del.onclick = (ev) => {
+      del.onclick = async (ev) => {
         ev.preventDefault(); ev.stopPropagation();
         const used = state.ranges.reduce((a, r) => a + r.items.filter((p) => p.name === name).length, 0);
-        if (!confirm("Remove the house “" + name + "”?" +
-          (used ? "\n\n" + used + " piece" + (used > 1 ? "s" : "") + " still name it — they will keep the name but lose the panel behind it." : ""))) return;
+        const ok = await askYes("Remove the house “" + name + "”?",
+          used ? used + " piece" + (used > 1 ? "s" : "") + " still name it. They keep the name, but the panel behind it goes."
+               : "Nothing names it, so nothing else changes.",
+          { confirm: "Remove", danger: true });
+        if (!ok) return;
         undoable("Removed the house “" + name + "”", () => { delete state.brands[name]; touched(); renderView(); });
       };
       head.appendChild(del);
@@ -1131,8 +1335,11 @@
       "<b>Discard the draft.</b> Everything edited here since the last publish is " +
       "thrown away and the panel reloads from the live site. There is no undo for this one."));
     const reset = el("button", "btn danger", "Discard the draft");
-    reset.onclick = () => {
-      if (!confirm("Throw away every unpublished change?")) return;
+    reset.onclick = async () => {
+      const ok = await askYes("Discard the draft?",
+        "Everything edited here since the last publish is thrown away and the panel reloads from the live site.\n\nThere is no undo for this one.",
+        { confirm: "Discard", danger: true });
+      if (!ok) return;
       localStorage.removeItem(DRAFT); location.reload();
     };
     zone.appendChild(reset);
@@ -1620,7 +1827,11 @@
       toast("Set the repository and token first, or use Download bags.js.", "bad");
       return;
     }
-    if (!confirm("Publish to the live site?\n\n· " + changeSummary().join("\n· "))) return;
+    const go = await askYes("Publish to the live site?",
+      changeSummary().map((l) => "· " + l).join("\n") +
+      "\n\nVercel deploys the commit on its own, so the site is live about a minute later.",
+      { confirm: "Publish" });
+    if (!go) return;
 
     const btn = $("#btnPublish");
     btn.disabled = true;
@@ -1635,9 +1846,10 @@
       btn.textContent = "Checking…";
       const now = await readSource();
       if (now.raw.bags !== state.raw.bags || now.raw.content !== state.raw.content) {
-        if (!confirm("The published files have changed since this page was opened — someone edited the site elsewhere, or a deploy landed.\n\nPublishing now replaces their version with yours. Continue?")) {
-          throw new Error("Nothing was published.");
-        }
+        const over = await askYes("The live files have moved on",
+          "Someone edited the site elsewhere, or a deploy landed, since this page was opened.\n\nPublishing now replaces their version with yours.",
+          { confirm: "Replace theirs", danger: true });
+        if (!over) throw new Error("Nothing was published.");
       }
       btn.textContent = "Saving…";
       await put("bags.js", b64(build()), "Update the collection from the control panel");
