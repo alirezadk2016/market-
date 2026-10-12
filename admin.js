@@ -844,18 +844,31 @@
     w.appendChild(sField("Headline", "eyewear.title"));
     w.appendChild(sArea("Paragraph", "eyewear.sub"));
 
-    w.appendChild(el("h3", null, "The photograph inside the lens"));
-    w.appendChild(picker("eyewear.photo", "eyewear-lens"));
+    w.appendChild(el("h3", null, "The campaign plate"));
+    w.appendChild(picker("eyewear.campaign", "eyewear-campaign"));
+    const c1 = el("div", "row-3");
+    c1.appendChild(sField("Label on the spine", "eyewear.campaignLabel"));
+    c1.appendChild(sField("House", "eyewear.campaignHouse"));
+    c1.appendChild(sField("Piece", "eyewear.campaignPiece"));
+    w.appendChild(c1);
+    w.appendChild(sField("Description of the photograph", "eyewear.campaignAlt",
+      "Read aloud to anyone who cannot see it, and shown if it fails to load."));
+
+    w.appendChild(el("h3", null, "The piece set against the plate"));
+    w.appendChild(picker("eyewear.campaignCut", "eyewear-campaign-cut"));
+    const c2 = el("div", "row");
+    c2.appendChild(sField("Small line", "eyewear.campaignCutKicker"));
+    c2.appendChild(sField("Larger line", "eyewear.campaignCutLine"));
+    w.appendChild(c2);
 
     w.appendChild(el("h3", null, "The specification beside it"));
     w.appendChild(blockEditor(e.meta || (e.meta = []), [
       { key: "label", label: "Label" }, { key: "value", label: "Value" },
     ], { addLabel: "Add a row" }));
 
-    const b = el("div", "row-3");
+    const b = el("div", "row");
     b.appendChild(sField("First button", "eyewear.ctaOne"));
     b.appendChild(sField("Second button", "eyewear.ctaTwo"));
-    b.appendChild(sField("Caption under the lens", "eyewear.dragHint"));
     w.appendChild(b);
 
     w.appendChild(el("hr", "hr"));

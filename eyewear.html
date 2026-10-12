@@ -101,188 +101,81 @@
     .room-actions .btn--ghost { border: 1px solid rgba(240,232,220,.34); color: #f0e8dc; }
     .room-actions .btn--ghost:hover { border-color: #c9a879; color: #c9a879; letter-spacing: .3em; }
 
-    /* ---- the lens itself ---- */
-    .lens-wrap {
-      position: relative; justify-self: center; width: min(760px, 100%); aspect-ratio: 2.02 / 1;
-      transform-style: preserve-3d;
-      transform: rotateX(calc(var(--my) * -9deg)) rotateY(calc(var(--mx) * 13deg));
-      transition: transform .9s var(--ease);
-      animation: lensRise .62s cubic-bezier(.16,1,.3,1) both, lensHover 12s ease-in-out .62s infinite;
+    /* ---- the campaign plate ---- */
+    .campaign {
+      position: relative; justify-self: center; margin: 0;
+      width: min(470px, 100%); padding-left: 34px;
+      transform: rotateX(calc(var(--my) * -3deg)) rotateY(calc(var(--mx) * 4deg));
+      transform-style: preserve-3d; transition: transform 1.1s var(--ease);
+      animation: campIn .8s cubic-bezier(.16,1,.3,1) both;
     }
-    /* the passage hands the lens over already formed and sharp — this only settles
-       it into the room, so the two pages read as one continuous move */
-    @keyframes lensRise {
-      from { opacity: 0; transform: translateY(14px) scale(.978); }
-      to { opacity: 1; transform: none; }
+    @keyframes campIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; } }
+
+    /* the label stands on end against the plate, the way a contact sheet is marked */
+    .camp-edge {
+      position: absolute; left: 0; top: 0; z-index: 2;
+      writing-mode: vertical-rl; padding-top: 66px;
+      font-size: 8.5px; letter-spacing: .4em; text-transform: uppercase;
+      color: rgba(201,168,121,.72); white-space: nowrap;
     }
-    @keyframes lensHover {
-      0%, 100% { translate: 0 0; }
-      34% { translate: 0 -14px; }
-      68% { translate: 0 -5px; }
+    .camp-edge::before {
+      content: ""; position: absolute; left: 50%; top: 0; width: 1px; height: 54px;
+      background: linear-gradient(transparent, rgba(201,168,121,.6));
     }
 
-    /* the two rims sit on one line, joined over the bridge */
-    .lens-pair {
-      position: absolute; left: 5%; right: 5%; top: 16%; height: 52%;
-      display: flex; align-items: center; justify-content: center;
-      transform: translateZ(46px); transform-style: preserve-3d;
+    .camp-plate {
+      position: relative; aspect-ratio: 3 / 4; overflow: hidden;
+      transform: translateZ(30px);
+      border: 1px solid rgba(201,168,121,.34);
+      box-shadow: 0 60px 110px -30px rgba(0,0,0,.8), 0 16px 40px rgba(0,0,0,.45);
     }
-
-    /* the brass rim: a gradient body that the glass is set into */
-    .lens-frame {
-      position: relative; flex: 1 1 0; height: 100%;
-      padding: 9px;
-      border-radius: 20% 24% 22% 20% / 40% 40% 46% 46%;
+    .camp-shot {
+      display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%;
+      filter: saturate(.97) contrast(1.03);
+    }
+    /* the light the room throws across the print */
+    .camp-light {
+      position: absolute; inset: 0; pointer-events: none;
       background:
-        linear-gradient(168deg, #fff2d6 0%, #d9b478 12%, #a67f42 34%, #f4e3bd 52%,
-                        #b8925a 68%, #8d6a34 84%, #e8cf9e 100%);
-      box-shadow:
-        0 70px 120px rgba(0,0,0,.7), 0 18px 40px rgba(0,0,0,.5),
-        0 0 70px rgba(201,168,121,.24),
-        inset 0 2px 1px rgba(255,250,236,.85), inset 0 -2px 1px rgba(90,64,28,.6);
+        linear-gradient(180deg, rgba(255,232,196,.12), transparent 26%),
+        linear-gradient(0deg, rgba(14,9,10,.62), transparent 42%),
+        radial-gradient(120% 80% at 50% 40%, transparent 54%, rgba(14,9,10,.4) 100%);
     }
-    /* the sharp specular that runs the top of a polished rim */
-    .lens-frame::before {
-      content: ""; position: absolute; z-index: 1; inset: 0; border-radius: inherit; pointer-events: none;
-      background: linear-gradient(178deg, rgba(255,253,244,.9) 0 1.5%, transparent 9%),
-                  linear-gradient(2deg, rgba(255,246,224,.4) 0 1.5%, transparent 10%);
-    }
-    /* light travelling the rim */
-    .lens-frame::after {
-      content: ""; position: absolute; z-index: 1; inset: 0; border-radius: inherit; pointer-events: none;
-      background: linear-gradient(104deg, transparent 34%, rgba(255,252,242,.65) 47%,
-                  rgba(255,255,255,.9) 50%, rgba(255,250,232,.5) 54%, transparent 68%);
-      background-size: 320% 100%; background-position: 165% 0;
-      animation: rimTravel 7.5s cubic-bezier(.5,0,.35,1) 2.4s infinite;
-      mix-blend-mode: screen;
-    }
-    @keyframes rimTravel { 0% { background-position: 165% 0; } 55%, 100% { background-position: -95% 0; } }
-
-    /* the glass sits above the rim's specular and travelling highlight: those
-       belong to the brass, and were washing the whole lens milky white */
-    .lens-body {
-      position: absolute; z-index: 3; inset: 9px; overflow: hidden;
-      border-radius: 19% 23% 21% 19% / 38% 38% 44% 44%;
-      box-shadow: inset 0 0 0 1px rgba(46,30,12,.8), inset 0 0 44px rgba(20,12,8,.5);
-    }
-    /* the right rim carries the room on a little further, as a pair does */
-    .lens-frame--r .lens-body img { object-position: 84% 32%; }
-    .lens-frame--l .lens-body img { object-position: 20% 32%; }
-
-    /* the bridge: a short brass arc over the nose */
-    .lens-bridge {
-      position: relative; z-index: 2; flex: 0 0 11%; height: 32%;
-      align-self: flex-start; margin: 5% -2% 0;
-      border-radius: 58% 58% 24% 24% / 96% 96% 30% 30%;
-      background: linear-gradient(170deg, #fff3da 0 7%, #d3ad72 24%, #a37c40 50%, #efdcb4 68%, #ad8750 100%);
-      box-shadow: 0 18px 34px rgba(0,0,0,.55), inset 0 2px 0 rgba(255,250,236,.85), inset 0 -2px 0 rgba(80,56,22,.55);
-    }
-    .lens-body img {
-      position: absolute; inset: 0; width: 100%; height: 100%;
-      object-fit: cover; object-position: 50% 33%; transform: scale(1.01);
-      animation: lensPan 28s ease-in-out infinite alternate;
-    }
-    @keyframes lensPan { from { transform: scale(1.04) translate(0,0); } to { transform: scale(1.11) translate(-1.6%, -1.6%); } }
-    /* Category 3: the glass is genuinely dark. A pale tint turned the rims
-       into mirrors — the salon should be seen through smoke, not fog. */
-    .lens-body .tint {
-      position: absolute; inset: 0;
-      background:
-        radial-gradient(74% 64% at 48% 36%, rgba(44,27,16,.34), rgba(14,8,6,.78) 100%),
-        linear-gradient(198deg, rgba(190,152,96,.14), transparent 46%);
-    }
-    .lens-body .gleam {
-      position: absolute; inset: -8% -6%;
-      background:
-        radial-gradient(38% 26% at 20% 12%, rgba(255,251,240,.17), transparent 64%),
-        radial-gradient(20% 14% at 82% 86%, rgba(255,240,214,.09), transparent 68%);
-      animation: gleamDrift 13s ease-in-out infinite alternate;
-    }
-    @keyframes gleamDrift { from { transform: translate(0,0); } to { transform: translate(3%, 2%); } }
-
-    /* the arm: a thick brass temple hinged at the rim and running off to the right */
-    .lens-arm {
-      position: absolute; right: -26%; top: 26%; width: 36%; height: 36%;
-      transform: translateZ(-6px) rotateY(-49deg) rotate(-7deg); transform-origin: left center;
-      pointer-events: none;
-    }
-    /* a temple tapers as it runs back towards the ear */
-    .arm-bar {
-      position: absolute; left: 0; right: 0; top: 30%; height: 42%;
-      clip-path: polygon(0 0, 100% 16%, 100% 84%, 0 100%);
-      border-radius: 3px 10px 12px 3px;
-      background: linear-gradient(174deg, #fff3da 0 6%, #d3ad72 22%, #a37c40 48%, #efdcb4 66%, #b08a52 84%, #7f5f2d 100%);
-      box-shadow: 0 22px 40px rgba(0,0,0,.6), inset 0 2px 0 rgba(255,250,236,.8), inset 0 -2px 0 rgba(80,56,22,.6);
-    }
-    .arm-gg {
-      position: absolute; left: 9%; top: 50%; width: 29px; height: 29px; margin-top: -14.5px;
-      border-radius: 50%; border: 5px solid rgba(52,32,12,.62);
-      box-shadow: inset 0 0 0 1.5px rgba(255,248,230,.6), 0 2px 5px rgba(0,0,0,.35);
-    }
-    .arm-gg::after {
-      content: ""; position: absolute; left: 9px; top: -4px; width: 34px; height: 34px;
-      border-radius: 50%; border: 5px solid rgba(52,32,12,.45);
-      box-shadow: inset 0 0 0 1.5px rgba(255,248,230,.42);
+    .camp-frame { position: absolute; inset: 11px; border: 1px solid rgba(255,244,224,.2); pointer-events: none; }
+    .camp-no {
+      position: absolute; right: 20px; bottom: 17px; z-index: 2;
+      font-family: var(--serif); font-style: italic; font-size: 14px; letter-spacing: .08em;
+      color: rgba(255,246,230,.62);
     }
 
-    /* the brass left on the polished floor — an echo of the two rims, not a
-       second photograph: a reflection should be softer than what casts it */
-    .lens-mirror {
-      position: absolute; left: 5%; right: 5%; top: 70%; height: 22%;
-      display: flex; align-items: flex-start; justify-content: center; gap: 9%;
-      transform: translateZ(20px); opacity: .34; filter: blur(7px);
-      -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,.95), transparent 88%);
-      mask-image: linear-gradient(180deg, rgba(0,0,0,.95), transparent 88%);
-      pointer-events: none;
+    /* the caption stands away from the inset card, at the other corner */
+    .camp-cap {
+      display: flex; align-items: baseline; justify-content: flex-end; gap: 12px; flex-wrap: wrap;
+      margin-top: 30px; transform: translateZ(18px);
     }
-    .lens-mirror i {
-      flex: 1 1 0; height: 100%;
-      border-radius: 40% 40% 24% 24% / 92% 92% 30% 30%;
-      background: linear-gradient(0deg, transparent, rgba(201,168,121,.55) 62%, rgba(236,212,170,.8));
-    }
+    .camp-cap .cc-house { font-size: 9.5px; letter-spacing: .34em; text-transform: uppercase; color: #c9a879; }
+    .camp-cap .cc-piece { font-family: var(--serif); font-style: italic; font-size: 19px; color: rgba(240,232,220,.8); }
 
-    .lens-shadow {
-      position: absolute; left: 10%; right: 10%; bottom: 14%; height: 9%;
-      transform: translateZ(-40px); filter: blur(22px);
-      background: radial-gradient(50% 50% at 50% 50%, rgba(0,0,0,.8), transparent 72%);
+    /* the object itself, set on paper against the dark — campaign and piece,
+       the way a lookbook puts the still beside the shot */
+    .camp-piece {
+      position: absolute; left: -26px; bottom: -22px; z-index: 3;
+      display: flex; align-items: center; gap: 13px;
+      padding: 10px 18px 10px 10px; transform: translateZ(66px);
+      background: linear-gradient(170deg, #fbf5ec, #ece1d2);
+      border: 1px solid rgba(201,168,121,.5);
+      box-shadow: 0 26px 50px -18px rgba(0,0,0,.72);
+      transition: transform .5s var(--ease), box-shadow .5s var(--ease);
     }
-    /* the hinge rosette, set into the outer edge of the left rim */
-    .lens-hinge {
-      position: absolute; left: -4.5%; top: 33%; width: 8%; height: 32%; z-index: 0;
-      transform: translateZ(-6px) rotateY(34deg); transform-origin: right center; pointer-events: none;
-      border-radius: 40% 8% 8% 40%;
-      background: linear-gradient(172deg, #fff3da 0 8%, #d3ad72 26%, #a37c40 52%, #efdcb4 70%, #ad8750 100%);
-      box-shadow: 0 16px 30px rgba(0,0,0,.5), inset 0 2px 0 rgba(255,250,236,.8);
-    }
-    .lens-hinge i {
-      position: absolute; left: 26%; top: 50%; width: 38px; height: 38px; margin-top: -19px;
-      border-radius: 50%; border: 5px solid rgba(52,32,12,.6);
-      box-shadow: inset 0 0 0 1.5px rgba(255,248,230,.62), 0 2px 5px rgba(0,0,0,.35);
-    }
-    .lens-hinge i::after {
-      content: ""; position: absolute; left: 8px; top: -4px; width: 30px; height: 30px;
-      border-radius: 50%; border: 5px solid rgba(52,32,12,.42);
-      box-shadow: inset 0 0 0 1.5px rgba(255,248,230,.44);
-    }
-    .lens-caption {
-      position: absolute; left: 0; right: 0; bottom: -2%; text-align: center;
-      display: flex; align-items: center; justify-content: center; gap: 12px;
-      font-size: 9px; letter-spacing: .34em; text-transform: uppercase; color: rgba(201,168,121,.72);
-      transition: opacity .5s var(--ease);
-    }
-    .lens-caption i {
-      width: 22px; height: 22px; border-radius: 50%; border: 1px solid rgba(201,168,121,.5);
-      position: relative;
-    }
-    .lens-caption i::after {
-      content: ""; position: absolute; left: 50%; top: 50%; width: 5px; height: 5px; margin: -2.5px;
-      border-radius: 50%; background: rgba(201,168,121,.9);
-      animation: dragPulse 2.6s var(--ease) infinite;
-    }
-    @keyframes dragPulse { 0%, 100% { transform: translateX(-4px); } 50% { transform: translateX(4px); } }
-    .lens-wrap.dragging .lens-caption { opacity: .3; }
-    .lens-wrap.dragging { cursor: grabbing; transition: none; }
-    .lens-wrap { cursor: grab; touch-action: pan-y; }
+    .camp-piece:hover { transform: translateZ(66px) translateY(-4px); box-shadow: 0 34px 62px -18px rgba(0,0,0,.8); }
+    .cp-shot { width: 78px; height: 56px; overflow: hidden; display: block; flex: none; }
+    /* the product shot carries a great deal of empty studio: the still is
+       pushed in so the pair fills the little window it is given */
+    .cp-shot img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 64%;
+      display: block; transform: scale(1.62); filter: saturate(.96) contrast(1.05); }
+    .cp-txt { display: flex; flex-direction: column; gap: 3px; }
+    .cp-txt b { font-weight: 400; font-size: 8.5px; letter-spacing: .28em; text-transform: uppercase; color: #8a6a3a; }
+    .cp-txt i { font-family: var(--serif); font-style: italic; font-size: 16px; color: #2b2226; }
 
     /* ---- the collection, opening below ---- */
     .room-scroll {
@@ -306,20 +199,20 @@
       .room-actions { justify-content: center; }
       .room-meta div { justify-content: center; }
       .room-meta span { flex: 0 0 auto; }
-      .lens-wrap { width: min(560px, 100%); }
+      .campaign { width: min(420px, 100%); margin-inline: auto; }
       .lens-room { padding-top: 104px; }
     }
     @media (max-width: 560px) {
-      /* the temple runs well past the rims: on a narrow screen it is drawn
-         back so the pair can be shown large and still keep both ends */
-      .lens-wrap { width: min(560px, 82%); }
-      .lens-arm { right: -12%; width: 22%; }
+      .campaign { width: min(420px, 86%); padding-left: 26px; }
+      .camp-piece { left: -18px; bottom: 38px; padding: 8px 14px 8px 8px; }
+      .cp-shot { width: 62px; height: 44px; }
+      .cp-txt i { font-size: 14px; }
       .room-meta { display: none; }
       .room-actions { flex-direction: column; align-items: stretch; max-width: 260px; margin-inline: auto; }
       .room-scroll { display: none; }
     }
     @media (prefers-reduced-motion: reduce) {
-      .lens-wrap, .lens-body img, .lens-body .gleam, .lens-body::after { animation: none; }
+      .campaign { animation: none; transition: none; }
     }
   </style>
 </head>
@@ -353,44 +246,32 @@
         </div>
       </div>
 
-      <!-- A pair, not a single glass: one lens on its own reads as a mirror
-           hung in the air. Both rims hold the same salon, offset, the way a
-           pair actually carries a room across the bridge. -->
-      <div class="lens-wrap" id="lensWrap">
-        <span class="lens-shadow" aria-hidden="true"></span>
+      <!-- The campaign itself. A pair of glasses built out of gradients will
+           always read as built; the photograph was taken, and says more. -->
+      <figure class="campaign" id="campaign">
+        <span class="camp-edge" aria-hidden="true" data-site="eyewear.campaignLabel">The Campaign — A.z</span>
 
-        <div class="lens-pair">
-          <span class="lens-hinge" aria-hidden="true"><i></i></span>
-
-          <div class="lens-frame lens-frame--l">
-            <div class="lens-body">
-              <img src="images/look.webp" data-src="eyewear.photo" alt="Seen through the A.z lens — the salon" />
-              <span class="tint" aria-hidden="true"></span>
-              <span class="gleam" aria-hidden="true"></span>
-            </div>
-          </div>
-
-          <span class="lens-bridge" aria-hidden="true"></span>
-
-          <div class="lens-frame lens-frame--r">
-            <div class="lens-body">
-              <img src="images/look.webp" data-src="eyewear.photo" alt="" aria-hidden="true" />
-              <span class="tint" aria-hidden="true"></span>
-              <span class="gleam" aria-hidden="true"></span>
-            </div>
-          </div>
-
-          <!-- the temple, hinged behind the right rim and running off -->
-          <span class="lens-arm" aria-hidden="true">
-            <span class="arm-bar"></span>
-            <span class="arm-gg"></span>
-          </span>
+        <div class="camp-plate">
+          <img class="camp-shot" src="images/look-back.webp" data-src="eyewear.campaign"
+               data-alt="eyewear.campaignAlt" alt="The A.z campaign — Gucci rectangular sunglasses" />
+          <span class="camp-light" aria-hidden="true"></span>
+          <span class="camp-frame" aria-hidden="true"></span>
+          <span class="camp-no" aria-hidden="true">No. 01</span>
         </div>
 
-        <!-- what the brass leaves on the polished floor -->
-        <span class="lens-mirror" aria-hidden="true"><i></i><i></i></span>
-        <span class="lens-caption" id="dragHint"><i></i><span data-site="eyewear.dragHint">Drag to rotate</span></span>
-      </div>
+        <figcaption class="camp-cap">
+          <span class="cc-house" data-site="eyewear.campaignHouse">Gucci</span>
+          <span class="cc-piece" data-site="eyewear.campaignPiece">Rectangular Sunglasses</span>
+        </figcaption>
+
+        <a class="camp-piece" href="#pieces">
+          <span class="cp-shot"><img src="images/gg-rect.webp" data-src="eyewear.campaignCut" alt="" loading="lazy" /></span>
+          <span class="cp-txt">
+            <b data-site="eyewear.campaignCutKicker">The piece itself</b>
+            <i data-site="eyewear.campaignCutLine">See the pair</i>
+          </span>
+        </a>
+      </figure>
     </div>
     <span class="room-scroll" aria-hidden="true">The Collection</span>
   </section>
@@ -467,35 +348,14 @@
       }
       var kick = function () { if (!raf) raf = requestAnimationFrame(loop); };
       room.addEventListener("pointermove", function (e) {
-        if (dragging) return;
         var r = room.getBoundingClientRect();
         tx = ((e.clientX - r.left) / r.width - 0.5) * 2;
         ty = ((e.clientY - r.top) / r.height - 0.5) * 2;
         kick();
       });
-      room.addEventListener("pointerleave", function () { if (!dragging) { tx = 0; ty = 0; kick(); } });
+      room.addEventListener("pointerleave", function () { tx = 0; ty = 0; kick(); });
 
-      /* take the glasses in hand: drag turns them further than a hover ever would */
-      var wrap = document.getElementById("lensWrap"), dragging = false, sx = 0, sy = 0, bx = 0, by = 0;
-      wrap.addEventListener("pointerdown", function (e) {
-        dragging = true; sx = e.clientX; sy = e.clientY; bx = tx; by = ty;
-        wrap.classList.add("dragging");
-        wrap.setPointerCapture && wrap.setPointerCapture(e.pointerId);
-      });
-      wrap.addEventListener("pointermove", function (e) {
-        if (!dragging) return;
-        var r = room.getBoundingClientRect();
-        tx = Math.max(-2.4, Math.min(2.4, bx + (e.clientX - sx) / (r.width * 0.22)));
-        ty = Math.max(-1.6, Math.min(1.6, by + (e.clientY - sy) / (r.height * 0.3)));
-        kick();
-      });
-      function release() {
-        if (!dragging) return;
-        dragging = false; wrap.classList.remove("dragging");
-        tx = 0; ty = 0; kick();
-      }
-      wrap.addEventListener("pointerup", release);
-      wrap.addEventListener("pointercancel", release);
+      /* the phone's own tilt moves the print as a hand would */
       window.addEventListener("deviceorientation", function (e) {
         if (e.gamma == null) return;
         tx = Math.max(-1, Math.min(1, e.gamma / 26));

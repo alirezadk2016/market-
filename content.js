@@ -138,7 +138,16 @@ const SITE = {
     ],
     ctaOne: "View the Pieces",
     ctaTwo: "Speak to an Advisor",
-    dragHint: "Drag to rotate",
+
+    /* the campaign plate that opens the room */
+    campaign: "images/look-back.webp",
+    campaignAlt: "The A.z campaign — Gucci rectangular sunglasses",
+    campaignLabel: "The Campaign — A.z",
+    campaignHouse: "Gucci",
+    campaignPiece: "Rectangular Sunglasses",
+    campaignCut: "images/gg-rect.webp",
+    campaignCutKicker: "The piece itself",
+    campaignCutLine: "See the pair",
     gridKicker: "The Vitrine",
     gridTitle: "Two shapes. <em>Discretion, and declaration.</em>",
     gridLead: "Select a piece",
