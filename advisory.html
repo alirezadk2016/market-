@@ -25,9 +25,22 @@
     }
     .m-line em { font-style: italic; color: var(--gold-2); }
     .m-line + .m-line { margin-top: clamp(44px, 6vw, 72px); }
-    .m-line:nth-child(odd) { margin-inline-end: auto; }
-    .m-line:nth-child(even) { margin-inline-start: auto; text-align: right; }
+    .m-line:nth-of-type(odd) { margin-inline-end: auto; }
+    .m-line:nth-of-type(even) { margin-inline-start: auto; text-align: right; }
     .m-sep { display: block; text-align: center; color: var(--gold); font-size: 13px; margin: clamp(44px, 6vw, 72px) 0; }
+
+    /* one room to look into, between the belief and the method */
+    .adv-plate { margin: clamp(64px, 9vw, 104px) 0 0; }
+    .adv-plate img {
+      display: block; width: 100%; aspect-ratio: 16 / 7; object-fit: cover; object-position: 50% 42%;
+      border: 1px solid rgba(122,44,61,.16);
+      filter: saturate(.95) contrast(1.02) sepia(.07) hue-rotate(-8deg);
+      box-shadow: 0 30px 70px -28px rgba(43,34,38,.3);
+    }
+    .adv-plate figcaption {
+      margin-top: 14px; text-align: right;
+      font-family: var(--serif); font-style: italic; font-size: 14.5px; color: var(--muted);
+    }
 
     /* the method — three quiet steps */
     .adv-method { margin-top: clamp(70px, 9vw, 110px); border-top: 1px solid var(--line-2); padding-top: clamp(48px, 6vw, 72px); }
@@ -51,7 +64,7 @@
 
     @media (max-width: 620px) {
       .adv { padding-top: 116px; }
-      .m-line:nth-child(even) { text-align: left; margin-inline-start: 0; }
+      .m-line:nth-of-type(even) { text-align: left; margin-inline-start: 0; }
       .step { grid-template-columns: 1fr; gap: 10px; }
     }
   </style>
@@ -75,6 +88,11 @@
     </header>
 
     <section class="adv-manifesto" id="advManifesto" aria-label="Our belief"></section>
+
+    <figure class="adv-plate">
+      <img src="images/look.webp" data-src="hero.photo" alt="The salon, before anything is chosen" loading="lazy" />
+      <figcaption>The salon — where every conversation begins</figcaption>
+    </figure>
 
     <section class="adv-method" aria-label="The method">
       <div class="method-head">

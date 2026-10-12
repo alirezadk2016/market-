@@ -17,16 +17,25 @@
     /* the gallery follows the reader, so the left column never sits empty */
     .piece-gallery { position: sticky; top: 96px; align-self: start; }
 
-    .p-main { position: relative; aspect-ratio: 4/5; border: 1px solid var(--line);
-      background: linear-gradient(168deg,#f4f6f8,#e0e4e9); overflow: hidden; }
+    .p-main { position: relative; aspect-ratio: 4/5; border: 1px solid rgba(122,44,61,.16);
+      background: linear-gradient(168deg,#fdfaf6,#efe7dc); overflow: hidden; }
     .p-main::after { content: ""; position: absolute; inset: 10px; border: 1px solid rgba(38,34,27,.1); pointer-events: none; }
-    .p-main img { width: 100%; height: 100%; object-fit: cover; object-position: center 40%; transition: opacity .4s var(--ease); }
+    /* the same whisper of warmth the collection plates carry, so a piece
+       does not arrive on a colder page than the one it was chosen from */
+    .p-main img { width: 100%; height: 100%; object-fit: cover; object-position: center 40%;
+      filter: saturate(.95) contrast(1.02) sepia(.07) hue-rotate(-8deg);
+      transition: opacity .4s var(--ease); }
+    .p-thumbs .thumb img { filter: saturate(.95) contrast(1.02) sepia(.07) hue-rotate(-8deg); }
     .p-thumbs { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
     .p-thumbs .thumb { width: 58px; height: 68px; }
 
     .p-index { font-family: var(--serif); font-style: italic; font-size: 17px; color: var(--gold); }
-    .p-name { font-family: var(--serif); font-weight: 500; font-size: clamp(34px, 4.6vw, 52px); line-height: 1.08; margin-top: 10px; }
-    .p-model { font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--gold-2); margin-top: 12px; }
+    /* The subject of the page is the piece. The house is its provenance —
+       named first, quietly, the way a label is read before the object. */
+    .p-house { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-top: 14px;
+      font-size: 11px; letter-spacing: .26em; text-transform: uppercase; color: var(--gold-2); }
+    .p-house .brand-hint { display: inline; margin-top: 0; font-size: 8.5px; }
+    .p-name { font-family: var(--serif); font-weight: 500; font-size: clamp(32px, 4.4vw, 50px); line-height: 1.08; margin-top: 8px; }
     .piece-info .swatches { margin-top: 22px; }
     .p-color-name { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-top: 8px; }
     .p-story { font-family: var(--serif); font-size: 17.5px; line-height: 1.95; color: var(--ink-2); margin-top: 26px; }
@@ -55,11 +64,14 @@
     .p-retail-copy { font-family: var(--serif); font-size: 16px; line-height: 1.85; color: var(--ink-2); max-width: 400px; margin: 0 auto; }
     .p-retail-btn {
       display: inline-flex; align-items: center; gap: 10px; margin-top: 20px;
-      padding: 15px 38px; background: var(--gold); border: 1px solid var(--gold); color: #ffffff;
+      padding: 15px 38px; color: #ffffff;
+      background: linear-gradient(180deg, #883349, #6d2337); border: 1px solid #6d2337;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 14px 30px -12px rgba(93,31,46,.5);
       font-size: 11px; letter-spacing: .24em; text-transform: uppercase;
-      transition: background .35s var(--ease), letter-spacing .35s var(--ease);
+      transition: background .35s var(--ease), letter-spacing .35s var(--ease), box-shadow .35s var(--ease);
     }
-    .p-retail-btn:hover { background: var(--gold-2); letter-spacing: .3em; }
+    .p-retail-btn:hover { background: linear-gradient(180deg, #96394f, #7a2c3d); letter-spacing: .3em;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 18px 36px -12px rgba(93,31,46,.6); }
     .p-retail-arrow { font-size: 13px; }
     .p-retail-note { margin-top: 16px; font-size: 11px; color: var(--muted); letter-spacing: .06em; }
     .p-retail-note a { color: var(--gold-2); border-bottom: 1px solid var(--line); transition: color .3s; }
@@ -166,9 +178,8 @@
 
       <section class="piece-info">
         <span class="p-index" id="pIndex"></span>
-        <h1 class="p-name"><span class="brand-name-link" id="pName" title="About the House"></span></h1>
-        <p class="p-model" id="pModel"></p>
-        <span class="brand-hint" id="pBrandHint">About the House ›</span>
+        <p class="p-house"><span class="brand-name-link" id="pName" title="About the House"></span><span class="brand-hint" id="pBrandHint">About the House ›</span></p>
+        <h1 class="p-name" id="pModel"></h1>
         <div class="brand-panel" id="pBrandPanel">
           <span class="bp-kicker">The House</span>
           <div class="bp-row"><span>Founded</span><span id="pbFounded"></span></div>

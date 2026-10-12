@@ -397,8 +397,17 @@ html.no-overture .hero { --overture: 0s; }
     inset 0 3px 16px rgba(66,44,40,.26), inset 0 -5px 18px rgba(66,44,40,.17),
     0 2px 5px rgba(43,34,38,.06), 0 30px 60px -12px rgba(43,34,38,.22), 0 70px 120px -32px rgba(43,34,38,.26);
 }
+/* A niche is a case, not a panel: the shelf the piece stands on, and the pool
+   of light the spot leaves around it, are what make the depth read. */
+.vit-niche::before {
+  content: ""; position: absolute; left: 13%; right: 13%; top: 6px; height: 52%;
+  z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255,238,210,.9) 0 1.6px, rgba(255,226,188,.3) 1.6px 3px, transparent 3px),
+    radial-gradient(72% 100% at 50% 0%, rgba(255,228,192,.3), transparent 74%);
+}
 .vit-niche img {
-  position: absolute; left: 50%; bottom: 13%; width: 72%; height: 58%; object-fit: contain;
+  position: absolute; z-index: 2; left: 50%; bottom: 13%; width: 72%; height: 58%; object-fit: contain;
   transform: translateX(-50%) scale(var(--z, 1));
   transform-origin: var(--ox, 50%) var(--oy, 60%);
   filter: drop-shadow(0 16px 20px rgba(60,40,25,.45));
