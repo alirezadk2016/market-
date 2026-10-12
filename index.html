@@ -147,8 +147,11 @@
   </section>
 
   <!-- Houses we source -->
-  <section class="houses" aria-label="Houses">
-    <p class="houses-line reveal">Armani Exchange <span>·</span> Coccinelle <span>·</span> Calvin Klein <span>·</span> U.S. Polo Assn. <span>·</span> Tommy Hilfiger <span>·</span> Twinset</p>
+  <section class="houses" aria-label="The houses we source">
+    <p class="houses-kicker reveal">The houses we source</p>
+    <!-- written from the collections themselves, so a house added in the
+         panel takes its place in the line without being typed twice -->
+    <p class="houses-line reveal" id="housesLine">Armani Exchange <span>·</span> Coccinelle <span>·</span> Calvin Klein <span>·</span> U.S. Polo Assn. <span>·</span> Tommy Hilfiger <span>·</span> Twinset</p>
   </section>
 
   <!-- The Vitrine — the display wall, lit like the salon -->
@@ -205,6 +208,7 @@
       <h2 class="enquire-title reveal" data-html="enquire.title">Considering a piece?<br /><em>Let us advise you.</em></h2>
       <p class="enquire-sub reveal" data-site="enquire.sub">Private consultations by appointment. Tell us what you are drawn to — we will guide you to the right piece and source it for you.</p>
       <div class="enquire-links reveal" id="enquireLinks"></div>
+      <p class="enquire-note reveal" id="enquireNote"></p>
     </div>
   </section>
 

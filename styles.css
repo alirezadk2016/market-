@@ -278,14 +278,13 @@ body.menu-open .topbar.tucked { transform: none; }
     radial-gradient(116% 80% at 50% 41%, #3a2329 0%, #211416 45%, #130d0e 76%),
     #130d0e;
 }
-/* Melt the stage into the cream body below. A straight ramp over this much
-   height reads as grey fog laid on the dark; the stops hold the stage almost
-   untouched and let the cream arrive late, so the two rooms meet cleanly. */
+/* Cream dragged down over the stage can only read as grey fog, however the
+   stops are weighted. The stage ends the way a photograph ends — on a line —
+   and the light of the room below spills up past it instead. */
 .hero::after {
-  content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 10%; z-index: 4;
-  background: linear-gradient(180deg,
-    rgba(245,239,232,0) 0%, rgba(245,239,232,.015) 48%, rgba(245,239,232,.07) 68%,
-    rgba(245,239,232,.26) 83%, rgba(245,239,232,.62) 93%, var(--bg) 100%);
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 15%; z-index: 4;
+  background: linear-gradient(0deg, rgba(201,168,121,.17), rgba(201,168,121,.045) 40%, transparent 78%);
+  border-bottom: 1px solid rgba(201,168,121,.38);
   pointer-events: none;
 }
 /* spotlight pooled behind the piece */
@@ -372,15 +371,20 @@ html.no-overture .hero { --overture: 0s; }
 .hero-dust { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
 
 /* ---------- Houses strip ---------- */
-.houses { padding: 46px 24px 0; text-align: center; }
+.houses { padding: clamp(44px, 5vw, 62px) 24px 0; text-align: center; }
+.houses-kicker {
+  font-size: 9px; letter-spacing: .36em; text-transform: uppercase; color: var(--gold);
+  margin-bottom: 18px;
+}
 .houses-line {
-  font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--muted);
-  line-height: 2.4;
+  max-width: 920px; margin: 0 auto;
+  font-size: 10.5px; letter-spacing: .3em; text-transform: uppercase; color: var(--ink-2);
+  line-height: 2.5;
 }
 .houses-line span { color: var(--gold); margin: 0 .7em; }
 
 /* ---------- A word from the curator ---------- */
-.word { padding: clamp(90px, 11vw, 140px) 26px; background: linear-gradient(180deg, var(--bg), #efe7dd 50%, var(--bg)); }
+.word { padding: clamp(84px, 10vw, 128px) 26px clamp(56px, 7vw, 86px); background: linear-gradient(180deg, var(--bg), #efe7dd 50%, var(--bg)); }
 .word-inner { max-width: 720px; margin: 0 auto; text-align: center; }
 .word-kicker { font-size: 10px; letter-spacing: .34em; text-transform: uppercase; color: var(--gold); }
 .word-text {
@@ -1035,24 +1039,50 @@ html.no-overture .hero { --overture: 0s; }
 /* ---------- The House ---------- */
 .house { padding: clamp(56px, 8vw, 100px) clamp(18px, 5vw, 60px) 30px; }
 .pillars {
+  --gutter: clamp(30px, 5vw, 70px);
   max-width: 1080px; margin: 0 auto;
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(30px, 5vw, 70px);
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gutter);
 }
-.pillar { text-align: center; padding: 0 6px; }
-.pillar-num { font-family: var(--serif); font-style: italic; font-size: 26px; color: var(--gold); }
-.pillar h3 { font-family: var(--serif); font-weight: 500; font-size: 25px; color: var(--ink); margin: 16px 0 12px; }
+/* Three columns of centred text and nothing else read as a content block,
+   not as a house stating how it works. A hairline between the columns and a
+   rule carrying each numeral give the section the structure of a page. */
+.pillar { position: relative; text-align: center; padding: 0 clamp(10px, 2vw, 28px); }
+.pillar + .pillar::before {
+  content: ""; position: absolute; left: calc(var(--gutter, 0px) * -.5); top: 8px; bottom: 8px; width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(122,44,61,.22) 22%, rgba(122,44,61,.22) 78%, transparent);
+}
+.pillar-num {
+  position: relative; display: inline-block; padding: 0 16px;
+  font-family: var(--serif); font-style: italic; font-size: 26px; line-height: 1; color: var(--gold);
+}
+.pillar-num::before, .pillar-num::after {
+  content: ""; position: absolute; top: 50%; width: clamp(18px, 3vw, 34px); height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(122,44,61,.4));
+}
+.pillar-num::before { right: 100%; }
+.pillar-num::after { left: 100%; transform: scaleX(-1); }
+.pillar h3 { font-family: var(--serif); font-weight: 500; font-size: 25px; color: var(--ink); margin: 18px 0 14px; }
 .pillar p { color: var(--ink-2); font-size: 14.5px; line-height: 1.85; max-width: 300px; margin: 0 auto; }
 
 .house-cta { text-align: center; margin-top: clamp(40px, 6vw, 60px); }
 
 /* ---------- Enquire — the house closes as it opened: in darkness ---------- */
 .enquire {
-  text-align: center; padding: clamp(84px, 11vw, 150px) 24px;
+  position: relative; text-align: center; padding: clamp(84px, 11vw, 150px) 24px;
   border-top: 1px solid rgba(201,168,121,.35);
   background:
     radial-gradient(110% 90% at 50% 30%, #3a2329 0%, #211416 52%, #130d0e 90%),
     #130d0e;
 }
+/* The cream must not be dragged down over the darkness — laid on black any
+   amount of it reads as grey fog. The join stays honest, a gold hairline,
+   and the light that spills past it falls inside the dark room instead. */
+.enquire::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 140px; z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(201,168,121,.15), rgba(201,168,121,.04) 42%, transparent 78%);
+}
+.enquire-inner { position: relative; z-index: 1; }
 .enquire-inner { max-width: 720px; margin: 0 auto; }
 .enquire .section-index { margin-bottom: 18px; color: #c9a879; }
 .enquire-title { font-family: var(--serif); font-weight: 500; font-size: clamp(30px, 5vw, 54px); line-height: 1.15; color: #f0e8dc; }
@@ -1065,6 +1095,12 @@ html.no-overture .hero { --overture: 0s; }
   transition: background .4s var(--ease), color .4s var(--ease), border-color .4s;
 }
 .chip:hover { background: #c9a879; color: #1a1216; border-color: #c9a879; }
+.chip--lead {
+  background: linear-gradient(180deg, #d6b98e, #bd9c6c); color: #1a1216;
+  border-color: rgba(255,255,255,.16);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 16px 34px -14px rgba(0,0,0,.6);
+}
+.chip--lead:hover { background: linear-gradient(180deg, #e1c79f, #caa877); border-color: rgba(255,255,255,.26); }
 .enquire-note { color: rgba(240,232,220,.45); font-size: 10.5px; letter-spacing: .12em; margin-top: 26px; }
 
 /* ---------- Footer — inside the same darkness ---------- */
@@ -1085,7 +1121,13 @@ html.no-overture .hero { --overture: 0s; }
 /* ---------- Responsive ---------- */
 @media (max-width: 940px) {
   .grid { grid-template-columns: repeat(2, 1fr); }
-  .pillars { grid-template-columns: 1fr; gap: 48px; max-width: 420px; }
+  /* stacked, the rule between columns would hang in the page margin —
+     the pillars are divided across instead */
+  .pillars { grid-template-columns: 1fr; gap: 44px; max-width: 420px; }
+  .pillar + .pillar::before {
+    left: 10%; right: 10%; top: -22px; bottom: auto; width: auto; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(122,44,61,.22) 30%, rgba(122,44,61,.22) 70%, transparent);
+  }
 }
 /* hero folds to a column — copy above, scene below */
 @media (max-width: 940px) {
@@ -1104,7 +1146,10 @@ html.no-overture .hero { --overture: 0s; }
 }
 @media (max-width: 560px) {
   /* declutter: phone shows only the essentials */
-  .houses, .hero-scroll, .card .thumbs, .only-desktop { display: none; }
+  .hero-scroll, .card .thumbs, .only-desktop { display: none; }
+  .houses { padding-top: 40px; }
+  .houses-line { font-size: 9px; letter-spacing: .2em; line-height: 2.3; max-width: 320px; }
+  .houses-line span { margin: 0 .45em; }
   /* Phones open the way the page does: the house speaks first, then shows.
      The headline is the brand — it is never demoted to a line in the top bar. */
   .topbar-title { display: none; }

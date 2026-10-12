@@ -40,14 +40,32 @@
     .range-soon em { display: block; font-family: var(--serif); font-style: italic; font-size: clamp(24px, 3.6vw, 32px); color: var(--ink-2); margin-top: 16px; }
     .range-soon p { max-width: 430px; margin: 18px auto 0; font-size: 14px; line-height: 1.95; color: var(--ink-2); }
     .range-soon .btn { margin-top: 30px; }
-    .range-nav { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 34px; }
-    .range-nav a { padding: 11px 22px; border: 1px solid var(--line-2); font-size: 10px; letter-spacing: .24em; text-transform: uppercase; color: var(--ink-2); transition: color .3s, border-color .3s; }
-    .range-nav a:hover { color: var(--gold-2); border-color: var(--gold); }
-    .range-nav a.on { color: var(--gold-2); border-color: var(--gold); }
+    /* The collections are read as a line of words, separated by hairlines and
+       marked by a fine rule — four boxed buttons looked like a toolbar. */
+    .range-nav { display: flex; justify-content: center; align-items: center;
+      flex-wrap: wrap; margin-top: 40px;
+      border-block: 1px solid rgba(43,34,38,.1); padding: 4px 0; }
+    .range-nav a { position: relative; padding: 14px clamp(16px, 2.4vw, 30px);
+      font-size: 10px; letter-spacing: .26em; text-transform: uppercase; color: var(--muted);
+      transition: color .35s var(--ease); }
+    .range-nav a + a::before {
+      content: ""; position: absolute; left: 0; top: 50%; width: 1px; height: 12px; margin-top: -6px;
+      background: rgba(43,34,38,.14);
+    }
+    .range-nav a::after {
+      content: ""; position: absolute; left: clamp(16px, 2.4vw, 30px); right: clamp(16px, 2.4vw, 30px);
+      bottom: 6px; height: 1px; background: var(--gold-2);
+      transform: scaleX(0); transform-origin: center; transition: transform .45s var(--ease);
+    }
+    .range-nav a:hover { color: var(--ink); }
+    .range-nav a:hover::after { transform: scaleX(.4); }
+    .range-nav a.on { color: var(--gold-2); }
+    .range-nav a.on::after { transform: scaleX(1); }
     @media (max-width: 880px) { .range { padding-top: 108px; } }
     @media (max-width: 560px) {
-      .range-nav { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 320px; margin-inline: auto; }
-      .range-nav a { text-align: center; padding: 11px 8px; }
+      .range-nav { gap: 0; }
+      .range-nav a { padding: 12px 11px; font-size: 9px; letter-spacing: .18em; }
+      .range-nav a::after { left: 11px; right: 11px; }
     }
   </style>
 </head>

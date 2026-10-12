@@ -122,35 +122,42 @@
     .rev-avg { margin-top: 12px; font-size: 13px; color: var(--ink-2); }
     .rev-avg .stars { color: var(--gold-2); letter-spacing: .18em; font-size: 16px; }
 
-    .rev-form { border: 1px solid var(--line); padding: clamp(22px, 3.5vw, 34px); }
-    .rev-form h3 { font-family: var(--serif); font-weight: 500; font-size: 22px; text-align: center; }
-    .star-input { display: flex; justify-content: center; gap: 10px; margin: 18px 0 6px; }
-    .star-input button { background: none; border: 0; cursor: pointer; font-size: 26px; color: #d0c6c0; transition: color .2s, transform .2s; padding: 2px; }
-    .star-input button:hover { transform: scale(1.15); }
+    /* A guest book, not a web form: no filled grey boxes and no hard corners.
+       Each field is a ruled line on the paper, the way a visitor's book is. */
+    .rev-form { border: 1px solid rgba(122,44,61,.16); padding: clamp(26px, 4vw, 40px); }
+    .rev-form h3 { font-family: var(--serif); font-weight: 500; font-size: 24px; text-align: center; }
+    .star-input { display: flex; justify-content: center; gap: 12px; margin: 20px 0 10px; }
+    .star-input button { background: none; border: 0; cursor: pointer; font-size: 24px; line-height: 1;
+      color: rgba(43,34,38,.17); transition: color .25s var(--ease), transform .25s var(--ease); padding: 2px; }
+    .star-input button:hover { transform: translateY(-2px) scale(1.12); color: rgba(122,44,61,.5); }
     .star-input button.lit { color: var(--gold-2); }
     .rev-form input[type=text], .rev-form textarea {
-      width: 100%; margin-top: 14px; padding: 13px 15px; color: var(--ink);
-      background: rgba(43,34,38,.04); border: 1px solid var(--line-2);
-      font-family: var(--sans); font-weight: 300; font-size: 14px; letter-spacing: .02em;
-      transition: border-color .3s;
+      display: block; width: 100%; margin-top: 22px; padding: 10px 2px 11px; color: var(--ink);
+      background: none; border: 0; border-bottom: 1px solid rgba(43,34,38,.16);
+      font-family: var(--serif); font-size: 17px; letter-spacing: .01em;
+      transition: border-color .4s var(--ease);
     }
-    .rev-form input:focus, .rev-form textarea:focus { outline: none; border-color: var(--gold); }
-    .rev-form textarea { min-height: 96px; resize: vertical; }
-    .rev-file { margin-top: 14px; }
+    .rev-form ::placeholder { color: var(--muted); font-style: italic; opacity: 1; }
+    .rev-form input:focus, .rev-form textarea:focus { outline: none; border-bottom-color: var(--gold); }
+    .rev-form textarea { min-height: 86px; resize: vertical; line-height: 1.75; }
     .rev-file input { display: none; }
+    .rev-file { margin-top: 20px; }
     .rev-file label {
-      display: inline-block; cursor: pointer; padding: 11px 22px; border: 1px solid var(--line-2);
-      font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted);
+      display: inline-block; cursor: pointer; padding: 0 0 4px; border: 0;
+      border-bottom: 1px solid rgba(43,34,38,.2);
+      font-size: 9.5px; letter-spacing: .26em; text-transform: uppercase; color: var(--muted);
       transition: color .3s, border-color .3s;
     }
     .rev-file label:hover { color: var(--gold-2); border-color: var(--gold); }
     .rev-previews { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
     .rev-previews img { width: 62px; height: 62px; object-fit: cover; border: 1px solid var(--line); }
-    .rev-submit { margin-top: 20px; width: 100%; cursor: pointer;
-      padding: 15px; background: var(--gold); border: 1px solid var(--gold); color: #ffffff;
+    .rev-submit { display: block; margin: 28px auto 0; cursor: pointer;
+      padding: 15px 42px; color: #ffffff;
+      background: linear-gradient(180deg, #883349, #6d2337); border: 1px solid #6d2337;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 14px 30px -14px rgba(93,31,46,.5);
       font-family: var(--sans); font-size: 11px; letter-spacing: .26em; text-transform: uppercase;
-      transition: background .35s; }
-    .rev-submit:hover { background: var(--gold-2); }
+      transition: background .35s var(--ease), letter-spacing .35s var(--ease); }
+    .rev-submit:hover { background: linear-gradient(180deg, #96394f, #7a2c3d); letter-spacing: .32em; }
     .rev-note { text-align: center; margin-top: 12px; font-size: 10.5px; color: var(--muted); letter-spacing: .08em; }
 
     .rev-list { margin-top: 44px; display: grid; gap: 18px; }
@@ -448,10 +455,10 @@
       var a = cache;
       list.innerHTML = "";
       if (!a.length) {
-        avgEl.innerHTML = "Be the first to share an impression.";
-        var e = document.createElement("p"); e.className = "rev-empty";
-        e.textContent = "No impressions yet — this piece is waiting for its first admirer.";
-        list.appendChild(e); return;
+        /* one empty state, said once — it was being written twice, above the
+           form and again below it */
+        avgEl.textContent = "This piece is waiting for its first admirer.";
+        return;
       }
       var avg = a.reduce(function (s, r) { return s + r.s; }, 0) / a.length;
       avgEl.innerHTML = '<span class="stars">' + starsTxt(Math.round(avg)) + "</span> &nbsp;" + avg.toFixed(1) + " · " + a.length + (a.length === 1 ? " impression" : " impressions");

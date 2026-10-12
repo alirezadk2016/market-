@@ -95,6 +95,19 @@
       nav.innerHTML = keys.map((k) => `<a href="${href(k)}">${short(k)}</a><span>·</span>`).join("") + advisory;
     }
 
+    /* the houses are read off the collections, in the order they first appear,
+       so adding a piece from a new house puts that house in the line */
+    const line = document.getElementById("housesLine");
+    if (line) {
+      const houses = [];
+      keys.forEach((k) => (RANGES[k].items || []).forEach((i) => {
+        if (i.name && houses.indexOf(i.name) < 0) houses.push(i.name);
+      }));
+      if (houses.length) {
+        line.innerHTML = houses.join(' <span aria-hidden="true">·</span> ');
+      }
+    }
+
     const title = document.getElementById("vitTitle");
     if (title && typeof SITE !== "undefined" && SITE.vitrine && SITE.vitrine.title) {
       title.innerHTML = SITE.vitrine.title.replace("{n}", num(keys.length));

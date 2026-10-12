@@ -168,8 +168,21 @@
       ? e.instagram : "https://instagram.com/" + String(e.instagram).replace(/^@/, "")]);
     if (has(e.email)) chips.push(["Email", "mailto:" + e.email + "?subject=Private%20Enquiry%20%E2%80%94%20A.z"]);
     if (chips.length) {
-      links.innerHTML = chips.map(([t, h]) => '<a href="' + h + '" class="chip"' +
+      /* the first way in is the invitation; the rest stand beside it. With one
+         channel filled a single outlined chip looked like something missing. */
+      links.innerHTML = chips.map(([t, h], i) => '<a href="' + h + '" class="chip' +
+        (i ? "" : " chip--lead") + '"' +
         (/^http/.test(h) ? ' target="_blank" rel="noopener"' : "") + ">" + t + "</a>").join("");
+    }
+    /* and the address itself is written out, so the invitation is answerable
+       even by someone who would rather copy it than click it */
+    const note = document.getElementById("enquireNote");
+    if (note && !note.textContent.trim()) {
+      const said = [];
+      if (has(e.email)) said.push(e.email);
+      if (has(e.whatsapp)) said.push("WhatsApp " + e.whatsapp);
+      if (has(e.instagram)) said.push("@" + String(e.instagram).replace(/^@/, ""));
+      note.textContent = said.length ? said.join("  ·  ") : "";
     }
   }
 
