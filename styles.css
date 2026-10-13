@@ -4,23 +4,23 @@
    Type: Cormorant Garamond (couture serif) + Jost (geometric sans)
 ================================================================= */
 
-/* ---- Fonts (self-hosted) ---- */
-@font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 400;
-  src: url("fonts/cormorant-400.woff2") format("woff2"); font-display: swap; }
+/* ---- Fonts (self-hosted) ----
+   Cormorant Garamond set against Jost is the default pairing of every
+   luxury template on the internet, which is exactly why the page read as
+   generated. Instrument Serif is narrower, higher in contrast and far more
+   particular; Archivo carries the labels without pretending to be Futura. */
+@font-face { font-family: "Instrument"; font-style: normal; font-weight: 400;
+  src: url("fonts/instrument-400.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Instrument"; font-style: italic; font-weight: 400;
+  src: url("fonts/instrument-400-italic.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Archivo"; font-style: normal; font-weight: 100 900;
+  src: url("fonts/archivo-var.woff2") format("woff2-variations"); font-display: swap; }
+
+/* kept for the Persian pages and the signature blocks */
 @font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 500;
   src: url("fonts/cormorant-500.woff2") format("woff2"); font-display: swap; }
-@font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 600;
-  src: url("fonts/cormorant-600.woff2") format("woff2"); font-display: swap; }
-@font-face { font-family: "Cormorant Garamond"; font-style: italic; font-weight: 400;
-  src: url("fonts/cormorant-400-italic.woff2") format("woff2"); font-display: swap; }
 @font-face { font-family: "Cormorant Garamond"; font-style: italic; font-weight: 500;
   src: url("fonts/cormorant-500-italic.woff2") format("woff2"); font-display: swap; }
-@font-face { font-family: "Jost"; font-style: normal; font-weight: 300;
-  src: url("fonts/jost-300.woff2") format("woff2"); font-display: swap; }
-@font-face { font-family: "Jost"; font-style: normal; font-weight: 400;
-  src: url("fonts/jost-400.woff2") format("woff2"); font-display: swap; }
-@font-face { font-family: "Jost"; font-style: normal; font-weight: 500;
-  src: url("fonts/jost-500.woff2") format("woff2"); font-display: swap; }
 
 :root {
   --bg:      #f5efe8;   /* warm porcelain */
@@ -33,8 +33,8 @@
   --gold-2:  #5d1f2e;
   --line:    rgba(122,44,61,.35);
   --line-2:  rgba(43,34,38,.12);
-  --serif:   "Cormorant Garamond", Georgia, "Times New Roman", serif;
-  --sans:    "Jost", "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+  --serif:   "Instrument", "Cormorant Garamond", Georgia, serif;
+  --sans:    "Archivo", "Helvetica Neue", "Segoe UI", Arial, sans-serif;
   --ease:    cubic-bezier(.22,.61,.36,1);
 }
 
@@ -270,12 +270,16 @@ body.menu-open .topbar.tucked { transform: none; }
 @keyframes menuIn { to { opacity: 1; transform: translateY(0); } }
 
 /* ---------- Hero — cinematic dark stage ---------- */
+/* The stage was a copy column beside a photograph with a hole between them —
+   the arrangement of every template. It is one composition now: the salon
+   holds the right of the room and bleeds off it, and the headline crosses
+   onto the print. */
 .hero {
   position: relative; min-height: 100vh; min-height: 100svh; overflow: hidden;
-  display: flex; align-items: center; justify-content: center; gap: clamp(36px, 5.5vw, 84px);
-  text-align: left; padding: 120px 5vw 100px; --mx: 0; --my: 0;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  text-align: left; padding: 0 0 0 clamp(20px, 5vw, 76px); --mx: 0; --my: 0;
   background:
-    radial-gradient(116% 80% at 50% 41%, #3a2329 0%, #211416 45%, #130d0e 76%),
+    radial-gradient(130% 92% at 16% 42%, #3a2329 0%, #211416 46%, #130d0e 82%),
     #130d0e;
 }
 /* Cream dragged down over the stage can only read as grey fog, however the
@@ -300,13 +304,22 @@ body.menu-open .topbar.tucked { transform: none; }
   position: absolute; inset: 0; z-index: 3; pointer-events: none;
   background: radial-gradient(120% 92% at 50% 46%, transparent 52%, rgba(15,11,13,.5) 100%);
 }
-.hero-copy { position: relative; z-index: 5; max-width: 520px; }
+.hero-copy { position: relative; z-index: 5; max-width: 1080px;
+  padding: 22vh 0 clamp(44px, 9vh, 96px); }
 .hero-eyebrow { color: #c9a879; font-size: 11.5px; margin-bottom: 24px; }
 .hero-title {
-  font-family: var(--serif); font-weight: 500;
-  font-size: clamp(44px, 6.6vw, 92px); line-height: .98; letter-spacing: -.028em; color: #f0e8dc;
+  font-family: var(--serif); font-weight: 400;
+  font-size: clamp(52px, 9.6vw, 142px); line-height: .9; letter-spacing: -.038em; color: #f6efe4;
   margin: 0;
 }
+.hero-title em { display: block; margin-left: .07em; }
+/* each line lifts out from behind its own edge */
+.hero-title .ln { display: block; overflow: hidden; }
+.hero-title .ln > span { display: block; transform: translateY(102%);
+  animation: lineUp 1.05s cubic-bezier(.16,1,.3,1) both;
+  animation-delay: calc(var(--overture) + .18s); }
+.hero-title .ln:nth-child(2) > span { animation-delay: calc(var(--overture) + .28s); }
+@keyframes lineUp { to { transform: none; } }
 .hero-title em { color: #c9a879; }
 .hero-rule { width: 64px; height: 1px; margin: 32px 0 30px; background: rgba(201,168,121,.7); }
 .hero-sub { max-width: 430px; margin: 0; color: rgba(240,232,220,.66); font-size: 15.5px; line-height: 1.9; }
@@ -314,13 +327,48 @@ body.menu-open .topbar.tucked { transform: none; }
 .hero-sign { margin-top: 22px; font-family: var(--serif); font-style: italic; font-size: 14.5px; color: rgba(240,232,220,.45); }
 .hero-sign em { color: #c9a879; }
 
-/* the scene — the salon photograph, explorable */
-.hero-scene { position: relative; z-index: 5; }
-.hero-scene .look-flip { width: clamp(250px, 27vw, 370px); }
-.hero-scene .look-stage {
-  box-shadow: 0 46px 100px rgba(0,0,0,.55), 0 8px 24px rgba(0,0,0,.3);
-  border: 1px solid rgba(201,168,121,.22);
+/* The scene is a print, not a backdrop: it holds the right of the room as a
+   discrete object with an edge, and the headline crosses its corner. Bled
+   off the page it only showed the salon's own wall line as a seam. */
+.hero-scene {
+  position: absolute; right: clamp(22px, 4vw, 72px); top: 54%; z-index: 2;
+  transform: translateY(-50%) translate3d(calc(var(--mx) * 7px), calc(var(--my) * 5px), 0);
+  transition: transform 1.4s var(--ease);
 }
+.hero-scene .look-flip { width: clamp(300px, 38vw, 540px); }
+.hero-scene .look-stage {
+  border: 1px solid rgba(201,168,121,.26);
+  box-shadow: 0 60px 120px -30px rgba(0,0,0,.8), 0 10px 30px rgba(0,0,0,.4);
+}
+/* the print steps back where the type runs over its corner */
+.hero-scene::after {
+  content: ""; position: absolute; inset: 0; z-index: 7; pointer-events: none;
+  background: linear-gradient(118deg, rgba(21,15,17,.88) 0%, rgba(21,15,17,.34) 20%, transparent 42%);
+}
+
+.hero-copy { position: relative; z-index: 5; max-width: 1080px;
+  padding: 22vh 0 clamp(44px, 9vh, 96px); }
+.hero-eyebrow { color: #c9a879; font-size: 11.5px; margin-bottom: 24px; }
+.hero-title {
+  font-family: var(--serif); font-weight: 400;
+  font-size: clamp(52px, 9.6vw, 142px); line-height: .9; letter-spacing: -.038em; color: #f6efe4;
+  margin: 0;
+}
+.hero-title em { display: block; margin-left: .07em; }
+/* each line lifts out from behind its own edge */
+.hero-title .ln { display: block; overflow: hidden; }
+.hero-title .ln > span { display: block; transform: translateY(102%);
+  animation: lineUp 1.05s cubic-bezier(.16,1,.3,1) both;
+  animation-delay: calc(var(--overture) + .18s); }
+.hero-title .ln:nth-child(2) > span { animation-delay: calc(var(--overture) + .28s); }
+@keyframes lineUp { to { transform: none; } }
+.hero-title em { color: #c9a879; }
+.hero-rule { width: 64px; height: 1px; margin: 32px 0 30px; background: rgba(201,168,121,.7); }
+.hero-sub { max-width: 430px; margin: 0; color: rgba(240,232,220,.66); font-size: 15.5px; line-height: 1.9; }
+.hero-actions { margin-top: 36px; display: flex; gap: 16px; flex-wrap: wrap; justify-content: flex-start; }
+.hero-sign { margin-top: 22px; font-family: var(--serif); font-style: italic; font-size: 14.5px; color: rgba(240,232,220,.45); }
+.hero-sign em { color: #c9a879; }
+
 .scene-hint { margin-top: 38px; text-align: center; font-size: 9.5px; letter-spacing: .15em;
   text-transform: uppercase; color: rgba(240,232,220,.42); }
 /* Buttons. Gradients and drop shadows date a page faster than anything else,
@@ -361,6 +409,10 @@ body.menu-open .topbar.tucked { transform: none; }
 .hero { --overture: 1.12s; }
 html.no-overture .hero { --overture: 0s; }
 .hero .reveal { animation: heroRise 1.05s var(--ease) both; }
+/* the scene is placed with a transform of its own, and heroRise ends on
+   transform:none — it would be dragged back to the middle of the room */
+.hero .hero-scene { animation-name: heroFade; }
+@keyframes heroFade { from { opacity: 0; } to { opacity: 1; } }
 .hero .hero-eyebrow { animation-delay: calc(var(--overture) + .04s); }
 .hero .hero-title   { animation-delay: calc(var(--overture) + .14s); }
 .hero .hero-rule    { animation-delay: calc(var(--overture) + .40s); }
@@ -1120,7 +1172,13 @@ html.no-overture .hero { --overture: 0s; }
 }
 /* hero folds to a column — copy above, scene below */
 @media (max-width: 940px) {
-  .hero { flex-direction: column; text-align: center; gap: 40px; padding: 116px 24px 84px; }
+  /* the print returns into the flow beneath the copy */
+  .hero { flex-direction: column; justify-content: center; text-align: center; gap: 40px; padding: 116px 24px 84px; }
+  .hero-copy { padding: 0; max-width: none; }
+  .hero-scene { position: static; transform: none; }
+  .hero-scene::after { display: none; }
+  .hero-title { font-size: clamp(42px, 8.4vw, 76px); }
+  .hero-title em { margin-left: 0; }
   .hero-rule { margin: 26px auto 24px; }
   .hero-sub { margin: 0 auto; }
   .hero-actions { justify-content: center; }

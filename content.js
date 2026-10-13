@@ -21,7 +21,7 @@ const SITE = {
 
   hero: {
     eyebrow: "A.z — Private Luxury Advisory",
-    title: "The art of <em>choosing well.</em>",
+    title: "The art of<br /><em>choosing well.</em>",
     sub: "A private advisory for luxury &amp; old-money essentials — we curate the finest, then guide you to the piece that truly suits you.",
     ctaOne: "View the Collection",
     ctaTwo: "Speak to an Advisor",

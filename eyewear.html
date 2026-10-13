@@ -20,9 +20,9 @@
   <!-- The page is led by its type and by one photograph: both are fetched
        with the stylesheet rather than after it, so the headline is never
        first drawn in a fallback face. -->
-  <link rel="preload" as="font" type="font/woff2" href="fonts/cormorant-500.woff2" crossorigin />
-  <link rel="preload" as="font" type="font/woff2" href="fonts/cormorant-500-italic.woff2" crossorigin />
-  <link rel="preload" as="font" type="font/woff2" href="fonts/jost-300.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="fonts/instrument-400.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="fonts/instrument-400-italic.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="fonts/archivo-var.woff2" crossorigin />
   <link rel="preload" as="image" href="images/look.webp" fetchpriority="high" />
   <link rel="stylesheet" href="styles.css" />
   <style>
@@ -43,135 +43,137 @@
     .topbar.lit .nav a::after { background: var(--gold); }
     .topbar.lit .brand-logo { filter: none; }
 
-    /* ================= The Eyewear — the lens room ================= */
+    /* ================= The Eyewear — the campaign room =================
+       The room was a left column of copy and a right box of photograph with
+       a hole between them. It is one composition now: the campaign runs the
+       full height off both edges, and the headline crosses onto it. */
     .lens-room {
       position: relative; min-height: 100svh; overflow: hidden;
-      display: flex; align-items: center; justify-content: center;
-      padding: 120px clamp(20px, 5vw, 70px) 90px;
-      background:
-        radial-gradient(120% 84% at 50% 42%, #3d2530 0%, #221518 46%, #120c0d 82%), #120c0d;
-      perspective: 1300px; perspective-origin: 50% 46%;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 0 0 0 clamp(20px, 5vw, 76px);
+      background: radial-gradient(130% 90% at 18% 40%, #35212a 0%, #1d1317 48%, #120c0d 86%), #120c0d;
       --mx: 0; --my: 0;
     }
-    /* the floor the lens hovers over */
-    .room-floor {
-      position: absolute; left: 0; right: 0; bottom: 0; height: 34%;
-      background: linear-gradient(180deg, transparent, rgba(228,196,150,.05) 40%, rgba(228,196,150,.09));
-      -webkit-mask-image: radial-gradient(70% 100% at 50% 100%, #000, transparent 78%);
-      mask-image: radial-gradient(70% 100% at 50% 100%, #000, transparent 78%);
-    }
-    /* a shaft of light from above */
-    .room-beam {
-      position: absolute; left: 50%; top: -12%; width: 66%; height: 96%;
-      transform: translateX(-50%); pointer-events: none;
-      background: radial-gradient(48% 58% at 50% 0%, rgba(236,206,158,.16), transparent 72%);
-    }
-    .room-dust { position: absolute; inset: 0; pointer-events: none; }
+    .room-dust { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
 
-    .room-grid {
-      position: relative; z-index: 3; width: 100%; max-width: 1240px;
-      display: grid; grid-template-columns: .82fr 1.28fr; gap: clamp(26px, 4vw, 60px); align-items: center;
+    /* ---- the campaign ---- */
+    .camp {
+      position: absolute; inset: 0; margin: 0; z-index: 1;
+      transform: translate3d(calc(var(--mx) * 10px), calc(var(--my) * 8px), 0) scale(1.03);
+      transition: transform 1.4s var(--ease);
+      animation: campIn 1.3s cubic-bezier(.16,1,.3,1) both;
     }
+    @keyframes campIn {
+      from { clip-path: inset(0 0 0 100%); }
+      to   { clip-path: inset(0 0 0 0); }
+    }
+    /* The print holds the right of the room and feathers out towards the
+        type, so there is no seam to see and no need to crop into her face
+        to fill the whole width. */
+    .camp-shot {
+      position: absolute; right: 0; top: 0; width: 60%; height: 100%;
+      object-fit: cover; object-position: 52% 22%;
+      display: block; filter: saturate(.96) contrast(1.04);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 30%);
+      mask-image: linear-gradient(90deg, transparent 0%, #000 30%);
+    }
+    /* the type crosses onto the print, so the print gives way under it */
+    .camp-veil {
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(21,15,17,.72) 0%, rgba(21,15,17,.5) 34%, rgba(21,15,17,.16) 54%, transparent 72%),
+        linear-gradient(0deg, rgba(18,12,13,.86), transparent 32%),
+        linear-gradient(180deg, rgba(18,12,13,.5), transparent 18%);
+    }
+    .camp-meta {
+      position: absolute; right: clamp(20px, 3vw, 44px); top: clamp(96px, 13vh, 150px);
+      z-index: 3; display: flex; flex-direction: column; align-items: flex-end; gap: 5px;
+      text-align: right;
+    }
+    .camp-meta span { font-size: 9px; letter-spacing: .22em; text-transform: uppercase; color: #c9a879; }
+    .camp-meta i { font-family: var(--serif); font-style: italic; font-size: 22px; color: #f0e8dc; }
+    .camp-meta b { font-weight: 400; font-size: 9px; letter-spacing: .14em; color: rgba(240,232,220,.45); }
+
+    /* ---- the index rail ---- */
+    .room-rail {
+      position: absolute; left: 0; top: 0; bottom: 0; width: clamp(20px, 5vw, 76px); z-index: 4;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+      pointer-events: none;
+    }
+    .rr-no, .rr-label {
+      writing-mode: vertical-rl; font-size: 8.5px; letter-spacing: .3em; text-transform: uppercase;
+      color: rgba(201,168,121,.6);
+    }
+    .rr-line { width: 1px; flex: 0 1 140px; background: linear-gradient(rgba(201,168,121,.45), transparent); }
 
     /* ---- the copy ---- */
-    .room-copy { max-width: 420px; }
-    .room-kicker { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: #c9a879; }
+    .room-copy { position: relative; z-index: 3; padding-top: 22vh; max-width: 1080px; }
+    .room-kicker { font-size: 9.5px; letter-spacing: .22em; text-transform: uppercase; color: #c9a879; }
     .room-title {
-      font-family: var(--serif); font-weight: 500; line-height: 1;
-      font-size: clamp(40px, 5.6vw, 76px); letter-spacing: -.026em;
-      color: #f0e8dc; margin-top: 20px;
+      font-family: var(--serif); font-weight: 400; line-height: .9;
+      font-size: clamp(52px, 9.6vw, 142px); letter-spacing: -.038em;
+      color: #f6efe4; margin-top: 18px;
     }
-    .room-title em { color: #c9a879; }
-    .room-rule { width: 64px; height: 1px; margin: 32px 0 30px; background: rgba(201,168,121,.7); }
-    .room-sub { color: rgba(240,232,220,.66); font-size: 15.5px; line-height: 1.95; }
-    .room-meta { margin-top: 30px; display: grid; gap: 11px; }
-    .room-meta div { display: flex; gap: 14px; align-items: baseline; font-size: 12px; }
-    .room-meta span { flex: 0 0 96px; font-size: 9px; letter-spacing: .15em; text-transform: uppercase; color: rgba(201,168,121,.8); }
-    .room-meta b { font-weight: 400; color: rgba(240,232,220,.78); }
-    .room-actions { margin-top: 34px; display: flex; gap: 12px; flex-wrap: wrap; }
-    .room-actions .btn { padding: 15px 26px; }
-    .room-actions .btn--solid { background: #e8dbc4; color: #1a1216; border-color: #e8dbc4; }
-    .room-actions .btn--solid::before { background: #fff3dd; }
-    .room-actions .btn--solid:hover { border-color: #fff3dd; }
-    .room-actions .btn--ghost { border-color: rgba(240,232,220,.3); color: #f0e8dc; }
+    .room-title em { display: block; font-style: italic; color: #c9a879; margin-left: .07em; }
+    /* each line lifts out from behind its own edge */
+    .room-title .ln { display: block; overflow: hidden; }
+    .room-title .ln > span {
+      display: block; transform: translateY(102%);
+      animation: lineUp 1.05s cubic-bezier(.16,1,.3,1) both;
+    }
+    .room-title .ln:nth-child(2) > span { animation-delay: .1s; }
+    @keyframes lineUp { to { transform: none; } }
+
+    .room-sub { margin-top: 30px; max-width: 34ch; color: rgba(240,232,220,.6);
+      font-size: 15px; line-height: 1.8; }
+    .room-actions { margin-top: 34px; display: flex; gap: 10px; flex-wrap: wrap; }
+    .room-actions .btn { padding: 15px 30px; }
+    .room-actions .btn--solid { background: #ece0c9; color: #15100f; border-color: #ece0c9; }
+    .room-actions .btn--solid::before { background: #fff6e4; }
+    .room-actions .btn--solid:hover { border-color: #fff6e4; }
+    .room-actions .btn--ghost { border-color: rgba(240,232,220,.26); color: #f0e8dc; }
     .room-actions .btn--ghost::before { background: #f0e8dc; }
     .room-actions .btn--ghost:hover { color: #130d0e; border-color: #f0e8dc; }
 
-    /* ---- the campaign plate ---- */
-    .campaign {
-      position: relative; justify-self: center; margin: 0;
-      width: min(470px, 100%); padding-left: 34px;
-      transform: rotateX(calc(var(--my) * -3deg)) rotateY(calc(var(--mx) * 4deg));
-      transform-style: preserve-3d; transition: transform 1.1s var(--ease);
-      animation: campIn .8s cubic-bezier(.16,1,.3,1) both;
+    /* ---- the technical strip across the foot ---- */
+    .room-foot {
+      position: relative; z-index: 3; margin-top: auto;
+      display: flex; align-items: flex-end; justify-content: space-between; gap: 30px;
+      padding: 0 clamp(20px, 3vw, 44px) 26px 0; flex-wrap: wrap;
     }
-    @keyframes campIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; } }
+    .room-meta { display: flex; gap: clamp(22px, 4vw, 64px); flex-wrap: wrap; }
+    .room-meta div { display: flex; flex-direction: column; gap: 6px; }
+    .room-meta span { font-size: 8.5px; letter-spacing: .22em; text-transform: uppercase; color: rgba(201,168,121,.7); }
+    .room-meta b { font-weight: 400; font-size: 13px; color: rgba(240,232,220,.84); }
 
-    /* the label stands on end against the plate, the way a contact sheet is marked */
-    .camp-edge {
-      position: absolute; left: 0; top: 0; z-index: 2;
-      writing-mode: vertical-rl; padding-top: 66px;
-      font-size: 8.5px; letter-spacing: .4em; text-transform: uppercase;
-      color: rgba(201,168,121,.72); white-space: nowrap;
+    .room-piece {
+      display: flex; align-items: center; gap: 12px; padding: 9px 16px 9px 9px;
+      background: rgba(20,14,15,.58); border: 1px solid rgba(201,168,121,.34);
+      -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+      transition: background .4s var(--ease), border-color .4s var(--ease);
     }
-    .camp-edge::before {
-      content: ""; position: absolute; left: 50%; top: 0; width: 1px; height: 54px;
-      background: linear-gradient(transparent, rgba(201,168,121,.6));
-    }
+    .room-piece:hover { background: rgba(20,14,15,.78); border-color: rgba(201,168,121,.62); }
+    .rp-shot { width: 66px; height: 46px; overflow: hidden; display: block; flex: none; background: #f3ece1; }
+    .rp-shot img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 64%;
+      display: block; transform: scale(1.62); mix-blend-mode: multiply; }
+    .rp-txt { display: flex; flex-direction: column; gap: 2px; }
+    .rp-txt b { font-weight: 400; font-size: 8px; letter-spacing: .24em; text-transform: uppercase; color: rgba(201,168,121,.8); }
+    .rp-txt i { font-family: var(--serif); font-style: italic; font-size: 15px; color: #f0e8dc; }
 
-    .camp-plate {
-      position: relative; aspect-ratio: 3 / 4; overflow: hidden;
-      transform: translateZ(30px);
-      border: 1px solid rgba(201,168,121,.34);
-      box-shadow: 0 60px 110px -30px rgba(0,0,0,.8), 0 16px 40px rgba(0,0,0,.45);
+    /* ---- the tape, run along the foot of the room ---- */
+    .tape {
+      position: relative; z-index: 3; overflow: hidden;
+      border-top: 1px solid rgba(201,168,121,.18);
+      margin-left: calc(clamp(20px, 5vw, 76px) * -1);
+      padding: 13px 0;
     }
-    .camp-shot {
-      display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%;
-      filter: saturate(.97) contrast(1.03);
+    .tape-run { display: flex; gap: 0; width: max-content; animation: tapeRun 42s linear infinite; }
+    .tape-run span {
+      padding: 0 clamp(26px, 4vw, 60px); white-space: nowrap;
+      font-size: 9px; letter-spacing: .26em; text-transform: uppercase; color: rgba(240,232,220,.34);
     }
-    /* the light the room throws across the print */
-    .camp-light {
-      position: absolute; inset: 0; pointer-events: none;
-      background:
-        linear-gradient(180deg, rgba(255,232,196,.12), transparent 26%),
-        linear-gradient(0deg, rgba(14,9,10,.62), transparent 42%),
-        radial-gradient(120% 80% at 50% 40%, transparent 54%, rgba(14,9,10,.4) 100%);
-    }
-    .camp-frame { position: absolute; inset: 11px; border: 1px solid rgba(255,244,224,.2); pointer-events: none; }
-    .camp-no {
-      position: absolute; right: 20px; bottom: 17px; z-index: 2;
-      font-family: var(--serif); font-style: italic; font-size: 14px; letter-spacing: .08em;
-      color: rgba(255,246,230,.62);
-    }
-
-    /* the caption stands away from the inset card, at the other corner */
-    .camp-cap {
-      display: flex; align-items: baseline; justify-content: flex-end; gap: 12px; flex-wrap: wrap;
-      margin-top: 30px; transform: translateZ(18px);
-    }
-    .camp-cap .cc-house { font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; color: #c9a879; }
-    .camp-cap .cc-piece { font-family: var(--serif); font-style: italic; font-size: 19px; color: rgba(240,232,220,.8); }
-
-    /* the object itself, set on paper against the dark — campaign and piece,
-       the way a lookbook puts the still beside the shot */
-    .camp-piece {
-      position: absolute; left: -26px; bottom: -22px; z-index: 3;
-      display: flex; align-items: center; gap: 13px;
-      padding: 10px 18px 10px 10px; transform: translateZ(66px);
-      background: linear-gradient(170deg, #fbf5ec, #ece1d2);
-      border: 1px solid rgba(201,168,121,.5);
-      box-shadow: 0 26px 50px -18px rgba(0,0,0,.72);
-      transition: transform .5s var(--ease), box-shadow .5s var(--ease);
-    }
-    .camp-piece:hover { transform: translateZ(66px) translateY(-4px); box-shadow: 0 34px 62px -18px rgba(0,0,0,.8); }
-    .cp-shot { width: 78px; height: 56px; overflow: hidden; display: block; flex: none; }
-    /* the product shot carries a great deal of empty studio: the still is
-       pushed in so the pair fills the little window it is given */
-    .cp-shot img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 64%;
-      display: block; transform: scale(1.62); filter: saturate(.96) contrast(1.05); }
-    .cp-txt { display: flex; flex-direction: column; gap: 3px; }
-    .cp-txt b { font-weight: 400; font-size: 8.5px; letter-spacing: .15em; text-transform: uppercase; color: #8a6a3a; }
-    .cp-txt i { font-family: var(--serif); font-style: italic; font-size: 16px; color: #2b2226; }
+    .tape-run span + span { border-left: 1px solid rgba(201,168,121,.16); }
+    @keyframes tapeRun { to { transform: translateX(-50%); } }
 
     /* ---- the collection, opening below ---- */
     .room-scroll {
@@ -193,27 +195,41 @@
     .ew-lead { margin-top: 12px; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
     .grid--objects .card-media img { object-fit: contain; padding: 14% 12%; }
 
-    @media (max-width: 940px) {
-      .room-grid { grid-template-columns: 1fr; gap: 44px; }
-      .room-copy { max-width: none; text-align: center; margin-inline: auto; }
-      .room-rule { margin-inline: auto; }
-      .room-actions { justify-content: center; }
-      .room-meta div { justify-content: center; }
-      .room-meta span { flex: 0 0 auto; }
-      .campaign { width: min(420px, 100%); margin-inline: auto; }
-      .lens-room { padding-top: 104px; }
+    @media (max-width: 1040px) {
+      /* the print falls behind the whole room rather than beside it */
+      .camp { inset: 0; }
+      .camp-veil {
+        background:
+          linear-gradient(90deg, rgba(18,12,13,.95) 0%, rgba(18,12,13,.78) 42%, rgba(18,12,13,.5) 100%),
+          linear-gradient(0deg, rgba(18,12,13,.92), transparent 44%);
+      }
+      .camp-shot { width: 100%; object-position: 62% 20%;
+        -webkit-mask-image: none; mask-image: none; }
+      .camp-meta { display: none; }
+      .room-copy { padding-top: 24vh; }
+      .room-foot { padding-right: clamp(20px, 5vw, 44px); }
     }
-    @media (max-width: 560px) {
-      .campaign { width: min(420px, 86%); padding-left: 26px; }
-      .camp-piece { left: -18px; bottom: 38px; padding: 8px 14px 8px 8px; }
-      .cp-shot { width: 62px; height: 44px; }
-      .cp-txt i { font-size: 14px; }
-      .room-meta { display: none; }
-      .room-actions { flex-direction: column; align-items: stretch; max-width: 260px; margin-inline: auto; }
-      .room-scroll { display: none; }
+    @media (max-width: 680px) {
+      .lens-room { padding-left: 22px; }
+      .room-rail { display: none; }
+      .tape { margin-left: -22px; }
+      .room-title { font-size: clamp(42px, 13vw, 72px); }
+      .room-sub { max-width: none; font-size: 14px; padding-right: 22px; }
+      .room-kicker, .room-title { padding-right: 22px; }
+      .room-copy { padding-top: 21vh; }
+      .room-actions { flex-direction: column; align-items: stretch; max-width: 280px; }
+      .room-meta { gap: 18px; }
+      .room-meta b { font-size: 12px; }
+      .room-foot { gap: 20px; padding-bottom: 20px; }
+      .room-piece { padding: 7px 13px 7px 7px; }
+      .rp-shot { width: 54px; height: 38px; }
+      .rp-txt i { font-size: 13px; }
     }
     @media (prefers-reduced-motion: reduce) {
-      .campaign { animation: none; transition: none; }
+      .camp, .room-title .ln > span { animation: none; }
+      .camp { transition: none; }
+      .room-title .ln > span { transform: none; }
+      .tape-run { animation: none; }
     }
   </style>
 </head>
@@ -230,51 +246,56 @@
 
   <!-- the lens room -->
   <section class="lens-room" id="lensRoom">
-    <span class="room-beam" aria-hidden="true"></span>
-    <span class="room-floor" aria-hidden="true"></span>
     <canvas class="room-dust" id="roomDust" aria-hidden="true"></canvas>
 
-    <div class="room-grid">
-      <div class="room-copy">
-        <p class="room-kicker" data-site="eyewear.kicker">The Eyewear</p>
-        <h1 class="room-title" data-html="eyewear.title">Seen through,<br /><em>never seen trying.</em></h1>
-        <div class="room-rule" aria-hidden="true"></div>
-        <p class="room-sub" data-site="eyewear.sub">Two shapes, one house. Black acetate cut in Italy and Japan, a whisper of gold at the temple, and lenses dark enough to keep your own counsel.</p>
-        <div class="room-meta" id="ewMeta"></div>
-        <div class="room-actions">
-          <a class="btn btn--solid" href="#pieces" data-site="eyewear.ctaOne">View the Pieces</a>
-          <a class="btn btn--ghost" href="index.html#enquire" data-site="eyewear.ctaTwo">Speak to an Advisor</a>
-        </div>
-      </div>
+    <!-- the campaign runs the full height of the room, off both edges -->
+    <figure class="camp" id="campaign">
+      <img class="camp-shot" src="images/look-back.webp" data-src="eyewear.campaign"
+           data-alt="eyewear.campaignAlt" alt="The A.z campaign — Gucci rectangular sunglasses" />
+      <span class="camp-veil" aria-hidden="true"></span>
+      <figcaption class="camp-meta">
+        <span data-site="eyewear.campaignHouse">Gucci</span>
+        <i data-site="eyewear.campaignPiece">Rectangular Sunglasses</i>
+      </figcaption>
+    </figure>
 
-      <!-- The campaign itself. A pair of glasses built out of gradients will
-           always read as built; the photograph was taken, and says more. -->
-      <figure class="campaign" id="campaign">
-        <span class="camp-edge" aria-hidden="true" data-site="eyewear.campaignLabel">The Campaign — A.z</span>
-
-        <div class="camp-plate">
-          <img class="camp-shot" src="images/look-back.webp" data-src="eyewear.campaign"
-               data-alt="eyewear.campaignAlt" alt="The A.z campaign — Gucci rectangular sunglasses" />
-          <span class="camp-light" aria-hidden="true"></span>
-          <span class="camp-frame" aria-hidden="true"></span>
-          <span class="camp-no" aria-hidden="true">No. 01</span>
-        </div>
-
-        <figcaption class="camp-cap">
-          <span class="cc-house" data-site="eyewear.campaignHouse">Gucci</span>
-          <span class="cc-piece" data-site="eyewear.campaignPiece">Rectangular Sunglasses</span>
-        </figcaption>
-
-        <a class="camp-piece" href="#pieces">
-          <span class="cp-shot"><img src="images/gg-rect.webp" data-src="eyewear.campaignCut" alt="" loading="lazy" /></span>
-          <span class="cp-txt">
-            <b data-site="eyewear.campaignCutKicker">The piece itself</b>
-            <i data-site="eyewear.campaignCutLine">See the pair</i>
-          </span>
-        </a>
-      </figure>
+    <!-- the index rail, stood on the left edge of the page -->
+    <div class="room-rail" aria-hidden="true">
+      <span class="rr-no">01 / 02</span>
+      <span class="rr-line"></span>
+      <span class="rr-label" data-site="eyewear.campaignLabel">The Campaign — A.z</span>
     </div>
-    <span class="room-scroll" aria-hidden="true">The Collection</span>
+
+    <div class="room-copy">
+      <p class="room-kicker" data-site="eyewear.kicker">The Eyewear</p>
+      <h1 class="room-title" data-html="eyewear.title">Seen through,<br /><em>never seen trying.</em></h1>
+      <p class="room-sub" data-site="eyewear.sub">Two shapes, one house. Black acetate cut in Italy and Japan, a whisper of gold at the temple, and lenses dark enough to keep your own counsel.</p>
+      <div class="room-actions">
+        <a class="btn btn--solid" href="#pieces" data-site="eyewear.ctaOne">View the Pieces</a>
+        <a class="btn btn--ghost" href="index.html#enquire" data-site="eyewear.ctaTwo">Speak to an Advisor</a>
+      </div>
+    </div>
+
+    <!-- the technical strip, run across the foot of the room -->
+    <div class="room-foot">
+      <div class="room-meta" id="ewMeta"></div>
+      <a class="room-piece" href="#pieces">
+        <span class="rp-shot"><img src="images/gg-rect.webp" data-src="eyewear.campaignCut" alt="" loading="lazy" /></span>
+        <span class="rp-txt">
+          <b data-site="eyewear.campaignCutKicker">The piece itself</b>
+          <i data-site="eyewear.campaignCutLine">See the pair</i>
+        </span>
+      </a>
+    </div>
+
+    <div class="tape" aria-hidden="true">
+      <div class="tape-run">
+        <span>Gucci</span><span>Category 3</span><span>Polished acetate</span><span>Interlocking G</span>
+        <span>Cut in Italy &amp; Japan</span><span>By appointment</span>
+        <span>Gucci</span><span>Category 3</span><span>Polished acetate</span><span>Interlocking G</span>
+        <span>Cut in Italy &amp; Japan</span><span>By appointment</span>
+      </div>
+    </div>
   </section>
 
   <!-- the collection opens beneath -->
@@ -337,7 +358,17 @@
     window.addEventListener("scroll", litScroll, { passive: true });
     litScroll();
 
-    /* the lens answers the pointer — and the phone's own tilt */
+    /* each line of the headline is given an edge to rise out from */
+    (function () {
+      var t = document.querySelector(".room-title");
+      if (!t) return;
+      var parts = t.innerHTML.split(/<br\s*\/?>/i);
+      t.innerHTML = parts.map(function (p) {
+        return '<span class="ln"><span>' + p + "</span></span>";
+      }).join("");
+    })();
+
+    /* the print answers the pointer — and the phone's own tilt */
     var room = document.getElementById("lensRoom");
     if (room && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
       var tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
