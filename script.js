@@ -19,14 +19,6 @@
       addEventListener(ev, dismissIntro, { once: true, passive: true }));
   }
 
-  /* each line of the headline is given an edge to rise out from */
-  (function () {
-    const t = document.querySelector(".hero-title");
-    if (!t) return;
-    t.innerHTML = t.innerHTML.split(/<br\s*\/?>/i)
-      .map((p) => '<span class="ln"><span>' + p + "</span></span>").join("");
-  })();
-
   /* ---- Mobile menu ---- */
   const menu = document.getElementById("menu");
   const menuToggle = document.getElementById("menuToggle");
