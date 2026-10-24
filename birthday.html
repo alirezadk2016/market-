@@ -310,8 +310,14 @@
     #muteBtn .ico.active{display:block}
     @media(max-width:560px){#muteBtn{top:22px;right:22px}}
   </style>
+  <link rel="stylesheet" href="birthday-atelier.css" />
 </head>
 <body>
+  <nav class="celebration-nav" aria-label="Celebration steps">
+    <button type="button" id="previousStage" hidden>← Back</button>
+    <span class="celebration-progress" id="celebrationProgress" role="status">01 / 04</span>
+    <span class="celebration-track" aria-hidden="true"><span id="celebrationTrack"></span></span>
+  </nav>
   <canvas id="fx"></canvas>
   <div class="frame" aria-hidden="true"></div>
 
@@ -443,7 +449,7 @@
   </section>
 
   <!-- Hidden YouTube player (background music, all stages) -->
-  <div id="yt-wrap" style="position:fixed;bottom:-9999px;left:-9999px;width:1px;height:1px;pointer-events:none;opacity:0" aria-hidden="true">
+  <div id="yt-wrap" style="position:fixed;bottom:-9999px;left:-9999px;width:1px;height:1px;pointer-events:none;opacity:0" aria-hidden="true" inert>
     <div id="yt-player"></div>
   </div>
 
@@ -471,10 +477,24 @@
     var musicStarted=false;
 
     function show(i){
-      stages.forEach(function(s,k){s.classList.toggle('on',k===i)});
+      var moved=i!==idx;
+      stages.forEach(function(s,k){
+        s.classList.toggle('on',k===i);
+        s.inert=k!==i;
+        s.setAttribute('aria-hidden',String(k!==i));
+      });
       idx=i;
+      document.getElementById('previousStage').hidden=i===0;
+      document.getElementById('celebrationProgress').textContent=String(i+1).padStart(2,'0')+' / '+String(stages.length).padStart(2,'0');
+      document.getElementById('celebrationTrack').style.width=((i+1)/stages.length*100)+'%';
       balloons.style.opacity='1';
+      if(moved){
+        var target=stages[i].querySelector('h1,h2,button')||stages[i];
+        if(target.tagName!=='BUTTON')target.setAttribute('tabindex','-1');
+        target.focus({preventScroll:true});
+      }
     }
+    document.getElementById('previousStage').addEventListener('click',function(){if(idx>0)show(idx-1);});
     document.querySelectorAll('[data-next]').forEach(function(b){
       b.addEventListener('click',function(){
         if(idx<stages.length-1) show(idx+1);
@@ -482,7 +502,7 @@
         burst(0.5,0.55,false); confetti();
       });
     });
-    setTimeout(function(){ show(0); },400);
+    show(0);
 
     /* ---- Stage 3: rose → gift ---- */
     var rose=document.getElementById('rose'), wrap=document.getElementById('rosewrap'),
@@ -494,10 +514,10 @@
       if(opened) return; opened=true;
       burst(0.5,0.5,true);
       wrap.classList.add('bloom');
-      setTimeout(function(){ wrap.style.display='none'; reveal.classList.add('on'); gift.classList.add('on'); },850);
+      setTimeout(function(){ wrap.style.display='none'; reveal.classList.add('on'); gift.classList.add('on'); },reduced?0:850);
       // the gift box wiggles… then the lid flies off and the bag rises out
-      setTimeout(function(){ gbox.classList.add('open'); confetti(); burst(0.5,0.45,false); },2400);
-      setTimeout(function(){ gcap.classList.add('on'); },3600);
+      setTimeout(function(){ gbox.classList.add('open'); confetti(); burst(0.5,0.45,false); },reduced?0:2400);
+      setTimeout(function(){ gcap.classList.add('on'); },reduced?0:3600);
     });
 
     /* ---- Stage 4: only offer the finale once the couple photo loads ---- */
@@ -515,13 +535,17 @@
     var ytPlayer=null, ytReady=false, musicPending=false;
     var muteBtn=document.getElementById('muteBtn');
     var icoOn=document.getElementById('icoOn'), icoOff=document.getElementById('icoOff');
-    var muted=false;
+    var muted=false, musicUnavailable=false;
 
     window.onYouTubeIframeAPIReady=function(){
       ytPlayer=new YT.Player('yt-player',{
         videoId:'bhoybya39QU',
         playerVars:{autoplay:0,controls:0,loop:1,playlist:'bhoybya39QU',rel:0,iv_load_policy:3,modestbranding:1},
-        events:{onReady:function(){
+        events:{onError:function(){
+          musicUnavailable=true;
+          muteBtn.hidden=true;
+          document.getElementById('yt-wrap').hidden=true;
+        },onReady:function(){
           ytReady=true;
           // try to start right away (works when the browser allows it)
           startMusic();
@@ -532,15 +556,18 @@
     (function(){var s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';document.head.appendChild(s);})();
 
     function startMusic(){
+      if(musicUnavailable) return;
       if(ytReady && ytPlayer){ ytPlayer.playVideo(); showMuteBtn(); }
       else musicPending=true;
     }
     // if autoplay was blocked, the very first touch anywhere starts the music
     document.addEventListener('pointerdown',function(){ startMusic(); },{once:true});
-    function showMuteBtn(){ muteBtn.classList.add('on'); }
+    function showMuteBtn(){ if(!musicUnavailable)muteBtn.classList.add('on'); }
     muteBtn.addEventListener('click',function(){
       if(!ytPlayer) return;
       muted=!muted;
+      muteBtn.setAttribute('aria-label',muted?'Unmute music':'Mute music');
+      muteBtn.setAttribute('aria-pressed',String(muted));
       if(muted){ ytPlayer.mute(); icoOn.classList.remove('active'); icoOff.classList.add('active'); }
       else{ ytPlayer.unMute(); icoOff.classList.remove('active'); icoOn.classList.add('active'); }
     });
@@ -550,7 +577,7 @@
     function size(){DPR=Math.min(2,window.devicePixelRatio||1);W=cv.width=innerWidth*DPR;H=cv.height=innerHeight*DPR;cv.style.width=innerWidth+'px';cv.style.height=innerHeight+'px';}
     size();addEventListener('resize',size);
     var dust=[],bp=[],cf=[];
-    for(var i=0;i<64;i++)dust.push(nd());
+    for(var i=0;i<18;i++)dust.push(nd());
     function nd(){return{x:Math.random()*W,y:Math.random()*H,r:(Math.random()*1.6+.4)*DPR,s:(Math.random()*.26+.05)*DPR,a:Math.random()*.5+.15,tw:Math.random()*6.28};}
     function burst(fx,fy,rosey){var x0=W*fx,y0=H*fy,n=rosey?110:80;
       for(var i=0;i<n;i++){var an=Math.random()*6.28,sp=(Math.random()*7+2)*DPR;
@@ -580,7 +607,7 @@
         cx.save();cx.translate(c.x,c.y);cx.rotate(c.rot);
         cx.fillStyle='rgba('+c.col+','+Math.max(0,c.life)+')';
         cx.fillRect(-c.w/2,-c.h/2,c.w,c.h);cx.restore();}
-      requestAnimationFrame(tick);}
+      if(!reduced)requestAnimationFrame(tick);}
     tick();
   })();
   </script>
