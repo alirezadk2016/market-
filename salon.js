@@ -63,8 +63,12 @@
   const status = document.getElementById('cinemaStatus');
   const inspect = document.getElementById('inspect');
   const resetView = document.getElementById('cinemaResetView');
+  const interaction = document.getElementById('cinemaInteraction');
+  const interactionState = document.getElementById('cinemaInteractionState');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
-  const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
+  const finePointer = matchMedia('(any-hover: hover) and (any-pointer: fine)');
+  const hoverYaw = 4.5;
+  const hoverPitch = 2.2;
   const sceneDuration = 8500;
   const imagePromises = new WeakMap();
 
@@ -93,6 +97,9 @@
   let suppressClickUntil = 0;
   let keyboardInput = false;
   let pointerMotionIntent = null;
+  let mousePresent = finePointer.matches;
+  let cameraRequested = !reduce.matches;
+  let cameraOptIn = false;
 
   const motionNote = document.createElement('p');
   motionNote.id = 'cinemaMotionNote';
@@ -122,8 +129,20 @@
   }
 
   // Autoplay and a person's deliberate camera gesture are separate intents.
+  function mouseViewEnabled() {
+    return mousePresent && cameraRequested && (!reduce.matches || cameraOptIn);
+  }
+
+  function syncMouseControl() {
+    const enabled = mouseViewEnabled();
+    hero.dataset.mouseCapable = String(mousePresent);
+    hero.dataset.mouseView = enabled ? 'on' : 'off';
+    if (interaction) interaction.setAttribute('aria-pressed', String(enabled));
+    if (interactionState) interactionState.textContent = enabled ? 'On' : 'Off';
+  }
+
   function canOrbit() {
-    return ready && !loading && !reduce.matches && finePointer.matches && innerWidth > 900 &&
+    return ready && !loading && mouseViewEnabled() &&
       inViewport && !documentHidden && !pageHidden && !modalOpen;
   }
 
@@ -166,7 +185,7 @@
     } else {
       const x = Math.max(-1, Math.min(1, ((pointerPosition.x - bounds.left) / bounds.width - .5) * 2));
       const y = Math.max(-1, Math.min(1, ((pointerPosition.y - bounds.top) / bounds.height - .5) * 2));
-      setOrbitPose(orbitAnchor.yaw - x * 2.8, orbitAnchor.pitch + y * 1.4);
+      setOrbitPose(orbitAnchor.yaw - x * hoverYaw, orbitAnchor.pitch + y * hoverPitch);
     }
   }
 
@@ -199,6 +218,7 @@
   }
 
   function syncPlayback() {
+    syncMouseControl();
     const interactive = canOrbit();
     hero.dataset.orbitEnabled = String(interactive);
     if (!interactive) resetOrbit();
@@ -375,6 +395,21 @@
     pointerMotionIntent = null;
     suppressClickUntil = 0;
   }, { capture: true, passive: true });
+  // Real mouse input also works in narrow panels and on touch-first laptops.
+  function observeMouse(event) {
+    if (event.pointerType !== 'mouse' || mousePresent) return;
+    mousePresent = true;
+    syncPlayback();
+  }
+  document.addEventListener('pointermove', observeMouse, { capture: true, passive: true });
+  document.addEventListener('pointerdown', observeMouse, { capture: true, passive: true });
+  interaction?.addEventListener('click', () => {
+    cameraRequested = !mouseViewEnabled();
+    cameraOptIn = cameraRequested && reduce.matches;
+    resetOrbit();
+    syncPlayback();
+    if (status) status.textContent = mouseViewEnabled() ? 'Mouse view on. Move to look, or drag to turn.' : 'Mouse view off.';
+  });
   hero.addEventListener('focusin', event => {
     const enteredFromOutside = !hero.contains(event.relatedTarget);
     if (enteredFromOutside && (keyboardInput || event.target.matches(':focus-visible'))) pauseByUser();
@@ -456,7 +491,7 @@
     const x = Math.max(-1, Math.min(1, ((event.clientX - bounds.left) / bounds.width - .5) * 2));
     const y = Math.max(-1, Math.min(1, ((event.clientY - bounds.top) / bounds.height - .5) * 2));
     // Preserve the last drag angle when hover takes over at the same pointer position.
-    orbitAnchor = { yaw: orbitPose.yaw + x * 2.8, pitch: orbitPose.pitch - y * 1.4 };
+    orbitAnchor = { yaw: orbitPose.yaw + x * hoverYaw, pitch: orbitPose.pitch - y * hoverPitch };
     orbitDrag = null;
     pointerPosition = null;
     stage.classList.remove('is-dragging');
@@ -477,7 +512,11 @@
     syncPlayback();
     if (status) status.textContent = 'Gallery view centred.';
   });
-  finePointer.addEventListener('change', () => { resetOrbit(); syncPlayback(); });
+  finePointer.addEventListener('change', () => {
+    mousePresent = finePointer.matches;
+    resetOrbit();
+    syncPlayback();
+  });
   window.addEventListener('resize', () => { resetOrbit(); syncPlayback(); }, { passive: true });
   window.addEventListener('blur', () => { resetOrbit(); syncPlayback(); });
 
@@ -488,7 +527,11 @@
   window.addEventListener('pagehide', () => { pageHidden = true; syncPlayback(); });
   window.addEventListener('pageshow', () => { pageHidden = false; syncPlayback(); });
   reduce.addEventListener('change', () => {
-    if (reduce.matches) userPaused = true;
+    if (reduce.matches) {
+      userPaused = true;
+      cameraRequested = false;
+      cameraOptIn = false;
+    }
     resetProgress();
     syncPlayback();
   });
