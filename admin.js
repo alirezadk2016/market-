@@ -338,7 +338,7 @@
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); return goTo(); }
       if (e.key === "Escape" && palOpen) { e.preventDefault(); $("#palette").hidden = true; palOpen = false; return; }
       if (e.key === "Escape" && modalClose) { e.preventDefault(); return modalClose(); }
-      if (e.key === "Escape" && !$("#sheet").hidden) return closeSheet();
+      if (e.key === "Escape" && !$("#sheet").hidden) { e.preventDefault(); return $("#sheetCancel").click(); }
       const cmd = e.metaKey || e.ctrlKey;
       if (cmd && e.key.toLowerCase() === "z") { e.preventDefault(); undo(); }
       if (cmd && e.key.toLowerCase() === "s") { e.preventDefault(); publish(); }
@@ -605,6 +605,9 @@
   function editPiece(r, i) {
     const p = r.items[i];
     const original = JSON.parse(JSON.stringify(p));
+    const wasDirty = state.dirty;
+    const originalImages = Object.assign({}, state.images);
+    const originalDraft = load(DRAFT);
     $("#sheetTitle").textContent = p.note || p.name || "New piece";
     const b = $("#sheetBody");
     b.innerHTML = "";
@@ -654,7 +657,19 @@
     b.appendChild(addV);
 
     $("#sheetSave").onclick = () => { closeSheet(); renderNav(); renderView(); };
-    $("#sheetCancel").onclick = () => { r.items[i] = original; closeSheet(); renderNav(); renderView(); };
+    $("#sheetCancel").onclick = () => {
+      r.items[i] = original;
+      state.images = originalImages;
+      if (wasDirty) touched();
+      else {
+        state.dirty = false;
+        if (originalDraft) save(DRAFT, originalDraft);
+        else { try { localStorage.removeItem(DRAFT); } catch (_) {} }
+        $("#dirty").className = "bar-mid";
+        $("#dirty").textContent = "";
+      }
+      closeSheet(); renderNav(); renderView();
+    };
     $("#sheet").hidden = false;
   }
 

@@ -5,11 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>A.z — Private Luxury Advisory</title>
   <meta name="description" content="A.z — a private advisory for luxury and old-money essentials. Curated pieces and personal purchase guidance, by appointment. Bags today; footwear and fragrance to follow." />
-  <meta name="theme-color" content="#f5efe8" />
-  <!-- Critical: paint dark immediately so there is never a white flash before styles.css loads -->
-  <style>html,body{margin:0;background:#f5efe8}#intro{position:fixed;inset:0;background:#130d0e;z-index:9999}html.no-overture #intro{display:none}</style>
-  <!-- The overture plays once a session: a returning visitor walks straight in. -->
-  <script>try{var k="az.overture";if(sessionStorage.getItem(k)){document.documentElement.className+=" no-overture";}else{sessionStorage.setItem(k,"1");}}catch(e){}</script>
+  <meta name="theme-color" content="#f7f4ee" />
+  <style>html,body{margin:0;background:#f7f4ee}</style>
 
   <!-- Favicon (gold monogram) -->
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23f5efe8'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-style='italic' font-size='30' fill='%237a2c3d' text-anchor='middle'%3EAZ%3C/text%3E%3C/svg%3E" />
@@ -35,19 +32,6 @@
   <link rel="stylesheet" href="atelier.css" />
 </head>
 <body data-meta="meta">
-  <!-- Intro curtain -->
-  <div class="intro" id="intro">
-    <div class="intro-inner">
-      <span class="intro-sig">
-        <img class="intro-logo-ghost" src="images/logo.png" alt="" aria-hidden="true" />
-        <img class="intro-logo" src="images/logo.png" alt="A.z" />
-        <span class="intro-nib" aria-hidden="true"></span>
-      </span>
-      <span class="intro-line" aria-hidden="true"></span>
-      <span class="intro-sub">Private Luxury Advisory</span>
-    </div>
-  </div>
-
   <!-- Top bar -->
   <header class="topbar" id="topbar">
     <a href="#" class="brand" aria-label="A.z — home">
@@ -79,14 +63,11 @@
 
   <!-- Hero — cinematic dark stage -->
   <section class="hero" id="hero">
-    <div class="hero-glow" aria-hidden="true"></div>
-    <canvas class="hero-dust" id="dust" aria-hidden="true"></canvas>
-    <div class="hero-vignette" aria-hidden="true"></div>
     <div class="hero-copy">
       <p class="hero-eyebrow reveal" data-site="hero.eyebrow">A.z — Private Luxury Advisory</p>
       <h1 class="hero-title reveal" data-html="hero.title">The art of <em>choosing well.</em></h1>
       <div class="hero-rule reveal" aria-hidden="true"></div>
-      <p class="hero-sub reveal" data-html="hero.sub">A private advisory for luxury &amp; old-money essentials — we curate the finest, then guide you to the piece that truly suits you.</p>
+      <p class="hero-sub reveal" data-html="hero.sub">Considered pieces. Personal guidance. A private edit of bags, eyewear and everyday essentials — chosen around you.</p>
       <div class="hero-actions reveal">
         <a href="#collection" class="btn btn--solid" data-site="hero.ctaOne">View the Collection</a>
         <a href="#enquire" class="btn btn--ghost" data-site="hero.ctaTwo">Speak to an Advisor</a>
@@ -185,7 +166,13 @@
       <h2 class="section-title reveal" data-site="service.title">The Service</h2>
       <p class="section-lead reveal" data-site="service.lead">How A.z works.</p>
     </div>
-    <div class="pillars" id="pillars"></div>
+    <div class="service-layout">
+      <figure class="service-image">
+        <img src="images/atelier-materials.webp" width="1536" height="1024" alt="An editorial study of oxblood leather, ivory linen and brushed brass on warm limestone" loading="lazy" decoding="async" />
+        <figcaption>A study in texture, proportion and detail.</figcaption>
+      </figure>
+      <div class="pillars" id="pillars"></div>
+    </div>
     <div class="house-cta reveal">
       <a class="btn btn--ghost" href="advisory.html" data-site="houseCta">How We Help — The Full Method</a>
     </div>
@@ -225,7 +212,7 @@
   </footer>
 
   <!-- Lightbox viewer -->
-  <div class="lb" id="lb" aria-hidden="true" role="dialog" aria-label="Piece viewer">
+  <dialog class="lb" id="lb" aria-hidden="true" aria-label="Piece viewer">
     <button class="lb-close" id="lbClose" aria-label="Close">×</button>
     <button class="lb-arrow lb-prev" id="lbPrev" aria-label="Previous view">‹</button>
     <figure class="lb-fig">
@@ -254,7 +241,7 @@
       <a class="lb-enquire" id="lbPage" href="#">Discover the Piece</a>
     </figure>
     <button class="lb-arrow lb-next" id="lbNext" aria-label="Next view">›</button>
-  </div>
+  </dialog>
 
   <script src="content.js"></script>
   <script src="fill.js"></script>

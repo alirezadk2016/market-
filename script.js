@@ -19,44 +19,8 @@
       addEventListener(ev, dismissIntro, { once: true, passive: true }));
   }
 
-  /* ---- Mobile menu ---- */
+  // Shared navigation and keyboard behavior are owned by fill.js.
   const menu = document.getElementById("menu");
-  const menuToggle = document.getElementById("menuToggle");
-  if (menu && menuToggle) {
-    const setMenu = (open) => {
-      menu.classList.toggle("open", open);
-      menuToggle.classList.toggle("open", open);
-      menuToggle.setAttribute("aria-expanded", open ? "true" : "false");
-      menu.setAttribute("aria-hidden", open ? "false" : "true");
-      menu.inert = !open;
-      document.body.classList.toggle("menu-open", open);
-      document.body.style.overflow = open ? "hidden" : "";
-      menuToggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
-      if (open) menu.querySelector("a")?.focus();
-    };
-    menu.inert = true;
-    menu.addEventListener("keydown", (e) => {
-      if (e.key !== "Tab") return;
-      const links = [...menu.querySelectorAll("a[href]")];
-      if (e.shiftKey && document.activeElement === links[0]) { e.preventDefault(); menuToggle.focus(); }
-      else if (!e.shiftKey && document.activeElement === links.at(-1)) { e.preventDefault(); menuToggle.focus(); }
-    });
-    menuToggle.addEventListener("keydown", (e) => {
-      if (e.key === "Tab" && menu.classList.contains("open")) {
-        e.preventDefault();
-        const links = [...menu.querySelectorAll("a[href]")];
-        (e.shiftKey ? links.at(-1) : links[0])?.focus();
-      }
-    });
-    menuToggle.addEventListener("click", () => setMenu(!menu.classList.contains("open")));
-    menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setMenu(false)));
-    // Close menu (and free the locked scroll) if the viewport grows to desktop
-    window.addEventListener("resize", () => {
-      if (window.innerWidth > 820 && menu.classList.contains("open")) setMenu(false);
-    });
-    // Escape closes the menu
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape") setMenu(false); });
-  }
 
   /* ---- Top bar scroll state ---- */
   const topbar = document.getElementById("topbar");
@@ -213,8 +177,15 @@
         advisor: bag.advisor || null, pageId: idx, award: bag.award || null
       });
     };
-    card.querySelector(".card-media").style.cursor = "zoom-in";
-    card.querySelector(".card-media").addEventListener("click", openViewer);
+    const media = card.querySelector(".card-media");
+    media.style.cursor = "zoom-in";
+    media.tabIndex = 0;
+    media.setAttribute("role", "button");
+    media.setAttribute("aria-label", "Quick view " + (bag.note || bag.name || "piece"));
+    media.addEventListener("click", openViewer);
+    media.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") { event.preventDefault(); openViewer(); }
+    });
     // dedicated page per piece — every bag added to bags.js gets one automatically
     const dBtn = document.createElement("a");
     dBtn.className = "card-details"; dBtn.href = "piece.html?id=" + idx;
@@ -264,16 +235,20 @@
           prev = document.getElementById("lbPrev"),
           next = document.getElementById("lbNext"),
           close = document.getElementById("lbClose");
-    let shots = [], idx = 0;
+    let shots = [], idx = 0, returnFocus = null, imageLabel = "";
+    lb.inert = true;
 
     function paint() {
       img.src = shots[idx] || "";
+      img.alt = imageLabel + " — view " + (idx + 1) + " of " + shots.length;
       prev.disabled = idx <= 0;
       next.disabled = idx >= shots.length - 1;
       const many = shots.length > 1;
       prev.style.display = next.style.display = many ? "" : "none";
     }
     window.openLightbox = function (s) {
+      returnFocus = document.activeElement;
+      imageLabel = [s.name, s.sub].filter(Boolean).join(" · ");
       shots = s.shots || []; idx = Math.min(s.idx || 0, shots.length - 1);
       nameEl.textContent = s.name; subEl.textContent = s.sub;
       // product sheet
@@ -302,13 +277,21 @@
       } else adv.style.display = "none";
       paint();
       lb.classList.add("open"); lb.setAttribute("aria-hidden", "false");
+      lb.setAttribute("aria-modal", "true"); lb.inert = false;
+      if (!lb.open) lb.showModal();
       document.body.style.overflow = "hidden";
+      requestAnimationFrame(() => { if (lb.classList.contains('open')) close.focus(); });
     };
     function shut() {
       lb.classList.remove("open"); lb.setAttribute("aria-hidden", "true");
+      lb.close();
+      lb.inert = true;
+      if (menu && !menu.classList.contains('open')) menu.inert = true;
       document.body.style.overflow = "";
+      requestAnimationFrame(() => { if (!lb.classList.contains('open')) returnFocus?.focus(); });
     }
     close.addEventListener("click", shut);
+    lb.addEventListener('cancel', (event) => { event.preventDefault(); shut(); });
 
     /* The House panel: fill from BRANDS and toggle from the brand name */
     window.fillBrandPanel = function (prefix, brandName, award) {
@@ -337,6 +320,12 @@
     next.addEventListener("click", () => { if (idx < shots.length - 1) { idx++; paint(); } });
     document.addEventListener("keydown", (e) => {
       if (!lb.classList.contains("open")) return;
+      if (e.key === "Tab") {
+        const controls = [...lb.querySelectorAll('button:not([disabled]),a[href],[tabindex="0"]')].filter(node => node.getClientRects().length && getComputedStyle(node).visibility !== 'hidden');
+        const first = controls[0], last = controls.at(-1);
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+      }
       if (e.key === "Escape") shut();
       if (e.key === "ArrowRight") next.click();
       if (e.key === "ArrowLeft") prev.click();

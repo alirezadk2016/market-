@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>A.z — The Piece</title>
-  <meta name="theme-color" content="#f5efe8" />
+  <meta name="theme-color" content="#f7f4ee" />
   <meta name="description" content="A single piece, examined — its house, its making, and whether it belongs in your wardrobe. Advised personally." />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="A.z — The Piece" />
@@ -196,7 +196,7 @@
     <a class="crumb" href="index.html#collection">← The Collection</a>
     <div class="piece-grid">
       <section class="piece-gallery">
-        <div class="p-main"><img id="pMain" alt="" /></div>
+        <div class="p-main"><img id="pMain" alt="" /><p class="p-media-status" id="pMediaStatus" role="status" hidden>Photograph unavailable. Ask your advisor for a closer look.</p></div>
         <div class="p-thumbs" id="pThumbs"></div>
       </section>
 
@@ -302,8 +302,8 @@
         <label for="revPhotos">Add Photos</label>
         <div class="rev-previews" id="revPreviews"></div>
       </div>
-      <button type="submit" class="rev-submit">Share Impression</button>
-      <p class="rev-note">Shared discreetly with the house.</p>
+      <button type="submit" class="rev-submit">Save Impression</button>
+      <p class="rev-note">Saved on this device only. To share feedback with A.z, <a href="index.html#enquire">contact your advisor</a>.</p>
     </form>
 
     <div class="rev-list" id="revList"></div>
@@ -323,8 +323,18 @@
     "use strict";
     var qs = new URLSearchParams(location.search);
     var col = qs.get("c") || "bags";
-    if (typeof RANGES === "undefined" || !RANGES[col] || !RANGES[col].items.length) col = "bags";
-    var SRC = (typeof RANGES !== "undefined") ? RANGES[col].items : BAGS;
+    if (typeof RANGES !== "undefined" && (!RANGES[col] || !RANGES[col].items.length)) col = Object.keys(RANGES).find(key => RANGES[key].items && RANGES[key].items.length) || 'bags';
+    var SRC = (typeof RANGES !== "undefined") ? (RANGES[col] && RANGES[col].items || []) : (typeof BAGS !== 'undefined' ? BAGS : []);
+    if (!SRC || !SRC.length) {
+      document.title = 'A.z — Piece unavailable';
+      const empty = document.createElement('section'); empty.className = 'piece-empty';
+      const title = document.createElement('h1'); title.textContent = 'A new edit is taking shape.';
+      const copy = document.createElement('p'); copy.textContent = 'This piece is no longer in the current collection. Explore the latest edit or speak to your advisor.';
+      const link = document.createElement('a'); link.className = 'btn btn--solid'; link.href = 'index.html#vitrine'; link.textContent = 'Explore the collections';
+      empty.append(title, copy, link); document.querySelector('.piece').replaceChildren(empty);
+      document.querySelector('.reviews').hidden = true; document.querySelector('.share-row').hidden = true;
+      return;
+    }
     var id = parseInt(qs.get("id") || "0", 10);
     if (isNaN(id) || id < 0 || id >= SRC.length) id = 0;
     var bag = SRC[id];
@@ -391,11 +401,19 @@
         sw = document.getElementById("pSwatches"),
         colorEl = document.getElementById("pColor");
     var variants = bag.variants || [];
-    function setMain(src) { main.style.opacity = 0; setTimeout(function(){ main.src = src; main.style.opacity = 1; }, 160); }
+    const imageStatus = document.getElementById('pMediaStatus');
+    main.addEventListener('load', function(){ imageStatus.hidden = true; });
+    main.addEventListener('error', function(){ imageStatus.hidden = false; imageStatus.textContent = 'Photograph unavailable. Ask your advisor for a closer look.'; });
+    function setMain(src) {
+      main.alt = [bag.name, bag.note, colorEl.textContent].filter(Boolean).join(' · ');
+      imageStatus.hidden = false;
+      if(src) { imageStatus.textContent = 'Loading photograph…'; main.src = src; if(main.complete && main.naturalWidth)imageStatus.hidden = true; }
+      else { main.removeAttribute('src'); imageStatus.textContent = 'Photograph unavailable. Ask your advisor for a closer look.'; }
+    }
     function renderVariant(i) {
       var v = variants[i] || {}, shots = v.shots || [];
       colorEl.textContent = v.color || "";
-      main.src = shots[0] || "";
+      setMain(shots[0] || "");
       thumbs.innerHTML = "";
       shots.forEach(function (s, k) {
         var b = document.createElement("button");
@@ -403,14 +421,19 @@
         var im = document.createElement("img"); im.src = s; im.alt = ""; im.loading = "lazy";
         im.width = 58; im.height = 68;
         b.setAttribute("aria-label", "View " + (k + 1) + (bag.note ? " of " + bag.note : ""));
+        b.setAttribute('aria-pressed', String(k === 0));
         b.appendChild(im);
         b.addEventListener("click", function () {
-          thumbs.querySelectorAll(".thumb").forEach(function (x) { x.classList.remove("active"); });
+          thumbs.querySelectorAll(".thumb").forEach(function (x) { x.classList.remove("active"); x.setAttribute('aria-pressed','false'); });
+          b.setAttribute('aria-pressed','true');
           b.classList.add("active"); setMain(s);
         });
         thumbs.appendChild(b);
       });
-      sw.querySelectorAll(".swatch").forEach(function (x, k) { x.classList.toggle("active", k === i); });
+      sw.querySelectorAll(".swatch").forEach(function (x, k) { x.classList.toggle("active", k === i); x.setAttribute('aria-pressed',String(k === i)); });
+      if (typeof SITE !== 'undefined' && SITE.enquire && SITE.enquire.email) {
+        document.querySelector('.p-cta .btn--solid').href = 'mailto:' + SITE.enquire.email + '?subject=' + encodeURIComponent('A.z enquiry — ' + bag.name + ' ' + bag.note) + '&body=' + encodeURIComponent('I would like advice on ' + bag.name + ' ' + bag.note + ' in ' + (v.color || 'this colour') + '.');
+      }
     }
     variants.forEach(function (v, i) {
       var b = document.createElement("button");
@@ -448,7 +471,7 @@
     /* ---------- Client impressions (stored on this device) ---------- */
     var KEY = "az_reviews_" + (col === "bags" ? "" : col + "_") + id;
     var list = document.getElementById("revList"), avgEl = document.getElementById("revAvg");
-    function load() { try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { return []; } }
+    function load() { try { const saved = JSON.parse(localStorage.getItem(KEY) || "[]"); return Array.isArray(saved) ? saved.filter(item => item && typeof item === 'object' && Number.isFinite(item.s) && item.s >= 1 && item.s <= 5) : []; } catch (e) { return []; } }
     function save(a) { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) {} }
     var cache = load(); // in-memory source of truth — works even if storage is blocked (private mode)
     function starsTxt(n) { return "★★★★★".slice(0, n) + "☆☆☆☆☆".slice(0, 5 - n); }
@@ -531,5 +554,6 @@
     });
   })();
   </script>
+<script src="atelier.js"></script>
 </body>
 </html>

@@ -14,10 +14,17 @@ Motion: restrained image transitions; preserve explicit hotspot and photograph f
 
 Verification: compare desktop/mobile screenshots, verify collection routes, product variants, mobile navigation, keyboard focus, missing assets and JavaScript errors. Do not claim the live deployment changed until GitHub publication and deployment are verified.
 
-## Collection workroom and personal celebration
+## Collection workroom
 
 Admin intent: the curator finds, edits and prepares real pieces. Product editing leads; collection metadata sits in a native disclosure. Domain: vitrine, provenance, house, colour, catalogue, appointment. Materials: ivory paper, warm stone, oxblood leather, faded rose, ink. Signature: the house's product photographs become the working catalogue. Avoid a generic metrics dashboard, dark terminal chrome and marketing-scale titles on form fields.
 
 Admin hierarchy: 46px Cormorant collection title, 30px section titles, 14px Jost body, 10–12px metadata. A 238px sidebar supports a flexible product workspace. Three product columns on desktop, two on smaller desktop and one on phone. Controls are at least 40px high (44px fields), inset paper inputs, thin warm borders, one oxblood primary action. The edit sheet has keyboard focus containment, background inertness and focus restoration; labels are available to assistive technology. No publishing credentials, collection contents or repository settings are changed by the design.
 
-Birthday intent: a personal card with a four-step gift reveal, retaining its original words and media. Deep oxblood replaces black, parchment lettering leads, subdued balloons and particles sit behind the content. A numbered progress indicator and Back control make the sequence understandable and reversible. Inactive stages are inert and new stages receive focus. Reduced motion reveals the gift without timed animation delays. An unavailable music video hides its unusable control.
+
+## Final scope and phone-specific design
+
+The birthday experience and its exclusive media were removed at the owner's request. Public commerce/advisory surfaces are the scope.
+
+Phone: a safe-area-aware bottom action shelf, compact two-line opening, portrait imagery, horizontally scrollable house filters, a two-column product edit, square contained product images and direct product-specific enquiry links. Desktop keeps the wide editorial composition, staggered collection gallery and split photograph/method section.
+
+New image: images/atelier-materials.webp is an AI-generated editorial material study, used as atmosphere alongside service and advisory copy. It is not a product photograph, an actual studio photograph or evidence of craftsmanship. Original product and campaign images remain. Generated with the built-in imagegen tool; compressed to WebP for delivery.
