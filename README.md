@@ -11,3 +11,6 @@ The architecture, watch support and material study are generated editorial/decor
 Validation: all referenced assets exist and scripts parse. Hero selections checked at 360/390/768/1440px without horizontal document overflow or broken completed images. Four catalogue counts, colour search, empty state, alternate photos, retained variant, native dialog Close/Escape, persistent phone close controls, FAQ disclosures and prefilled enquiry destinations checked in browser. Physical phone hardware and email app launch were not exercised.
 
 Collection cover photography: four original unbranded generated editorial studies, with responsive 640/960px and full-size WebP sources. The decorative covers do not replace the real catalogue photographs. See IMAGE_CREDITS.md.
+
+
+Collection gallery refinement: native full-screen mobile browsing, a persistent collection rail, House/Colour refinements, tokenized variant-aware search and independent 44px swatches. Catalogue photographs use the original sources; responsive framing removes surplus studio canvas without modifying image files or filtering product colours. The Sand long-strap photograph remains complete. Product-to-list navigation restores browsing scroll and focus by stable model index. `catalogue.css` scopes this surface separately from the salon/campaign sections.
