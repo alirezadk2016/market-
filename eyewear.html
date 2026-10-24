@@ -14,8 +14,8 @@
   <meta name="twitter:image" content="images/og.png" />
 
   <title>A.z — The Eyewear</title>
-  <meta name="theme-color" content="#130d0e" />
-  <style>html,body{margin:0;background:#130d0e}</style>
+  <meta name="theme-color" content="#f7f8f6" />
+  <style>html,body{margin:0;background:#f7f8f6}</style>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23f5efe8'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-style='italic' font-size='30' fill='%237a2c3d' text-anchor='middle'%3EAZ%3C/text%3E%3C/svg%3E" />
   <!-- The page is led by its type and by one photograph: both are fetched
        with the stylesheet rather than after it, so the headline is never
@@ -217,6 +217,7 @@
     }
   </style>
   <link rel="stylesheet" href="atelier.css" />
+  <link rel="stylesheet" href="studio.css?v=studio4" />
 </head>
 <body data-meta="eyewear.meta">
   <header class="topbar" id="topbar">
@@ -299,7 +300,7 @@
     <span class="footer-copy">© A.z — By Appointment</span>
   </footer>
 
-  <script src="content.js"></script>
+  <script src="content.js?v=studio4"></script>
   <script src="fill.js"></script>
   <script src="bags.js"></script>
   <script>
@@ -337,64 +338,9 @@
     window.addEventListener("scroll", litScroll, { passive: true });
     litScroll();
 
-    /* the lens answers the pointer — and the phone's own tilt */
-    var room = document.getElementById("lensRoom");
-    if (room && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      var tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
-      function loop() {
-        cx += (tx - cx) * 0.07; cy += (ty - cy) * 0.07;
-        room.style.setProperty("--mx", cx.toFixed(3));
-        room.style.setProperty("--my", cy.toFixed(3));
-        raf = (Math.abs(tx - cx) + Math.abs(ty - cy) > 0.001) ? requestAnimationFrame(loop) : 0;
-      }
-      var kick = function () { if (!raf) raf = requestAnimationFrame(loop); };
-      room.addEventListener("pointermove", function (e) {
-        var r = room.getBoundingClientRect();
-        tx = ((e.clientX - r.left) / r.width - 0.5) * 2;
-        ty = ((e.clientY - r.top) / r.height - 0.5) * 2;
-        kick();
-      });
-      room.addEventListener("pointerleave", function () { tx = 0; ty = 0; kick(); });
-
-      /* the phone's own tilt moves the print as a hand would */
-      window.addEventListener("deviceorientation", function (e) {
-        if (e.gamma == null) return;
-        tx = Math.max(-1, Math.min(1, e.gamma / 26));
-        ty = Math.max(-1, Math.min(1, ((e.beta || 40) - 40) / 30));
-        kick();
-      });
-
-      /* motes of light in the room */
-      var cv = document.getElementById("roomDust");
-      if (cv) {
-        var ctx = cv.getContext("2d"), W, H, DPR;
-        function size() {
-          DPR = Math.min(2, window.devicePixelRatio || 1);
-          W = cv.width = room.clientWidth * DPR; H = cv.height = room.clientHeight * DPR;
-        }
-        size(); addEventListener("resize", size);
-        var ps = [];
-        for (var i = 0; i < 40; i++) ps.push({
-          x: Math.random() * W, y: Math.random() * H,
-          r: (Math.random() * 1.5 + .4) * DPR, s: (Math.random() * .2 + .04) * DPR,
-          a: Math.random() * .4 + .1, tw: Math.random() * 6.28
-        });
-        (function tick() {
-          ctx.clearRect(0, 0, W, H);
-          for (var j = 0; j < ps.length; j++) {
-            var d = ps[j];
-            d.y -= d.s; d.tw += .024; d.x += Math.sin(d.tw) * .13 * DPR;
-            if (d.y < -5) { d.y = H + 5; d.x = Math.random() * W; }
-            ctx.beginPath();
-            ctx.fillStyle = "rgba(214,182,128," + d.a * (.6 + .4 * Math.sin(d.tw)) + ")";
-            ctx.arc(d.x, d.y, d.r, 0, 6.28); ctx.fill();
-          }
-          requestAnimationFrame(tick);
-        })();
-      }
-    }
+    // Campaign image is static: no hidden particle loop or device sensors.
   })();
   </script>
-<script src="atelier.js"></script>
+<script src="atelier.js?v=studio4"></script>
 </body>
 </html>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>A.z — The Collections</title>
-  <meta name="theme-color" content="#f7f4ee" />
+  <meta name="theme-color" content="#f7f8f6" />
   <meta name="description" content="Bags, timepieces, headwear and eyewear, curated piece by piece and advised on personally. By appointment." />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="A.z — The Collections" />
@@ -15,7 +15,7 @@
   <meta name="twitter:description" content="Bags, timepieces, headwear and eyewear, curated piece by piece and advised on personally. By appointment." />
   <meta name="twitter:image" content="images/og.png" />
 
-  <style>html,body{margin:0;background:#f5efe8}</style>
+  <style>html,body{margin:0;background:#f7f8f6}</style>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23f5efe8'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-style='italic' font-size='30' fill='%237a2c3d' text-anchor='middle'%3EAZ%3C/text%3E%3C/svg%3E" />
   <!-- The page is led by its type and by one photograph: both are fetched
        with the stylesheet rather than after it, so the headline is never
@@ -77,6 +77,7 @@
     }
   </style>
   <link rel="stylesheet" href="atelier.css" />
+  <link rel="stylesheet" href="studio.css?v=studio4" />
 </head>
 <body>
   <header class="topbar scrolled" id="topbar">
@@ -111,7 +112,7 @@
     <span class="footer-copy">© A.z — By Appointment</span>
   </footer>
 
-  <script src="content.js"></script>
+  <script src="content.js?v=studio4"></script>
   <script src="fill.js"></script>
   <script src="bags.js"></script>
   <script>
@@ -119,7 +120,7 @@
     "use strict";
     var qs = new URLSearchParams(location.search);
     var col = qs.get("c") || "bags";
-    if (!RANGES[col]) col = Object.keys(RANGES)[0];
+    if (!Object.prototype.hasOwnProperty.call(RANGES,col)) col = Object.keys(RANGES)[0];
     var range = RANGES[col];
     if (!range) {
       document.getElementById('rTitle').textContent = 'The next edit';
@@ -173,6 +174,6 @@
     });
   })();
   </script>
-<script src="atelier.js"></script>
+<script src="atelier.js?v=studio4"></script>
 </body>
 </html>

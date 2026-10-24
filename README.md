@@ -38,3 +38,6 @@ Product impressions are stored locally on the current device; they are not sent 
 
 ### Enquiries and private notes
 FAQ content is in `SITE.faq` and the admin content editor. The enquiry brief opens an editable email draft and requires an email app; it is not a backend form. Product links preserve the selected colour. Notes and attached photos stay in browser storage, with a visit-only fallback when storage is unavailable. They are not public customer reviews. `404.html` supplies the branded missing-page document; production routing must be confirmed after deployment.
+
+### Studio visual system
+`studio.css` is the final public-facing theme and loads after the legacy baseline and interaction styles. `studio.js` owns the explicit featured-piece selector. The hero resolves actual catalogue items by house/model so reordering a collection does not change its identity. Six initial home cards expand with View all; searching/filtering continues to cover the full catalogue. Product return links accept only known same-origin catalogue paths. The editorial satin/chrome photograph is generated atmosphere, not stock or product evidence (see IMAGE_CREDITS.md).

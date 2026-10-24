@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>A.z — Private Luxury Advisory</title>
   <meta name="description" content="A.z — a private advisory for luxury and old-money essentials. Curated pieces and personal purchase guidance, by appointment. Bags today; footwear and fragrance to follow." />
-  <meta name="theme-color" content="#f7f4ee" />
-  <style>html,body{margin:0;background:#f7f4ee}</style>
+  <meta name="theme-color" content="#f7f8f6" />
+  <style>html,body{margin:0;background:#f7f8f6}</style>
 
   <!-- Favicon (gold monogram) -->
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23f5efe8'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-style='italic' font-size='30' fill='%237a2c3d' text-anchor='middle'%3EAZ%3C/text%3E%3C/svg%3E" />
@@ -27,9 +27,10 @@
   <link rel="preload" as="font" type="font/woff2" href="fonts/cormorant-500.woff2" crossorigin />
   <link rel="preload" as="font" type="font/woff2" href="fonts/cormorant-500-italic.woff2" crossorigin />
   <link rel="preload" as="font" type="font/woff2" href="fonts/jost-300.woff2" crossorigin />
-  <link rel="preload" as="image" href="images/look.webp" fetchpriority="high" />
+  <link rel="preload" as="image" href="images/vit-rosa.webp" fetchpriority="high" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="atelier.css" />
+  <link rel="stylesheet" href="studio.css?v=studio4" />
 </head>
 <body data-meta="meta">
   <!-- Top bar -->
@@ -38,7 +39,7 @@
       <img class="brand-logo brand-logo--gold" src="images/logo.png" alt="A.z" />
       <img class="brand-logo brand-logo--ink" src="images/logo-ink.png" alt="" aria-hidden="true" />
     </a>
-    <span class="topbar-title" aria-hidden="true">The art of <em>choosing well.</em></span>
+    <span class="topbar-title" aria-hidden="true">Private luxury advisory</span>
     <nav class="nav">
       <a href="#collection">Collection</a>
       <a href="eyewear.html">The Eyewear</a>
@@ -61,18 +62,60 @@
     <span class="menu-foot">A.z — By Appointment</span>
   </div>
 
+  <main id="main">
+  <section class="edit-hero" id="hero" aria-labelledby="editTitle">
+    <div class="edit-hero-copy">
+      <p class="hero-eyebrow" data-site="hero.eyebrow">A.z · The private edit</p>
+      <h1 id="editTitle" data-html="hero.title">Your next<br />signature.</h1>
+      <p class="edit-hero-sub" data-html="hero.sub">A personal edit of bags, eyewear and everyday essentials. Selected with you in mind.</p>
+      <div class="edit-hero-actions"><a class="btn btn--solid" href="#collection" data-site="hero.ctaOne">Explore the edit</a><a class="text-link" href="advisory.html" data-site="hero.ctaTwo">Our approach ↗</a></div>
+    </div>
+    <div class="hero-feature" id="heroFeature">
+      <a class="hero-product-image" id="heroPieceImageLink" href="piece.html?id=3&amp;colour=Rosa" aria-label="Discover Coccinelle Jellyfish in Rosa">
+        <img id="heroPieceImage" src="images/vit-rosa.webp" width="960" height="1000" alt="Coccinelle Jellyfish bag in Rosa" fetchpriority="high" />
+      </a>
+      <div class="hero-product-caption"><div><p id="heroPieceHouse">Coccinelle</p><span id="heroPieceName">Jellyfish · Rosa</span></div><a id="heroPieceLink" href="piece.html?id=3&amp;colour=Rosa" class="hero-piece-go" aria-label="View the featured piece">↗</a></div>
+      <div class="hero-product-tabs" role="group" aria-label="Featured pieces"><button type="button" data-feature="0" aria-pressed="true">The statement</button><button type="button" data-feature="1" aria-pressed="false">The everyday</button><button type="button" data-feature="2" aria-pressed="false">The finishing touch</button></div>
+    </div>
+  </section>
+  <!-- Houses we source -->
+  <section class="houses" aria-label="The houses we source">
+    <p class="houses-kicker reveal">The houses we source</p>
+    <!-- written from the collections themselves, so a house added in the
+         panel takes its place in the line without being typed twice -->
+    <p class="houses-line reveal" id="housesLine">Armani Exchange <span>·</span> Coccinelle <span>·</span> Calvin Klein <span>·</span> U.S. Polo Assn. <span>·</span> Tommy Hilfiger <span>·</span> Twinset</p>
+  </section>
+
+  <!-- The Vitrine — the display wall, lit like the salon -->
+  <section class="vitrine" id="vitrine">
+    <div class="look-head">
+
+      <h2 class="look-title reveal" id="vitTitle">Find your everyday.</h2>
+
+    </div>
+    <!-- built from the collection registry in bags.js, so a collection added
+         in the admin panel takes its place on the wall on its own -->
+    <div class="vit-wall reveal" id="vitWall"></div>
+  </section>
+
+  <!-- Collection -->
+  <section class="collection" id="collection">
+    <div class="section-head">
+
+      <h2 class="section-title reveal" data-site="collection.title">The Collection</h2>
+      <p class="section-lead reveal" data-site="collection.lead">A sample of what we source — ask, and we advise.</p>
+      <p class="swipe-hint reveal" id="swipeHint" aria-hidden="true">Swipe — <b id="swipeNow">01</b> / <span id="swipeTotal">13</span></p>
+    </div>
+    <div class="grid" id="grid"><!-- built by script.js --></div>
+  </section>
+
   <!-- Hero — cinematic dark stage -->
-  <section class="hero" id="hero">
-    <div class="hero-copy">
-      <p class="hero-eyebrow reveal" data-site="hero.eyebrow">A.z — Private Luxury Advisory</p>
-      <h1 class="hero-title reveal" data-html="hero.title">The art of <em>choosing well.</em></h1>
-      <div class="hero-rule reveal" aria-hidden="true"></div>
-      <p class="hero-sub reveal" data-html="hero.sub">Considered pieces. Personal guidance. A private edit of bags, eyewear and everyday essentials — chosen around you.</p>
-      <div class="hero-actions reveal">
-        <a href="#collection" class="btn btn--solid" data-site="hero.ctaOne">View the Collection</a>
-        <a href="#enquire" class="btn btn--ghost" data-site="hero.ctaTwo">Speak to an Advisor</a>
-      </div>
-      <p class="hero-sign reveal" data-html="hero.sign">Curated personally — <em>A.z</em></p>
+  <section class="style-story" id="style-story">
+    <div class="story-copy">
+      <p class="section-kicker">Styled, not staged</p>
+      <h2>See the pieces.<br />Find your way.</h2>
+      <p>Explore the details in a complete look. Select a marker to discover a piece, or turn the photograph for the eyewear edit.</p>
+      <a href="eyewear.html" class="text-link">Discover the eyewear <span aria-hidden="true">↗</span></a>
     </div>
     <div class="hero-scene reveal">
       <div class="look-flip" id="lookFlip">
@@ -128,48 +171,17 @@
     </div>
   </section>
 
-  <!-- Houses we source -->
-  <section class="houses" aria-label="The houses we source">
-    <p class="houses-kicker reveal">The houses we source</p>
-    <!-- written from the collections themselves, so a house added in the
-         panel takes its place in the line without being typed twice -->
-    <p class="houses-line reveal" id="housesLine">Armani Exchange <span>·</span> Coccinelle <span>·</span> Calvin Klein <span>·</span> U.S. Polo Assn. <span>·</span> Tommy Hilfiger <span>·</span> Twinset</p>
-  </section>
-
-  <!-- The Vitrine — the display wall, lit like the salon -->
-  <section class="vitrine" id="vitrine">
-    <div class="look-head">
-      <p class="look-kicker reveal" data-site="vitrine.kicker">The Vitrine</p>
-      <h2 class="look-title reveal" id="vitTitle">Four collections. <em>One standard.</em></h2>
-      <p class="look-lead reveal" data-site="vitrine.lead">Select a collection</p>
-    </div>
-    <!-- built from the collection registry in bags.js, so a collection added
-         in the admin panel takes its place on the wall on its own -->
-    <div class="vit-wall reveal" id="vitWall"></div>
-  </section>
-
-  <!-- Collection -->
-  <section class="collection" id="collection">
-    <div class="section-head">
-      <span class="section-index reveal" data-site="collection.index">I</span>
-      <h2 class="section-title reveal" data-site="collection.title">The Collection</h2>
-      <p class="section-lead reveal" data-site="collection.lead">A sample of what we source — ask, and we advise.</p>
-      <p class="swipe-hint reveal" id="swipeHint" aria-hidden="true">Swipe — <b id="swipeNow">01</b> / <span id="swipeTotal">13</span></p>
-    </div>
-    <div class="grid" id="grid"><!-- built by script.js --></div>
-  </section>
-
   <!-- The Service -->
   <section class="house" id="house">
     <div class="section-head">
-      <span class="section-index reveal" data-site="service.index">II</span>
+
       <h2 class="section-title reveal" data-site="service.title">The Service</h2>
       <p class="section-lead reveal" data-site="service.lead">How A.z works.</p>
     </div>
     <div class="service-layout">
       <figure class="service-image">
-        <img src="images/atelier-materials.webp" width="1536" height="1024" alt="An editorial study of oxblood leather, ivory linen and brushed brass on warm limestone" loading="lazy" decoding="async" />
-        <figcaption>A study in texture, proportion and detail.</figcaption>
+        <img src="images/studio-materials.webp" width="1536" height="1024" alt="An editorial material study of forest-green satin and brushed stainless steel" loading="lazy" decoding="async" />
+
       </figure>
       <div class="pillars" id="pillars"></div>
     </div>
@@ -198,7 +210,7 @@
   <section class="enquire" id="enquire">
     <div class="enquire-inner">
       <div class="enquire-copy">
-      <span class="section-index reveal" data-site="enquire.index">III</span>
+
       <h2 class="enquire-title reveal" data-html="enquire.title">Considering a piece?<br /><em>Let us advise you.</em></h2>
       <p class="enquire-sub reveal" data-site="enquire.sub">Private consultations by appointment. Tell us what you are drawn to — we will guide you to the right piece and source it for you.</p>
       <div class="enquire-links reveal" id="enquireLinks"></div>
@@ -216,6 +228,8 @@
       </div>
     </div>
   </section>
+
+  </main>
 
   <!-- Footer -->
   <footer class="footer">
@@ -237,7 +251,7 @@
       <figcaption class="lb-cap">
         <span class="lb-name brand-name-link" id="lbName" title="About the House"></span>
         <span class="lb-sub" id="lbSub"></span>
-        <span class="brand-hint" id="lbBrandHint">About the House ›</span>
+        <button type="button" class="brand-hint" id="lbBrandHint">About the House ›</button>
       </figcaption>
       <div class="brand-panel" id="lbBrandPanel">
         <span class="bp-kicker">The House</span>
@@ -260,11 +274,12 @@
     <button class="lb-arrow lb-next" id="lbNext" aria-label="Next view">›</button>
   </dialog>
 
-  <script src="content.js"></script>
+  <script src="content.js?v=studio4"></script>
   <script src="fill.js"></script>
   <script src="bags.js"></script>
-  <script src="script.js"></script>
-  <script src="atelier.js"></script>
+  <script src="script.js?v=studio4"></script>
+  <script src="atelier.js?v=studio4"></script>
+  <script src="studio.js?v=studio4"></script>
 
 </body>
 </html>

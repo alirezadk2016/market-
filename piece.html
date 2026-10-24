@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>A.z — The Piece</title>
-  <meta name="theme-color" content="#f7f4ee" />
+  <meta name="theme-color" content="#f7f8f6" />
   <meta name="description" content="A single piece, examined — its house, its making, and whether it belongs in your wardrobe. Advised personally." />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="A.z — The Piece" />
@@ -15,7 +15,7 @@
   <meta name="twitter:description" content="A single piece, examined — its house, its making, and whether it belongs in your wardrobe. Advised personally." />
   <meta name="twitter:image" content="images/og.png" />
 
-  <style>html,body{margin:0;background:#f5efe8}</style>
+  <style>html,body{margin:0;background:#f7f8f6}</style>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23f5efe8'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-style='italic' font-size='30' fill='%237a2c3d' text-anchor='middle'%3EAZ%3C/text%3E%3C/svg%3E" />
   <!-- The page is led by its type and by one photograph: both are fetched
        with the stylesheet rather than after it, so the headline is never
@@ -180,6 +180,7 @@
     }
   </style>
   <link rel="stylesheet" href="atelier.css" />
+  <link rel="stylesheet" href="studio.css?v=studio4" />
 </head>
 <body>
   <header class="topbar scrolled" id="topbar">
@@ -224,6 +225,12 @@
         <p class="p-color-name" id="pColor"></p>
         <p class="p-story" id="pStory"></p>
 
+        <div class="p-cta">
+          <a class="btn btn--solid" href="index.html#enquire">Enquire About This Piece</a>
+          <a class="btn btn--ghost" href="index.html#collection">View the Collection</a>
+        </div>
+        <p class="p-enquiry-note">Ask your advisor for current price and availability.</p>
+
         <div class="p-advisor" id="pAdvisor">
           <span class="lb-adv-kicker">The A.z Note</span>
           <p class="lb-adv-note" id="pAdvNote"></p>
@@ -261,10 +268,7 @@
           </div>
         </details>
 
-        <div class="p-cta">
-          <a class="btn btn--solid" href="index.html#enquire">Enquire About This Piece</a>
-          <a class="btn btn--ghost" href="index.html#collection">View the Collection</a>
-        </div>
+
       </section>
     </div>
   </main>
@@ -331,42 +335,63 @@
     <span class="footer-copy">© A.z — By Appointment</span>
   </footer>
 
-  <script src="content.js"></script>
+  <script src="content.js?v=studio4"></script>
   <script src="fill.js"></script>
   <script src="bags.js"></script>
   <script>
   (function () {
     "use strict";
     var qs = new URLSearchParams(location.search);
-    var col = qs.get("c") || "bags";
-    if (typeof RANGES !== "undefined" && (!RANGES[col] || !RANGES[col].items.length)) col = Object.keys(RANGES).find(key => RANGES[key].items && RANGES[key].items.length) || 'bags';
-    var SRC = (typeof RANGES !== "undefined") ? (RANGES[col] && RANGES[col].items || []) : (typeof BAGS !== 'undefined' ? BAGS : []);
-    if (!SRC || !SRC.length) {
+    var col = qs.has("c") ? qs.get("c") : "bags";
+    var range = typeof RANGES !== "undefined" && Object.prototype.hasOwnProperty.call(RANGES, col) ? RANGES[col] : null;
+    var SRC = range && Array.isArray(range.items) ? range.items :
+      (typeof RANGES === "undefined" && col === "bags" && typeof BAGS !== "undefined" && Array.isArray(BAGS) ? BAGS : []);
+    var rawId = qs.get("id");
+    var id = rawId !== null && /^\d+$/.test(rawId) ? Number(rawId) : NaN;
+    var bag = Number.isSafeInteger(id) && id >= 0 && id < SRC.length ? SRC[id] : null;
+    var variants = bag && Array.isArray(bag.variants) ? bag.variants.filter(variant =>
+      variant && typeof variant === "object" && Array.isArray(variant.shots) &&
+      variant.shots.some(shot => typeof shot === "string" && shot.trim())) : [];
+    if (!bag || !variants.length) {
       document.title = 'A.z — Piece unavailable';
       const empty = document.createElement('section'); empty.className = 'piece-empty';
       const title = document.createElement('h1'); title.textContent = 'A new edit is taking shape.';
       const copy = document.createElement('p'); copy.textContent = 'This piece is no longer in the current collection. Explore the latest edit or speak to your advisor.';
       const link = document.createElement('a'); link.className = 'btn btn--solid'; link.href = 'index.html#vitrine'; link.textContent = 'Explore the collections';
       empty.append(title, copy, link); document.querySelector('.piece').replaceChildren(empty);
-      document.querySelector('.reviews').hidden = true; document.querySelector('.share-row').hidden = true;
+      document.querySelector('.reviews').hidden = true; document.querySelector('.share').hidden = true;
       return;
     }
-    var id = parseInt(qs.get("id") || "0", 10);
-    if (isNaN(id) || id < 0 || id >= SRC.length) id = 0;
-    var bag = SRC[id];
     document.querySelectorAll('.piece-disclosure').forEach(disclosure => {
       disclosure.open = !matchMedia('(max-width:560px)').matches;
     });
 
     /* breadcrumb points back to this piece's own collection */
+    var crumb = document.querySelector(".crumb");
     if (col !== "bags") {
-      var crumb = document.querySelector(".crumb");
       crumb.href = "range.html?c=" + col;
       crumb.textContent = "← " + RANGES[col].title;
       /* cut-out objects show whole, never cropped */
       document.getElementById("pMain").style.objectFit = "contain";
       document.getElementById("pMain").style.padding = "4%";
     }
+    // A return address is a local catalogue route, never an arbitrary URL.
+    // The root path is the clean-URL alias of the home catalogue.
+    function catalogueReturn(raw) {
+      if (!raw || raw.length > 2048 || !raw.startsWith("/") || raw.startsWith("//") || /[\\\u0000-\u001f\u007f]/.test(raw)) return "";
+      try {
+        const url = new URL(raw, location.origin);
+        if (url.origin !== location.origin || url.username || url.password ||
+          !/^\/(?:$|(?:index|range|eyewear)(?:\.html)?$)/.test(url.pathname)) return "";
+        return url.pathname + url.search + url.hash;
+      } catch (error) { return ""; }
+    }
+    const returnTo = catalogueReturn(qs.get("return"));
+    if (returnTo) {
+      crumb.href = returnTo;
+      crumb.textContent = "← Back to your edit";
+    }
+    document.querySelector('.p-cta .btn--ghost').href = crumb.href;
 
     document.title = "A.z — " + (bag.name || "The Piece") + " " + (bag.note || "");
     document.getElementById("pIndex").textContent = "No. " + String(id + 1).padStart(2, "0") + (bag.tag ? " — " + bag.tag : "");
@@ -418,7 +443,6 @@
         thumbs = document.getElementById("pThumbs"),
         sw = document.getElementById("pSwatches"),
         colorEl = document.getElementById("pColor");
-    var variants = bag.variants || [];
     let currentShots = [], currentPhoto = 0, activeVariant = 0;
     const previousPhoto = document.getElementById('pPrevious'), nextPhoto = document.getElementById('pNext');
     function selectPhoto(index) {
@@ -490,7 +514,7 @@
     renderVariant(Math.max(0,variants.findIndex(variant => variant.color === qs.get('colour'))));
 
     function shareData() {
-      return {url:location.href, text:'A.z — '+(bag.name || '')+' · '+(variants[activeVariant].color || '')};
+      return {url:location.href, text:'A.z — '+(bag.name || '')+' · '+(variants[activeVariant]?.color || '')};
     }
     function refreshShareLinks() {
       var d=shareData(), u=encodeURIComponent(d.url), t=encodeURIComponent(d.text);
@@ -539,6 +563,6 @@
     render();
   })();
   </script>
-<script src="atelier.js"></script>
+<script src="atelier.js?v=studio4"></script>
 </body>
 </html>

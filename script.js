@@ -98,6 +98,28 @@
   /* ---- Build gallery ---- */
   const grid = document.getElementById("grid");
 
+  // Keep the edit (including live filters) with each piece link. Only local
+  // product URLs are changed; the destination validates this return path too.
+  function withCatalogueReturn(href) {
+    const url = new URL(href, location.href);
+    if (url.origin !== location.origin || !/\/piece(?:\.html)?$/.test(url.pathname)) return href;
+    url.searchParams.set("return", location.pathname + location.search + "#collection");
+    return url.pathname + url.search + url.hash;
+  }
+  function pieceHref(id, colour) {
+    const query = new URLSearchParams({id: String(id)});
+    if (colour) query.set("colour", colour);
+    return withCatalogueReturn("piece.html?" + query);
+  }
+  // Refresh immediately before navigation, since filtering updates history
+  // without rebuilding cards. This also covers newly authored hero links.
+  ["click", "auxclick", "contextmenu"].forEach((type) => {
+    document.addEventListener(type, (event) => {
+      const link = event.target.closest?.("a[href]");
+      if (link) link.href = withCatalogueReturn(link.href);
+    }, true);
+  });
+
   BAGS.forEach((bag, idx) => {
     const variants = bag.variants || [];
     let av = 0; // active variant
@@ -108,7 +130,7 @@
     const swatches = variants.length > 1
       ? `<div class="swatches">` + variants.map((v, i) =>
           `<button class="swatch${i === 0 ? " active" : ""}" style="background:${v.hex}"
-                   data-i="${i}" title="${v.color}" aria-label="${v.color}"></button>`).join("") + `</div>`
+                   type="button" data-i="${i}" title="${v.color}" aria-label="${v.color}" aria-pressed="${i === 0}"></button>`).join("") + `</div>`
       : "";
 
     const card = document.createElement("article");
@@ -134,6 +156,8 @@
     let curShots = [], curColor = "", curIdx = 0; // live state for the lightbox
 
     function setMain(src) {
+      img.alt = [bag.name, bag.note, curColor].filter(Boolean).join(" · ") +
+        (curShots.length ? " — view " + (curIdx + 1) + " of " + curShots.length : "");
       if (!src) { ph.style.display = ""; return; }
       // Re-selecting the same src fires no "load" event — reflect state directly
       // so the placeholder can never get stuck over the photo.
@@ -152,17 +176,24 @@
       const shots = v.shots || [];
       curShots = shots; curColor = v.color || ""; curIdx = 0;
       noteColor.textContent = v.color || "";
+      dBtn.href = pieceHref(idx, curColor);
+      card.querySelectorAll(".swatch").forEach((button, index) => {
+        button.classList.toggle("active", index === i);
+        button.setAttribute("aria-pressed", String(index === i));
+      });
       setMain(shots[0] || "");
       // thumbnails (only when a colour has more than one shot)
       thumbs.innerHTML = shots.length > 1
         ? shots.map((s, k) =>
-            `<button class="thumb${k === 0 ? " active" : ""}" data-src="${s}" aria-label="View ${k + 1}">
+            `<button type="button" class="thumb${k === 0 ? " active" : ""}" data-src="${s}" aria-label="View ${k + 1} of ${bag.note || bag.name || "this piece"}" aria-pressed="${k === 0}">
                <img src="${s}" alt="" loading="lazy" /></button>`).join("")
         : "";
       thumbs.querySelectorAll(".thumb").forEach((t, k) => {
         t.addEventListener("click", () => {
-          thumbs.querySelectorAll(".thumb").forEach((x) => x.classList.remove("active"));
-          t.classList.add("active");
+          thumbs.querySelectorAll(".thumb").forEach((x, index) => {
+            x.classList.toggle("active", index === k);
+            x.setAttribute("aria-pressed", String(index === k));
+          });
           curIdx = k;
           setMain(t.dataset.src);
         });
@@ -174,7 +205,7 @@
       if (window.openLightbox) window.openLightbox({
         name: bag.name || "", sub: (bag.note || "") + (curColor ? " · " + curColor : ""),
         shots: curShots.slice(), idx: curIdx, details: bag.details || null,
-        advisor: bag.advisor || null, pageId: idx, award: bag.award || null
+        advisor: bag.advisor || null, pageId: idx, colour: curColor, award: bag.award || null
       });
     };
     const media = card.querySelector(".card-media");
@@ -188,7 +219,7 @@
     });
     // dedicated page per piece — every bag added to bags.js gets one automatically
     const dBtn = document.createElement("a");
-    dBtn.className = "card-details"; dBtn.href = "piece.html?id=" + idx;
+    dBtn.className = "card-details"; dBtn.href = pieceHref(idx, first.color);
     dBtn.textContent = "Discover";
     card.querySelector(".card-info").appendChild(dBtn);
 
@@ -197,12 +228,16 @@
 
     card.querySelectorAll(".swatch").forEach((btn) => {
       btn.addEventListener("click", () => {
-        card.querySelectorAll(".swatch").forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
         renderVariant(+btn.dataset.i);
       });
     });
 
+    card.addEventListener('catalogue-colour', (event) => {
+      const index = Number(event.detail);
+      if (!Number.isInteger(index) || !variants[index] || av === index) return;
+      card.querySelectorAll('.swatch').forEach((button,i) => { button.classList.toggle('active',i===index); button.setAttribute('aria-pressed',String(i===index)); });
+      renderVariant(index);
+    });
     renderVariant(0);
     grid.appendChild(card);
   });
@@ -264,7 +299,7 @@
       specsEl.style.display = s.details ? "" : "none";
       // link to the piece's own page
       const pageLink = document.getElementById("lbPage");
-      if (pageLink) pageLink.href = "piece.html?id=" + (s.pageId || 0);
+      if (pageLink) pageLink.href = pieceHref(s.pageId || 0, s.colour);
       // the House panel (brand story) — closed on each open
       if (window.fillBrandPanel) window.fillBrandPanel("lb", s.name, s.award);
       // advisor's note
@@ -300,6 +335,7 @@
       if (!panel) return;
       const b = (typeof BRANDS !== "undefined") && BRANDS[brandName];
       panel.classList.remove("open");
+      if (hint) hint.setAttribute("aria-expanded", "false");
       if (!b) { if (hint) hint.style.display = "none"; return; }
       if (hint) hint.style.display = "";
       document.getElementById("bpFounded").textContent = b.founded || "—";
@@ -311,10 +347,22 @@
       if (award) { document.getElementById("bpAwardText").textContent = award; aw.style.display = ""; }
       else aw.style.display = "none";
     };
-    const brandToggle = () => document.getElementById("lbBrandPanel").classList.toggle("open");
-    nameEl.addEventListener("click", brandToggle);
     const lbHint = document.getElementById("lbBrandHint");
-    if (lbHint) lbHint.addEventListener("click", brandToggle);
+    const brandToggle = () => {
+      const open = document.getElementById("lbBrandPanel").classList.toggle("open");
+      lbHint?.setAttribute("aria-expanded", String(open));
+    };
+    if (lbHint) {
+      lbHint.setAttribute("aria-controls", "lbBrandPanel");
+      lbHint.setAttribute("aria-expanded", "false");
+      lbHint.addEventListener("click", brandToggle);
+      if (lbHint.tagName !== "BUTTON") {
+        lbHint.setAttribute("role", "button"); lbHint.tabIndex = 0;
+        lbHint.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") { event.preventDefault(); brandToggle(); }
+        });
+      }
+    }
     lb.addEventListener("click", (e) => { if (e.target === lb) shut(); });
     prev.addEventListener("click", () => { if (idx > 0) { idx--; paint(); } });
     next.addEventListener("click", () => { if (idx < shots.length - 1) { idx++; paint(); } });
@@ -546,31 +594,4 @@
     }
   })();
 
-  /* ---- Hero parallax — the piece tilts to the pointer / device ---- */
-  (function () {
-    const hero = document.getElementById("hero");
-    if (!hero || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
-    const loop = () => {
-      cx += (tx - cx) * 0.06; cy += (ty - cy) * 0.06;
-      hero.style.setProperty("--mx", cx.toFixed(3));
-      hero.style.setProperty("--my", cy.toFixed(3));
-      raf = (Math.abs(tx - cx) + Math.abs(ty - cy) > 0.001) ? requestAnimationFrame(loop) : 0;
-    };
-    const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
-    hero.addEventListener("pointermove", (e) => {
-      const r = hero.getBoundingClientRect();
-      tx = ((e.clientX - r.left) / r.width - 0.5) * 2;
-      ty = ((e.clientY - r.top) / r.height - 0.5) * 2;
-      kick();
-    });
-    hero.addEventListener("pointerleave", () => { tx = 0; ty = 0; kick(); });
-    // gentle device-tilt parallax on phones
-    window.addEventListener("deviceorientation", (e) => {
-      if (e.gamma == null) return;
-      tx = Math.max(-1, Math.min(1, e.gamma / 26));
-      ty = Math.max(-1, Math.min(1, ((e.beta || 40) - 40) / 30));
-      kick();
-    });
-  })();
 })();

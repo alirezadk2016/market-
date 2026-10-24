@@ -30,17 +30,35 @@
       const emptyCopy = document.createElement('p'); emptyCopy.textContent = 'Try another house, colour or model, or clear your filters to see the full edit.';
       empty.append(emptyTitle, emptyCopy);
       const source = typeof RANGES !== 'undefined' ? (grid.id === 'grid' ? BAGS : RANGES[grid.id === 'ewGrid' ? 'eyewear' : (RANGES[new URLSearchParams(location.search).get('c')] ? new URLSearchParams(location.search).get('c') : Object.keys(RANGES)[0])]?.items || []) : [];
-      const catalogue = cards.map((card,index) => ({card, house:card.querySelector('.card-name')?.textContent.trim() || '', text:[card.textContent,...(source[index]?.variants || []).map(variant => variant.color)].join(' ').toLowerCase()}));
+      const catalogue = cards.map((card,index) => ({card, data:source[index], originalHref:card.getAttribute('href'), house:card.querySelector('.card-name')?.textContent.trim() || '', text:[card.textContent,...(source[index]?.variants || []).map(variant => variant.color)].join(' ').toLowerCase()}));
       const initial = new URLSearchParams(location.search);
       let activeHouse = catalogue.some(item => item.house === initial.get('house')) ? initial.get('house') : '';
       input.value = initial.get('q') || '';
+      let expanded = grid.id !== 'grid';
+      const more = document.createElement('button'); more.type='button'; more.className='edit-more'; more.textContent='View all '+cards.length+' pieces';
+      more.addEventListener('click',()=>{expanded=true;apply();});
       function apply() {
         const query = input.value.trim().toLowerCase(); let visible = 0;
         catalogue.forEach(item => {
-          item.card.hidden = !!((activeHouse && item.house !== activeHouse) || (query && !item.text.includes(query)));
-          if (!item.card.hidden) visible++;
+          const matches = !((activeHouse && item.house !== activeHouse) || (query && !item.text.includes(query)));
+          item.card.hidden = !matches || (!expanded && !query && !activeHouse && visible >= 6);
+          if (matches) visible++;
+          const variants=item.data?.variants || [];
+          const matchingColour=query ? variants.findIndex(variant=>variant.color?.toLowerCase().includes(query)) : -1;
+          if(grid.id==='grid') {
+            if(matchingColour>=0)item.card.dispatchEvent(new CustomEvent('catalogue-colour',{detail:matchingColour}));
+          } else {
+            const variant=variants[matchingColour>=0?matchingColour:0];
+            if(variant){
+              const image=item.card.querySelector('.card-media img');
+              if(image){image.src=variant.shots?.[0] || image.src;image.alt=[item.data.name,item.data.note,variant.color].filter(Boolean).join(' · ');}
+              const label=item.card.querySelector('.note-color');if(label)label.textContent=variant.color || '';
+              if(item.originalHref){const href=new URL(item.originalHref,location.href);if(variant.color)href.searchParams.set('colour',variant.color);href.searchParams.set('return',location.pathname+location.search+'#'+grid.id);item.card.href=href.pathname+href.search;}
+            }
+          }
         });
-        count.textContent = String(visible).padStart(2,'0') + ' of ' + String(cards.length).padStart(2,'0') + ' pieces' + (activeHouse ? ' · '+activeHouse : '');
+        more.hidden=expanded || !!query || !!activeHouse || cards.length<=6;
+        count.textContent = String(!expanded && !query && !activeHouse ? Math.min(6,visible) : visible).padStart(2,'0') + ' of ' + String(cards.length).padStart(2,'0') + ' pieces' + (activeHouse ? ' · '+activeHouse : '');
         empty.hidden = visible !== 0; reset.hidden = !query && !activeHouse;
         bar.querySelectorAll('button').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.house === activeHouse)));
         const url = new URL(location.href);
@@ -52,10 +70,13 @@
         const button = document.createElement('button'); button.type = 'button'; button.textContent = house || 'All pieces'; button.dataset.house = house;
         button.addEventListener('click', () => { activeHouse = house; apply(); }); bar.append(button);
       });
+      if(grid.id!=='grid') grid.addEventListener('click',event=>{
+        const link=event.target.closest('a.card');if(!link)return;const url=new URL(link.href);url.searchParams.set('return',location.pathname+location.search+'#'+grid.id);link.href=url.pathname+url.search;
+      });
       input.addEventListener('input', apply);
       reset.addEventListener('click', () => { input.value = ''; activeHouse = ''; apply(); input.focus(); });
       if (catalogue.every(item => item.house === catalogue[0].house)) bar.hidden = true;
-      grid.before(search, bar, count); grid.after(empty); apply();
+      grid.before(search, bar, count); grid.after(empty, more); apply();
     }
   }
   if (!document.querySelector('.topbar')) return;

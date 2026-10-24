@@ -40,3 +40,14 @@ Brand information is opened by a native button with an expanded state. Details/d
 A two-column desktop enquiry becomes a single-column phone brief. Collection and optional preferences generate an editable mailto draft; no form submission or automatic message is implied. Native FAQ disclosures are driven by SITE.faq and editable in the existing admin content editor. Footer utility links aid return navigation. The branded 404 document uses root-relative links for nested missing addresses.
 
 Product colour is preserved in the URL and in dynamic share links. Local impressions are now explicitly private notes, collapsed by default, with optional ratings (never invented five-star scores), bounded compressed attachments, removable notes and truthful storage-failure feedback. Existing local notes retain compatible storage keys.
+
+
+## Studio redesign, 24 October 2026
+
+The owner rejected the previous visual direction. Superseding direction: product-led contemporary fashion retail. DESIGN_VARIANCE 7 / MOTION_INTENSITY 3 / VISUAL_DENSITY 4. Native CSS and existing JavaScript; no framework migration or external kit. A deliberately light brand surface uses cool porcelain #f7f8f6, soft grey-green image stages and forest #244c3b. Original Cormorant display type remains because its high-contrast letterforms suit the fashion collection; Jost carries functional information. No gold gradients, particle decoration or dark/light section inversions.
+
+Audit: prior opening centred a selfie and a generic advisory statement, products were too far down, overlarge section gaps and microscopic metadata slowed browsing, and mobile was a shrinking desktop composition. Home is now a product-led opening with three explicit featured choices from actual catalogue data; the spatial photograph remains a secondary styling story. Collection entrances align into a clear four-part shopfront. Six initial handbag cards expand on demand; search still covers all 13. New editorial green satin/chrome material photograph supports service atmosphere without posing as merchandise or an actual location.
+
+Phone uses title, direct action and featured product in that order, compact categories in two columns, thumb-reachable persistent actions and a legible two-column edit. Desktop gives the featured product and heading equal visual importance; product detail and advisory are refitted to the same tokens.
+
+Functional audit fixes: selected colours survive Discover and quickview; colour searches show that variant photograph; catalogue query/house returns through product breadcrumb and CTA; swatches/thumbs announce selection. Invalid product links render unavailable instead of another product. Personal photo upload remains keyboard reachable. Headers remain accessible above the open phone menu. Native dialog focus and reduced-motion handling preserved.
