@@ -28,9 +28,26 @@
       menuToggle.classList.toggle("open", open);
       menuToggle.setAttribute("aria-expanded", open ? "true" : "false");
       menu.setAttribute("aria-hidden", open ? "false" : "true");
+      menu.inert = !open;
       document.body.classList.toggle("menu-open", open);
       document.body.style.overflow = open ? "hidden" : "";
+      menuToggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      if (open) menu.querySelector("a")?.focus();
     };
+    menu.inert = true;
+    menu.addEventListener("keydown", (e) => {
+      if (e.key !== "Tab") return;
+      const links = [...menu.querySelectorAll("a[href]")];
+      if (e.shiftKey && document.activeElement === links[0]) { e.preventDefault(); menuToggle.focus(); }
+      else if (!e.shiftKey && document.activeElement === links.at(-1)) { e.preventDefault(); menuToggle.focus(); }
+    });
+    menuToggle.addEventListener("keydown", (e) => {
+      if (e.key === "Tab" && menu.classList.contains("open")) {
+        e.preventDefault();
+        const links = [...menu.querySelectorAll("a[href]")];
+        (e.shiftKey ? links.at(-1) : links[0])?.focus();
+      }
+    });
     menuToggle.addEventListener("click", () => setMenu(!menu.classList.contains("open")));
     menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setMenu(false)));
     // Close menu (and free the locked scroll) if the viewport grows to desktop
@@ -329,7 +346,7 @@
   /* ---- Hero gold dust ---- */
   (function () {
     const cv = document.getElementById("dust");
-    if (!cv || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!cv || getComputedStyle(cv).display === "none" || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const cx = cv.getContext("2d");
     const hero = cv.parentElement;
     let W, H, DPR;
@@ -490,6 +507,8 @@
     }
     /* wheel — free zoom toward the cursor, like walking into the scene */
     stage.addEventListener("wheel", (e) => {
+      // Keep page scrolling natural; zoom is an explicit modifier gesture.
+      if (!e.altKey) return;
       e.preventDefault();
       const r = stage.getBoundingClientRect();
       const cx = ((e.clientX - r.left) / r.width) * 100 - 50;
