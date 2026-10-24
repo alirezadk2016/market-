@@ -100,10 +100,10 @@
 
   // Keep the edit (including live filters) with each piece link. Only local
   // product URLs are changed; the destination validates this return path too.
-  function withCatalogueReturn(href) {
+  function withCatalogueReturn(href, anchor = "collection") {
     const url = new URL(href, location.href);
     if (url.origin !== location.origin || !/\/piece(?:\.html)?$/.test(url.pathname)) return href;
-    url.searchParams.set("return", location.pathname + location.search + "#collection");
+    url.searchParams.set("return", location.pathname + location.search + "#" + anchor);
     return url.pathname + url.search + url.hash;
   }
   function pieceHref(id, colour) {
@@ -116,7 +116,7 @@
   ["click", "auxclick", "contextmenu"].forEach((type) => {
     document.addEventListener(type, (event) => {
       const link = event.target.closest?.("a[href]");
-      if (link) link.href = withCatalogueReturn(link.href);
+      if (link) link.href = withCatalogueReturn(link.href, link.closest(".edit-hero") ? "hero" : "collection");
     }, true);
   });
 
