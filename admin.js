@@ -293,6 +293,36 @@
 
   /* --------------------------------------------------------------- shell */
   function wire() {
+    // Keep keyboard navigation inside the uppermost open editor or dialog.
+    const overlays = [$("#sheet"), $("#palette"), $("#modal")];
+    let activeOverlay = null;
+    const returnFocus = new Map();
+    const focusable = (root) => [...root.querySelectorAll("button:not([disabled]),a[href],input:not([disabled]),textarea:not([disabled]),select:not([disabled]),[tabindex='0']")]
+      .filter((node) => !node.closest("[hidden]") && node.getClientRects().length);
+    const syncOverlay = () => {
+      const next = overlays.filter((node) => !node.hidden).at(-1) || null;
+      if (next === activeOverlay) return;
+      const previous = activeOverlay;
+      if (next) returnFocus.set(next, document.activeElement);
+      activeOverlay = next;
+      $(".bar").inert = !!next;
+      $(".shell").inert = !!next;
+      overlays.forEach((node) => { node.inert = !!next && node !== next; });
+      if (next && !next.contains(document.activeElement)) focusable(next)[0]?.focus();
+      if (!next && previous) {
+        const target = returnFocus.get(previous);
+        (target?.isConnected ? target : $("#btnFind")).focus();
+      }
+    };
+    const overlayObserver = new MutationObserver(syncOverlay);
+    overlays.forEach((node) => overlayObserver.observe(node, { attributes: true, attributeFilter: ["hidden"] }));
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Tab" || !activeOverlay) return;
+      const items = focusable(activeOverlay), first = items[0], last = items.at(-1);
+      if (!first) { event.preventDefault(); return; }
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    });
     $("#btnAddCollection").onclick = addCollection;
     $("#btnDownload").onclick = download;
     $("#btnPublish").onclick = publish;
@@ -308,7 +338,7 @@
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); return goTo(); }
       if (e.key === "Escape" && palOpen) { e.preventDefault(); $("#palette").hidden = true; palOpen = false; return; }
       if (e.key === "Escape" && modalClose) { e.preventDefault(); return modalClose(); }
-      if (e.key === "Escape" && !$("#sheet").hidden) return closeSheet();
+      if (e.key === "Escape" && !$("#sheet").hidden) { e.preventDefault(); return $("#sheetCancel").click(); }
       const cmd = e.metaKey || e.ctrlKey;
       if (cmd && e.key.toLowerCase() === "z") { e.preventDefault(); undo(); }
       if (cmd && e.key.toLowerCase() === "s") { e.preventDefault(); publish(); }
@@ -373,7 +403,13 @@
     if (!r) { w.appendChild(el("div", "empty", "No collection selected.")); return; }
 
     w.appendChild(el("h1", null, esc(r.title)));
-    w.appendChild(el("p", "lead", "The heading, the line beneath it and the photograph shown on the home page's vitrine wall."));
+    w.appendChild(el("p", "lead", "Curate the pieces, refine the details, and prepare your next collection update."));
+
+    const details = el("details", "collection-settings");
+    details.appendChild(el("summary", null, "Collection presentation <span>Title, address &amp; cover photograph</span>"));
+    const settings = el("div", "collection-settings-body");
+    details.appendChild(settings);
+    w.appendChild(details);
 
     const box = el("div");
     box.appendChild(textField("Title", r.title, (v) => { r.title = v; touched(); renderNav(); }));
@@ -387,10 +423,10 @@
     two2.appendChild(textField("Its own page (optional)", r.href, (v) => { r.href = v.trim(); touched(); },
       "Leave empty and it uses the standard collection page."));
     box.appendChild(two2);
-    w.appendChild(box);
+    settings.appendChild(box);
 
-    w.appendChild(el("h3", null, "Vitrine photograph"));
-    w.appendChild(shotStrip([r.cover].filter(Boolean), {
+    settings.appendChild(el("h3", null, "Vitrine photograph"));
+    settings.appendChild(shotStrip([r.cover].filter(Boolean), {
       single: true,
       onAdd: (paths) => { r.cover = paths[0]; touched(); renderView(); },
       onRemove: () => { r.cover = ""; touched(); renderView(); },
@@ -399,7 +435,7 @@
 
     w.appendChild(el("hr", "hr"));
 
-    const head = el("div");
+    const head = el("div", "collection-toolbar");
     head.style.cssText = "display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px";
     head.appendChild(el("h2", null, r.items.length + " piece" + (r.items.length === 1 ? "" : "s")));
     const acts = el("div"); acts.style.cssText = "display:flex;gap:8px";
@@ -431,12 +467,14 @@
     /* thirteen pieces is already too many to scan */
     const find = el("div", "field");
     const fi = el("input"); fi.type = "text"; fi.placeholder = "Filter by house, model or badge…";
+    fi.setAttribute("aria-label", "Filter pieces by house, model or badge");
     find.appendChild(fi);
     w.appendChild(find);
 
     const grid = el("div", "cards");
     w.appendChild(grid);
     const count = el("p", "hint", "");
+    count.setAttribute("role", "status");
     count.style.marginTop = "12px";
     w.appendChild(count);
 
@@ -461,7 +499,9 @@
   function pieceCard(r, p, i) {
     const shot = (p.variants && p.variants[0] && p.variants[0].shots && p.variants[0].shots[0]) || "";
     const c = el("div", "card");
-    const img = el("div", "card-img");
+    const img = el("button", "card-img");
+    img.type = "button";
+    img.setAttribute("aria-label", "Edit " + (p.note || p.name || "piece"));
     if (shot) img.style.backgroundImage = "url('" + resolve(shot) + "')";
     else img.appendChild(el("span", "none", "No photograph"));
     /* the photograph is the obvious thing to reach for — it opens the piece */
@@ -565,6 +605,9 @@
   function editPiece(r, i) {
     const p = r.items[i];
     const original = JSON.parse(JSON.stringify(p));
+    const wasDirty = state.dirty;
+    const originalImages = Object.assign({}, state.images);
+    const originalDraft = load(DRAFT);
     $("#sheetTitle").textContent = p.note || p.name || "New piece";
     const b = $("#sheetBody");
     b.innerHTML = "";
@@ -614,7 +657,19 @@
     b.appendChild(addV);
 
     $("#sheetSave").onclick = () => { closeSheet(); renderNav(); renderView(); };
-    $("#sheetCancel").onclick = () => { r.items[i] = original; closeSheet(); renderNav(); renderView(); };
+    $("#sheetCancel").onclick = () => {
+      r.items[i] = original;
+      state.images = originalImages;
+      if (wasDirty) touched();
+      else {
+        state.dirty = false;
+        if (originalDraft) save(DRAFT, originalDraft);
+        else { try { localStorage.removeItem(DRAFT); } catch (_) {} }
+        $("#dirty").className = "bar-mid";
+        $("#dirty").textContent = "";
+      }
+      closeSheet(); renderNav(); renderView();
+    };
     $("#sheet").hidden = false;
   }
 
@@ -854,6 +909,13 @@
       { key: "text", label: "Text", area: true },
     ], { addLabel: "Add a column" }));
     w.appendChild(sField("Button under them", "houseCta"));
+
+    w.appendChild(el("hr", "hr"));
+    w.appendChild(el("h3", null, "Common questions"));
+    w.appendChild(blockEditor(state.site.faq || (state.site.faq = []), [
+      { key: "question", label: "Question" },
+      { key: "answer", label: "Answer", area: true },
+    ], { addLabel: "Add a question" }));
 
     w.appendChild(el("hr", "hr"));
     w.appendChild(el("h3", null, "A word from the curator"));
@@ -1372,6 +1434,7 @@
     const f = el("div", "field");
     f.appendChild(el("label", null, esc(label)));
     const i = el("input"); i.type = "text"; i.value = value == null ? "" : value;
+    i.setAttribute("aria-label", label);
     if (commit) i.onchange = () => onInput(i.value);
     else i.oninput = () => onInput(i.value);
     f.appendChild(trackEdits(i, label));
@@ -1385,6 +1448,7 @@
     f.appendChild(el("label", null, esc(label)));
     const wrap = el("div", "secret-wrap");
     const i = el("input"); i.type = "password"; i.autocomplete = "off"; i.spellcheck = false;
+    i.setAttribute("aria-label", label);
     i.value = value == null ? "" : value;
     i.oninput = () => onInput(i.value);
     const eye = el("button", "secret-eye", "Show");
@@ -1404,6 +1468,7 @@
     const f = el("div", "field");
     f.appendChild(el("label", null, esc(label)));
     const t = el("textarea"); t.value = value == null ? "" : value;
+    t.setAttribute("aria-label", label);
     t.oninput = () => onInput(t.value);
     f.appendChild(trackEdits(t, label));
     return f;

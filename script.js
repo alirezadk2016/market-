@@ -19,27 +19,8 @@
       addEventListener(ev, dismissIntro, { once: true, passive: true }));
   }
 
-  /* ---- Mobile menu ---- */
+  // Shared navigation and keyboard behavior are owned by fill.js.
   const menu = document.getElementById("menu");
-  const menuToggle = document.getElementById("menuToggle");
-  if (menu && menuToggle) {
-    const setMenu = (open) => {
-      menu.classList.toggle("open", open);
-      menuToggle.classList.toggle("open", open);
-      menuToggle.setAttribute("aria-expanded", open ? "true" : "false");
-      menu.setAttribute("aria-hidden", open ? "false" : "true");
-      document.body.classList.toggle("menu-open", open);
-      document.body.style.overflow = open ? "hidden" : "";
-    };
-    menuToggle.addEventListener("click", () => setMenu(!menu.classList.contains("open")));
-    menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setMenu(false)));
-    // Close menu (and free the locked scroll) if the viewport grows to desktop
-    window.addEventListener("resize", () => {
-      if (window.innerWidth > 820 && menu.classList.contains("open")) setMenu(false);
-    });
-    // Escape closes the menu
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape") setMenu(false); });
-  }
 
   /* ---- Top bar scroll state ---- */
   const topbar = document.getElementById("topbar");
@@ -117,6 +98,28 @@
   /* ---- Build gallery ---- */
   const grid = document.getElementById("grid");
 
+  // Keep the edit (including live filters) with each piece link. Only local
+  // product URLs are changed; the destination validates this return path too.
+  function withCatalogueReturn(href, anchor = "collection") {
+    const url = new URL(href, location.href);
+    if (url.origin !== location.origin || !/\/piece(?:\.html)?$/.test(url.pathname)) return href;
+    url.searchParams.set("return", location.pathname + location.search + "#" + anchor);
+    return url.pathname + url.search + url.hash;
+  }
+  function pieceHref(id, colour) {
+    const query = new URLSearchParams({id: String(id)});
+    if (colour) query.set("colour", colour);
+    return withCatalogueReturn("piece.html?" + query);
+  }
+  // Refresh immediately before navigation, since filtering updates history
+  // without rebuilding cards. This also covers newly authored hero links.
+  ["click", "auxclick", "contextmenu"].forEach((type) => {
+    document.addEventListener(type, (event) => {
+      const link = event.target.closest?.("a[href]");
+      if (link) link.href = withCatalogueReturn(link.href, link.closest(".edit-hero") ? "hero" : "collection");
+    }, true);
+  });
+
   BAGS.forEach((bag, idx) => {
     const variants = bag.variants || [];
     let av = 0; // active variant
@@ -127,7 +130,7 @@
     const swatches = variants.length > 1
       ? `<div class="swatches">` + variants.map((v, i) =>
           `<button class="swatch${i === 0 ? " active" : ""}" style="background:${v.hex}"
-                   data-i="${i}" title="${v.color}" aria-label="${v.color}"></button>`).join("") + `</div>`
+                   type="button" data-i="${i}" title="${v.color}" aria-label="${v.color}" aria-pressed="${i === 0}"></button>`).join("") + `</div>`
       : "";
 
     const card = document.createElement("article");
@@ -153,6 +156,8 @@
     let curShots = [], curColor = "", curIdx = 0; // live state for the lightbox
 
     function setMain(src) {
+      img.alt = [bag.name, bag.note, curColor].filter(Boolean).join(" · ") +
+        (curShots.length ? " — view " + (curIdx + 1) + " of " + curShots.length : "");
       if (!src) { ph.style.display = ""; return; }
       // Re-selecting the same src fires no "load" event — reflect state directly
       // so the placeholder can never get stuck over the photo.
@@ -171,17 +176,24 @@
       const shots = v.shots || [];
       curShots = shots; curColor = v.color || ""; curIdx = 0;
       noteColor.textContent = v.color || "";
+      dBtn.href = pieceHref(idx, curColor);
+      card.querySelectorAll(".swatch").forEach((button, index) => {
+        button.classList.toggle("active", index === i);
+        button.setAttribute("aria-pressed", String(index === i));
+      });
       setMain(shots[0] || "");
       // thumbnails (only when a colour has more than one shot)
       thumbs.innerHTML = shots.length > 1
         ? shots.map((s, k) =>
-            `<button class="thumb${k === 0 ? " active" : ""}" data-src="${s}" aria-label="View ${k + 1}">
+            `<button type="button" class="thumb${k === 0 ? " active" : ""}" data-src="${s}" aria-label="View ${k + 1} of ${bag.note || bag.name || "this piece"}" aria-pressed="${k === 0}">
                <img src="${s}" alt="" loading="lazy" /></button>`).join("")
         : "";
       thumbs.querySelectorAll(".thumb").forEach((t, k) => {
         t.addEventListener("click", () => {
-          thumbs.querySelectorAll(".thumb").forEach((x) => x.classList.remove("active"));
-          t.classList.add("active");
+          thumbs.querySelectorAll(".thumb").forEach((x, index) => {
+            x.classList.toggle("active", index === k);
+            x.setAttribute("aria-pressed", String(index === k));
+          });
           curIdx = k;
           setMain(t.dataset.src);
         });
@@ -193,14 +205,21 @@
       if (window.openLightbox) window.openLightbox({
         name: bag.name || "", sub: (bag.note || "") + (curColor ? " · " + curColor : ""),
         shots: curShots.slice(), idx: curIdx, details: bag.details || null,
-        advisor: bag.advisor || null, pageId: idx, award: bag.award || null
+        advisor: bag.advisor || null, pageId: idx, colour: curColor, award: bag.award || null
       });
     };
-    card.querySelector(".card-media").style.cursor = "zoom-in";
-    card.querySelector(".card-media").addEventListener("click", openViewer);
+    const media = card.querySelector(".card-media");
+    media.style.cursor = "zoom-in";
+    media.tabIndex = 0;
+    media.setAttribute("role", "button");
+    media.setAttribute("aria-label", "Quick view " + (bag.note || bag.name || "piece"));
+    media.addEventListener("click", openViewer);
+    media.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") { event.preventDefault(); openViewer(); }
+    });
     // dedicated page per piece — every bag added to bags.js gets one automatically
     const dBtn = document.createElement("a");
-    dBtn.className = "card-details"; dBtn.href = "piece.html?id=" + idx;
+    dBtn.className = "card-details"; dBtn.href = pieceHref(idx, first.color);
     dBtn.textContent = "Discover";
     card.querySelector(".card-info").appendChild(dBtn);
 
@@ -209,12 +228,16 @@
 
     card.querySelectorAll(".swatch").forEach((btn) => {
       btn.addEventListener("click", () => {
-        card.querySelectorAll(".swatch").forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
         renderVariant(+btn.dataset.i);
       });
     });
 
+    card.addEventListener('catalogue-colour', (event) => {
+      const index = Number(event.detail);
+      if (!Number.isInteger(index) || !variants[index] || av === index) return;
+      card.querySelectorAll('.swatch').forEach((button,i) => { button.classList.toggle('active',i===index); button.setAttribute('aria-pressed',String(i===index)); });
+      renderVariant(index);
+    });
     renderVariant(0);
     grid.appendChild(card);
   });
@@ -247,16 +270,20 @@
           prev = document.getElementById("lbPrev"),
           next = document.getElementById("lbNext"),
           close = document.getElementById("lbClose");
-    let shots = [], idx = 0;
+    let shots = [], idx = 0, returnFocus = null, imageLabel = "";
+    lb.inert = true;
 
     function paint() {
       img.src = shots[idx] || "";
+      img.alt = imageLabel + " — view " + (idx + 1) + " of " + shots.length;
       prev.disabled = idx <= 0;
       next.disabled = idx >= shots.length - 1;
       const many = shots.length > 1;
       prev.style.display = next.style.display = many ? "" : "none";
     }
     window.openLightbox = function (s) {
+      returnFocus = document.activeElement;
+      imageLabel = [s.name, s.sub].filter(Boolean).join(" · ");
       shots = s.shots || []; idx = Math.min(s.idx || 0, shots.length - 1);
       nameEl.textContent = s.name; subEl.textContent = s.sub;
       // product sheet
@@ -272,7 +299,7 @@
       specsEl.style.display = s.details ? "" : "none";
       // link to the piece's own page
       const pageLink = document.getElementById("lbPage");
-      if (pageLink) pageLink.href = "piece.html?id=" + (s.pageId || 0);
+      if (pageLink) pageLink.href = pieceHref(s.pageId || 0, s.colour);
       // the House panel (brand story) — closed on each open
       if (window.fillBrandPanel) window.fillBrandPanel("lb", s.name, s.award);
       // advisor's note
@@ -285,13 +312,21 @@
       } else adv.style.display = "none";
       paint();
       lb.classList.add("open"); lb.setAttribute("aria-hidden", "false");
+      lb.setAttribute("aria-modal", "true"); lb.inert = false;
+      if (!lb.open) lb.showModal();
       document.body.style.overflow = "hidden";
+      requestAnimationFrame(() => { if (lb.classList.contains('open')) close.focus(); });
     };
     function shut() {
       lb.classList.remove("open"); lb.setAttribute("aria-hidden", "true");
+      lb.close();
+      lb.inert = true;
+      if (menu && !menu.classList.contains('open')) menu.inert = true;
       document.body.style.overflow = "";
+      requestAnimationFrame(() => { if (!lb.classList.contains('open')) returnFocus?.focus(); });
     }
     close.addEventListener("click", shut);
+    lb.addEventListener('cancel', (event) => { event.preventDefault(); shut(); });
 
     /* The House panel: fill from BRANDS and toggle from the brand name */
     window.fillBrandPanel = function (prefix, brandName, award) {
@@ -300,6 +335,7 @@
       if (!panel) return;
       const b = (typeof BRANDS !== "undefined") && BRANDS[brandName];
       panel.classList.remove("open");
+      if (hint) hint.setAttribute("aria-expanded", "false");
       if (!b) { if (hint) hint.style.display = "none"; return; }
       if (hint) hint.style.display = "";
       document.getElementById("bpFounded").textContent = b.founded || "—";
@@ -311,15 +347,33 @@
       if (award) { document.getElementById("bpAwardText").textContent = award; aw.style.display = ""; }
       else aw.style.display = "none";
     };
-    const brandToggle = () => document.getElementById("lbBrandPanel").classList.toggle("open");
-    nameEl.addEventListener("click", brandToggle);
     const lbHint = document.getElementById("lbBrandHint");
-    if (lbHint) lbHint.addEventListener("click", brandToggle);
+    const brandToggle = () => {
+      const open = document.getElementById("lbBrandPanel").classList.toggle("open");
+      lbHint?.setAttribute("aria-expanded", String(open));
+    };
+    if (lbHint) {
+      lbHint.setAttribute("aria-controls", "lbBrandPanel");
+      lbHint.setAttribute("aria-expanded", "false");
+      lbHint.addEventListener("click", brandToggle);
+      if (lbHint.tagName !== "BUTTON") {
+        lbHint.setAttribute("role", "button"); lbHint.tabIndex = 0;
+        lbHint.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") { event.preventDefault(); brandToggle(); }
+        });
+      }
+    }
     lb.addEventListener("click", (e) => { if (e.target === lb) shut(); });
     prev.addEventListener("click", () => { if (idx > 0) { idx--; paint(); } });
     next.addEventListener("click", () => { if (idx < shots.length - 1) { idx++; paint(); } });
     document.addEventListener("keydown", (e) => {
       if (!lb.classList.contains("open")) return;
+      if (e.key === "Tab") {
+        const controls = [...lb.querySelectorAll('button:not([disabled]),a[href],[tabindex="0"]')].filter(node => node.getClientRects().length && getComputedStyle(node).visibility !== 'hidden');
+        const first = controls[0], last = controls.at(-1);
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+      }
       if (e.key === "Escape") shut();
       if (e.key === "ArrowRight") next.click();
       if (e.key === "ArrowLeft") prev.click();
@@ -329,7 +383,7 @@
   /* ---- Hero gold dust ---- */
   (function () {
     const cv = document.getElementById("dust");
-    if (!cv || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!cv || getComputedStyle(cv).display === "none" || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const cx = cv.getContext("2d");
     const hero = cv.parentElement;
     let W, H, DPR;
@@ -490,6 +544,8 @@
     }
     /* wheel — free zoom toward the cursor, like walking into the scene */
     stage.addEventListener("wheel", (e) => {
+      // Keep page scrolling natural; zoom is an explicit modifier gesture.
+      if (!e.altKey) return;
       e.preventDefault();
       const r = stage.getBoundingClientRect();
       const cx = ((e.clientX - r.left) / r.width) * 100 - 50;
@@ -538,31 +594,4 @@
     }
   })();
 
-  /* ---- Hero parallax — the piece tilts to the pointer / device ---- */
-  (function () {
-    const hero = document.getElementById("hero");
-    if (!hero || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
-    const loop = () => {
-      cx += (tx - cx) * 0.06; cy += (ty - cy) * 0.06;
-      hero.style.setProperty("--mx", cx.toFixed(3));
-      hero.style.setProperty("--my", cy.toFixed(3));
-      raf = (Math.abs(tx - cx) + Math.abs(ty - cy) > 0.001) ? requestAnimationFrame(loop) : 0;
-    };
-    const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
-    hero.addEventListener("pointermove", (e) => {
-      const r = hero.getBoundingClientRect();
-      tx = ((e.clientX - r.left) / r.width - 0.5) * 2;
-      ty = ((e.clientY - r.top) / r.height - 0.5) * 2;
-      kick();
-    });
-    hero.addEventListener("pointerleave", () => { tx = 0; ty = 0; kick(); });
-    // gentle device-tilt parallax on phones
-    window.addEventListener("deviceorientation", (e) => {
-      if (e.gamma == null) return;
-      tx = Math.max(-1, Math.min(1, e.gamma / 26));
-      ty = Math.max(-1, Math.min(1, ((e.beta || 40) - 40) / 30));
-      kick();
-    });
-  })();
 })();

@@ -20,11 +20,11 @@ const SITE = {
   },
 
   hero: {
-    eyebrow: "A.z — Private Luxury Advisory",
-    title: "The art of <em>choosing well.</em>",
-    sub: "A private advisory for luxury &amp; old-money essentials — we curate the finest, then guide you to the piece that truly suits you.",
-    ctaOne: "View the Collection",
-    ctaTwo: "Speak to an Advisor",
+    eyebrow: "A.z · The private edit",
+    title: "Your next<br />signature.",
+    sub: "A personal edit of bags, eyewear and everyday essentials. Selected with you in mind.",
+    ctaOne: "Explore the edit",
+    ctaTwo: "Our approach ↗",
     sign: "Curated personally — <em>A.z</em>",
     hint: "Touch a marker · turn the plate",
     photo: "images/look.webp",
@@ -52,14 +52,14 @@ const SITE = {
 
   vitrine: {
     kicker: "The Vitrine",
-    title: "{n} collections. <em>One standard.</em>",
+    title: "Find your everyday.",
     lead: "Select a collection",
   },
 
   collection: {
     index: "01",
-    title: "The Collection",
-    lead: "A sample of what we source.",
+    title: "The handbag edit",
+    lead: "Explore the shapes, colours and houses in our current selection.",
   },
 
   service: {
@@ -80,13 +80,20 @@ const SITE = {
   /* the three columns under "The Service" */
   pillars: [
     { num: "01", title: "Curated, Not Sold",
-      text: "We select the finest across the great houses — you receive taste and honesty, never a sales pitch." },
+      text: "Explore a selection of pieces from established houses, chosen for their shape, material and everyday use." },
     { num: "02", title: "Personal Guidance",
-      text: "Speak with an advisor who learns your life and wardrobe, and points you to what genuinely suits you." },
+      text: "Tell us about your wardrobe and what you need. We will help you compare the details." },
     { num: "03", title: "By Appointment",
-      text: "A discreet, old-money sensibility and time taken for you. Bags today; footwear and fragrance to follow." },
+      text: "Take time to find your piece. Speak with an advisor about availability, colour and the next steps." },
   ],
   houseCta: "How We Help — The Full Method",
+
+  faq: [
+    { question: "Can I purchase directly on this website?", answer: "This is a curated catalogue with personal advice, rather than an online checkout. Use the enquiry link on a piece to begin the conversation." },
+    { question: "Can I ask about a particular colour?", answer: "Yes. Select a colour on the product page. Its enquiry link includes the piece and your selected colour in an editable email draft." },
+    { question: "What should I include in my enquiry?", answer: "A piece you like, a preferred colour, an occasion or the kind of advice you need is a useful starting point. You can add as much or as little detail as you wish." },
+    { question: "How is an email enquiry sent?", answer: "Email enquiry links open your email app. Review the draft and send it there. The website does not send a message automatically." },
+  ],
 
   word: {
     kicker: "A Word from the Curator",
@@ -137,7 +144,7 @@ const SITE = {
       { label: "Frames", value: "Polished acetate, interlocking G" },
     ],
     ctaOne: "View the Pieces",
-    ctaTwo: "Speak to an Advisor",
+    ctaTwo: "Ask an advisor",
 
     /* the campaign plate that opens the room */
     campaign: "images/look-back.webp",

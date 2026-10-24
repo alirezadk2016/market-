@@ -79,11 +79,15 @@
     if (!Array.isArray(SITE.nav) || !SITE.nav.length) return;
 
     /* a home-page anchor is only an anchor when that section is on this page */
-    const href = (h) => (h.charAt(0) === "#" && !document.querySelector(h) ? "index.html" + h : h);
-    const here = location.pathname.split("/").pop() || "index.html";
+    const href = (h) => {
+      const target = h.charAt(0) === '#' && !document.querySelector(h) ? 'index.html' + h : h;
+      return document.body.dataset.errorPage && !/^(#|\/|https?:|mailto:)/.test(target) ? '/' + target : target;
+    };
+    const normalize = path => path.replace(/\.html$/, '').replace(/\/$/, '') || 'index';
+    const here = normalize(location.pathname.split("/").pop() || "index.html");
     const draw = (n) => SITE.nav.map((l) => {
       const h = href(l.href);
-      const on = h === here || (h.charAt(0) !== "#" && h.split("#")[0] === here);
+      const on = h.charAt(0) !== '#' && normalize(h.split('#')[0]) === here;
       return '<a href="' + h + '"' + (on ? ' aria-current="page"' : "") + ">" + l.label + "</a>";
     }).join(n);
 
@@ -97,7 +101,6 @@
 
     let menu = document.querySelector(".menu");
     let toggle = bar.querySelector(".menu-toggle");
-    const mine = !toggle;                       /* did this page already wire one? */
 
     if (!menu) {
       menu = document.createElement("div");
@@ -119,23 +122,55 @@
       bar.appendChild(toggle);
     }
 
-    if (mine) {
+    if (!toggle.dataset.menuBound) {
+      toggle.dataset.menuBound = "true";
+      menu.inert = true;
+      const background = () => [...document.querySelectorAll('body > main, body > section, body > footer, .mobile-dock')];
       const set = (open) => {
         menu.classList.toggle("open", open);
         toggle.classList.toggle("open", open);
         toggle.setAttribute("aria-expanded", open ? "true" : "false");
         menu.setAttribute("aria-hidden", open ? "false" : "true");
+        menu.inert = !open;
+        background().forEach(node => { node.inert = open; });
+        toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
         document.body.classList.toggle("menu-open", open);
         document.body.style.overflow = open ? "hidden" : "";
+        if (open) { bar.classList.remove('tucked'); menu.querySelector('a')?.focus(); }
+        else if (menu.contains(document.activeElement)) toggle.focus();
       };
+      menu.addEventListener('keydown', (event) => {
+        if (event.key !== 'Tab') return;
+        const links = [...menu.querySelectorAll('a[href]')];
+        if ((event.shiftKey && document.activeElement === links[0]) || (!event.shiftKey && document.activeElement === links.at(-1))) {
+          event.preventDefault(); toggle.focus();
+        }
+      });
+      toggle.addEventListener('keydown', (event) => {
+        if (event.key !== 'Tab' || !menu.classList.contains('open')) return;
+        event.preventDefault();
+        const links = [...menu.querySelectorAll('a[href]')];
+        (event.shiftKey ? links.at(-1) : links[0])?.focus();
+      });
       toggle.addEventListener("click", () => set(!menu.classList.contains("open")));
       menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => set(false)));
-      addEventListener("keydown", (e) => { if (e.key === "Escape") set(false); });
+      addEventListener("keydown", (e) => { if (e.key === "Escape" && menu.classList.contains('open')) set(false); });
       addEventListener("resize", () => { if (innerWidth > 820) set(false); });
     }
   })();
 
   /* a list rendered into a container, when both exist */
+  const faqHost = document.getElementById('faqList');
+  if (faqHost) {
+    const questions = Array.isArray(SITE.faq) ? SITE.faq.filter(item => item.question && item.answer) : [];
+    questions.forEach(item => {
+      const details = document.createElement('details'), summary = document.createElement('summary'), answer = document.createElement('p');
+      summary.textContent = item.question; answer.textContent = item.answer;
+      details.append(summary, answer); faqHost.append(details);
+    });
+    if (!questions.length) faqHost.closest('section').hidden = true;
+  }
+
   function list(id, items, draw) {
     const host = document.getElementById(id);
     if (!host || !Array.isArray(items) || !items.length) return;

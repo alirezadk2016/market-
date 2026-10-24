@@ -1,264 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>A.z — Private Luxury Advisory</title>
-  <meta name="description" content="A.z — a private advisory for luxury and old-money essentials. Curated pieces and personal purchase guidance, by appointment. Bags today; footwear and fragrance to follow." />
-  <meta name="theme-color" content="#f5efe8" />
-  <!-- Critical: paint dark immediately so there is never a white flash before styles.css loads -->
-  <style>html,body{margin:0;background:#f5efe8}#intro{position:fixed;inset:0;background:#130d0e;z-index:9999}html.no-overture #intro{display:none}</style>
-  <!-- The overture plays once a session: a returning visitor walks straight in. -->
-  <script>try{var k="az.overture";if(sessionStorage.getItem(k)){document.documentElement.className+=" no-overture";}else{sessionStorage.setItem(k,"1");}}catch(e){}</script>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b0c0d"><meta name="description" content="Discover the A.z selection of bags, eyewear, timepieces and headwear, with personal guidance on every piece."><title>A.z · The Night Salon</title><link rel="stylesheet" href="salon.css?v=night-salon-1"><link rel="stylesheet" href="salon-sections.css?v=night-salon-1"><link rel="canonical" href="https://market-one-indol.vercel.app/"><meta property="og:type" content="website"><meta property="og:title" content="A.z · The Night Salon"><meta property="og:description" content="Distinctive pieces. A more personal way to discover them."><meta property="og:url" content="https://market-one-indol.vercel.app/"><meta property="og:image" content="https://market-one-indol.vercel.app/assets/night-gallery.webp"></head><body>
+<a class="skip" href="#gallery">Skip to the gallery</a>
+<header class="header">
+  <a class="signature" href="#entrance" aria-label="A.z home"><img src="assets/logo-silver.png" alt="A.z" width="76" height="76"></a>
+  <span class="descriptor">Private luxury advisory</span>
+  <nav class="main-nav" aria-label="Main navigation"><a href="#collections">Collections</a><a href="#advisory">The Advisory</a><a href="#questions">Questions</a></nav>
+  <a class="mobile-collection" href="#collections">Collections</a>
+  <button class="header-enquiry" id="openAdvice">Private enquiry</button>
+</header>
+<main id="entrance"><section class="salon" aria-labelledby="salonTitle">
+<div class="architecture" aria-hidden="true"></div><div class="shade" aria-hidden="true"></div>
+<div class="intro"><p class="eyebrow">The A.z salon</p><h1 id="salonTitle">A private<br>perspective.</h1><p class="lead">Distinctive pieces.<br>A more personal way to discover them.</p></div>
+<div class="room" id="gallery" role="region" aria-label="Interactive collection gallery" tabindex="0">
+<div class="camera" id="camera">
+<button class="exhibit" data-id="0" aria-label="Inspect Armani Exchange Logo Top-Handle"><span class="object-photo"><img src="assets/bag-retouched.webp" alt="Armani Exchange Logo Top-Handle in Nero" width="1264" height="1198" fetchpriority="high"></span><span class="ambient-shadow" aria-hidden="true"></span><span class="contact-shadow" aria-hidden="true"></span></button>
+<button class="exhibit" data-id="1" aria-label="Select Gucci Oval Sunglasses"><span class="object-photo"><img src="assets/gg-oval-retouched.webp" alt="Gucci Oval Sunglasses in Black and Grey" width="1600" height="723"></span><span class="ambient-shadow" aria-hidden="true"></span><span class="contact-shadow" aria-hidden="true"></span></button>
+<button class="exhibit" data-id="2" aria-label="Select Swarovski Era Journey Chrono"><span class="watch-holder" aria-hidden="true"><img src="assets/watch-holder.webp" alt="" width="600" height="800"></span><span class="object-photo"><img src="assets/holo-watch.webp" alt="Swarovski Era Journey Chrono in Rose Gold and Black" width="448" height="720"></span><span class="ambient-shadow" aria-hidden="true"></span><span class="contact-shadow" aria-hidden="true"></span></button>
+</div></div>
+<div class="footer-console">
+<div class="piece-label" aria-live="polite" aria-atomic="true"><p class="house" id="pieceHouse">Armani Exchange</p><h2 id="pieceName">Logo Top-Handle</h2><p class="colour" id="pieceColour">Nero · The Bags</p></div>
+<div class="gallery-navigation" role="group" aria-label="Select a featured collection">
+  <button class="selection-tab" data-select="0" aria-pressed="true"><span class="selection-number" aria-hidden="true">01</span><span class="selection-title">Bags</span></button>
+  <button class="selection-tab" data-select="1" aria-pressed="false"><span class="selection-number" aria-hidden="true">02</span><span class="selection-title">Eyewear</span></button>
+  <button class="selection-tab" data-select="2" aria-pressed="false"><span class="selection-number" aria-hidden="true">03</span><span class="selection-title">Timepieces</span></button>
+  <span class="sr-only" id="current">01</span>
+</div>
+<button class="inspect" id="inspect"><span>View this piece</span><span class="action-rule" aria-hidden="true"></span></button>
+</div>
 
-  <!-- Favicon (gold monogram) -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23f5efe8'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-style='italic' font-size='30' fill='%237a2c3d' text-anchor='middle'%3EAZ%3C/text%3E%3C/svg%3E" />
-
-  <!-- Social share -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="A.z — Private Luxury Advisory" />
-  <meta property="og:description" content="Curated luxury & old-money essentials, with personal purchase guidance. By appointment." />
-  <meta property="og:image" content="images/og.png" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="A.z — Private Luxury Advisory" />
-  <meta name="twitter:description" content="Curated luxury & old-money essentials, with personal purchase guidance. By appointment." />
-  <meta name="twitter:image" content="images/og.png" />
-
-  <!-- The page is led by its type and by one photograph: both are fetched
-       with the stylesheet rather than after it, so the headline is never
-       first drawn in a fallback face. -->
-  <link rel="preload" as="font" type="font/woff2" href="fonts/cormorant-500.woff2" crossorigin />
-  <link rel="preload" as="font" type="font/woff2" href="fonts/cormorant-500-italic.woff2" crossorigin />
-  <link rel="preload" as="font" type="font/woff2" href="fonts/jost-300.woff2" crossorigin />
-  <link rel="preload" as="image" href="images/look.webp" fetchpriority="high" />
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body data-meta="meta">
-  <!-- Intro curtain -->
-  <div class="intro" id="intro">
-    <div class="intro-inner">
-      <span class="intro-sig">
-        <img class="intro-logo-ghost" src="images/logo.png" alt="" aria-hidden="true" />
-        <img class="intro-logo" src="images/logo.png" alt="A.z" />
-        <span class="intro-nib" aria-hidden="true"></span>
-      </span>
-      <span class="intro-line" aria-hidden="true"></span>
-      <span class="intro-sub">Private Luxury Advisory</span>
-    </div>
+</section>
+<section class="collection-salon" id="collections" aria-labelledby="collectionsTitle">
+  <div class="collection-intro"><p class="salon-overline">The private edit</p><h2 id="collectionsTitle">Four collections.<br>Entirely your own.</h2><p>Explore the pieces, colours and details in the current A.z selection.</p></div>
+  <div class="collection-salon-grid">
+    <button type="button" class="collection-entrance collection-entrance--bags" data-collection="bags" aria-label="Explore the Bags collection"><span class="collection-entrance-image"><img src="assets/bag-retouched.webp" width="1264" height="1198" alt="" loading="lazy"></span><span class="collection-entrance-caption"><span class="collection-house">Armani Exchange · Coccinelle · more</span><strong>The Bags</strong><span class="collection-entrance-action">View the collection</span></span></button>
+    <button type="button" class="collection-entrance collection-entrance--eyewear" data-collection="eyewear" aria-label="Explore the Eyewear collection"><span class="collection-entrance-image"><img src="assets/gg-oval-retouched.webp" width="1600" height="723" alt="" loading="lazy"></span><span class="collection-entrance-caption"><span class="collection-house">Gucci</span><strong>The Eyewear</strong><span class="collection-entrance-action">View the collection</span></span></button>
+    <button type="button" class="collection-entrance collection-entrance--watches" data-collection="watches" aria-label="Explore the Timepieces collection"><span class="collection-entrance-image"><img src="assets/holo-watch.webp" width="448" height="720" alt="" loading="lazy"></span><span class="collection-entrance-caption"><span class="collection-house">Swarovski</span><strong>The Timepieces</strong><span class="collection-entrance-action">View the collection</span></span></button>
+    <button type="button" class="collection-entrance collection-entrance--headwear" data-collection="headwear" aria-label="Explore the Headwear collection"><span class="collection-entrance-image"><img src="assets/cap-cut.webp" width="980" height="816" alt="" loading="lazy"></span><span class="collection-entrance-caption"><span class="collection-house">Polo Ralph Lauren</span><strong>The Headwear</strong><span class="collection-entrance-action">View the collection</span></span></button>
   </div>
+</section>
+<figure class="material-study"><img src="assets/material-study.webp" width="1536" height="1024" alt="" loading="lazy"><figcaption>Texture. Proportion. Detail.</figcaption></figure>
+<section class="advisory-salon" id="advisory" aria-labelledby="advisoryTitle">
+  <div class="advisory-intro"><p class="salon-overline">The A.z approach</p><h2 id="advisoryTitle">Good choices<br>begin with you.</h2><p>Personal guidance is part of the collection. Tell us how you live, what you love and what you are looking for.</p><a class="salon-text-link" href="#private-enquiry">Begin a private enquiry</a></div>
+  <dl class="salon-method"><div><dt>First, a conversation.</dt><dd>A piece you have seen, a colour you return to, or an occasion in mind. We start with what matters to you.</dd></div><div><dt>Then, a closer look.</dt><dd>Compare the shapes, materials and details. Ask about the pieces and colours you are considering.</dd></div><div><dt>A considered next step.</dt><dd>Speak with an advisor about current availability and how to proceed, at your pace.</dd></div></dl>
+</section>
+<section class="salon-enquiry" id="private-enquiry" aria-labelledby="enquiryTitle">
+  <div class="salon-enquiry-intro"><p class="salon-overline">By appointment</p><h2 id="enquiryTitle">A little more<br>personal.</h2><p>Tell us what caught your eye.<br>We will take it from there.</p><a href="mailto:alirezadk2020@gmail.com" class="salon-contact-address">alirezadk2020@gmail.com</a></div>
+  <form id="salonEnquiry" class="salon-enquiry-form" aria-labelledby="enquiryFormTitle"><h3 id="enquiryFormTitle">Your private enquiry</h3><label for="salonCollection">Collection</label><select id="salonCollection" name="collection"><option value="">Help me choose</option><option value="bags">The Bags</option><option value="eyewear">The Eyewear</option><option value="watches">The Timepieces</option><option value="headwear">The Headwear</option></select><label for="salonPreferences">What are you considering? <span>(optional)</span></label><textarea id="salonPreferences" name="preferences" rows="4" maxlength="1200" placeholder="A piece, a colour, an occasion…"></textarea><a class="salon-compose" id="salonCompose" href="mailto:alirezadk2020@gmail.com?subject=A.z%20private%20enquiry">Compose my enquiry</a><p class="salon-form-note">Opens your email app with an editable draft. Nothing is sent automatically.</p></form>
+</section>
+<section class="salon-questions" id="questions" aria-labelledby="questionsTitle"><div><p class="salon-overline">A few details</p><h2 id="questionsTitle">Before we begin.</h2></div><div class="salon-question-list"><details><summary>Can I order directly on the website?</summary><p>A.z is a curated catalogue with personal advice. Use the enquiry link on a piece to ask about availability, price and how to proceed.</p></details><details><summary>Can I ask about a specific colour?</summary><p>Yes. Choose the colour in the collection browser, then select “Ask about this piece”. Its name and colour will be included in your enquiry.</p></details><details><summary>What happens when I compose an enquiry?</summary><p>Your email app opens with an editable draft. You can review it and send it there. The website does not send a message automatically.</p></details></div></section>
+<dialog id="collectionRoom" class="collection-dialog" aria-labelledby="collectionRoomTitle"><div class="modal-toolbar"><button type="button" class="collection-close" aria-label="Close collection" id="closeCollection">Close</button></div><div class="modal-scroll collection-scroll"><header class="collection-dialog-head"><p class="salon-overline">The A.z selection</p><h2 id="collectionRoomTitle">The Bags</h2><p id="collectionRoomCount" role="status"></p></header><div class="collection-browser" id="collectionBrowser"><div class="catalogue-discovery"><label for="catalogueSearch">Find a piece</label><input id="catalogueSearch" type="search" placeholder="House, model or colour" autocomplete="off"><button type="button" id="clearCatalogue" hidden>Clear</button></div><div id="catalogueGrid" class="catalogue-grid"></div><p class="catalogue-empty" id="catalogueEmpty" hidden>No pieces match that search. Try another house, model or colour.</p></div><section class="catalogue-piece" id="cataloguePiece" aria-labelledby="cataloguePieceTitle" hidden><button type="button" class="catalogue-back" id="catalogueBack">Back to the collection</button><div class="catalogue-piece-grid"><div class="catalogue-piece-gallery"><div class="catalogue-main-photo"><img id="cataloguePhoto" alt=""></div><div class="catalogue-thumbnails" id="catalogueThumbnails" aria-label="Product photographs"></div></div><div class="catalogue-piece-copy"><p id="catalogueHouse" class="catalogue-house"></p><h3 id="cataloguePieceTitle"></h3><p id="catalogueColour" class="catalogue-colour"></p><div id="catalogueVariants" class="catalogue-variants" role="group" aria-label="Choose a colour"></div><p id="catalogueDescription" class="catalogue-description"></p><details class="catalogue-specs"><summary>Details &amp; dimensions</summary><dl id="catalogueSpecifications"></dl></details><button type="button" class="salon-compose" id="catalogueEnquire">Ask about this piece</button><p class="salon-form-note">For current price, availability and personal guidance.</p></div></div></section></div></dialog>
 
-  <!-- Top bar -->
-  <header class="topbar" id="topbar">
-    <a href="#" class="brand" aria-label="A.z — home">
-      <img class="brand-logo brand-logo--gold" src="images/logo.png" alt="A.z" />
-      <img class="brand-logo brand-logo--ink" src="images/logo-ink.png" alt="" aria-hidden="true" />
-    </a>
-    <span class="topbar-title" aria-hidden="true">The art of <em>choosing well.</em></span>
-    <nav class="nav">
-      <a href="#collection">Collection</a>
-      <a href="eyewear.html">The Eyewear</a>
-      <a href="advisory.html">The Advisory</a>
-      <a href="#enquire">Enquire</a>
-    </nav>
-    <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
-      <span></span><span></span>
-    </button>
-  </header>
-
-  <!-- Full-screen mobile menu -->
-  <div class="menu" id="menu" aria-hidden="true">
-    <nav class="menu-nav">
-      <a href="#collection">Collection</a>
-      <a href="eyewear.html">The Eyewear</a>
-      <a href="advisory.html">The Advisory</a>
-      <a href="#enquire">Enquire</a>
-    </nav>
-    <span class="menu-foot">A.z — By Appointment</span>
-  </div>
-
-  <!-- Hero — cinematic dark stage -->
-  <section class="hero" id="hero">
-    <div class="hero-glow" aria-hidden="true"></div>
-    <canvas class="hero-dust" id="dust" aria-hidden="true"></canvas>
-    <div class="hero-vignette" aria-hidden="true"></div>
-    <div class="hero-copy">
-      <p class="hero-eyebrow reveal" data-site="hero.eyebrow">A.z — Private Luxury Advisory</p>
-      <h1 class="hero-title reveal" data-html="hero.title">The art of <em>choosing well.</em></h1>
-      <div class="hero-rule reveal" aria-hidden="true"></div>
-      <p class="hero-sub reveal" data-html="hero.sub">A private advisory for luxury &amp; old-money essentials — we curate the finest, then guide you to the piece that truly suits you.</p>
-      <div class="hero-actions reveal">
-        <a href="#collection" class="btn btn--solid" data-site="hero.ctaOne">View the Collection</a>
-        <a href="#enquire" class="btn btn--ghost" data-site="hero.ctaTwo">Speak to an Advisor</a>
-      </div>
-      <p class="hero-sign reveal" data-html="hero.sign">Curated personally — <em>A.z</em></p>
-    </div>
-    <div class="hero-scene reveal">
-      <div class="look-flip" id="lookFlip">
-      <div class="flip-inner" id="flipInner">
-      <div class="look-stage" id="lookStage">
-        <div class="look-photo" id="lookPhoto">
-          <img src="images/look.webp" data-src="hero.photo" data-alt="hero.photoAlt" alt="Styled in the salon — every piece in the scene can be explored" />
-          <span class="look-shade" aria-hidden="true"></span>
-          <!-- markers placed from content.js -->
-        </div>
-        <div class="holo" id="holo" aria-hidden="true">
-          <span class="holo-glow"></span>
-          <span class="holo-beam" aria-hidden="true"></span>
-          <div class="holo-body">
-            <img id="holoImg" src="" alt="" />
-            <img class="holo-refl" id="holoRefl" src="" alt="" aria-hidden="true" />
-            <span class="glass-face" aria-hidden="true"></span>
-          </div>
-          <i class="holo-corner hc1"></i><i class="holo-corner hc2"></i>
-          <i class="holo-corner hc3"></i><i class="holo-corner hc4"></i>
-        </div>
-        <button class="look-close" id="lookClose" aria-label="Step back">×</button>
-        <article class="look-card" id="lookCard" aria-live="polite">
-          <span class="lc-kicker" id="lcKicker"></span>
-          <h3 class="lc-name" id="lcName"></h3>
-          <p class="lc-note" id="lcNote"></p>
-          <img class="lc-img hidden" id="lcImg" src="" alt="" loading="lazy" />
-          <a class="lc-link hidden" id="lcLink" href="#">Discover the Piece</a>
-        </article>
-        <span class="plate-sheen" aria-hidden="true"></span>
-      </div><!-- /.look-stage -->
-
-      <!-- the reverse of the plate — the campaign portrait -->
-      <div class="look-back" id="lookBack">
-        <span class="lens-glass">
-          <img src="images/look-back.webp" data-src="hero.back.photo" data-alt="hero.back.alt" alt="A.z campaign — the Gucci rectangular sunglasses" loading="lazy" />
-          <span class="back-vignette" aria-hidden="true"></span>
-          <span class="plate-sheen" aria-hidden="true"></span>
-        </span>
-        <span class="back-edge" aria-hidden="true" data-site="hero.back.edge">The Campaign</span>
-        <a class="back-plate" href="eyewear.html" data-href="hero.back.link">
-          <span class="bp-house" data-site="hero.back.house">Gucci</span>
-          <span class="bp-piece" data-site="hero.back.piece">Rectangular Sunglasses</span>
-          <span class="bp-go"><span data-site="hero.back.go">Enter the Eyewear</span> <i>⟶</i></span>
-        </a>
-      </div>
-      </div><!-- /.flip-inner -->
-        <button class="flip-btn" id="flipBtn" aria-label="Turn the plate">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>
-        </button>
-      </div><!-- /.look-flip -->
-      <p class="scene-hint reveal" data-site="hero.hint">Scroll into the scene · touch a marker · turn the plate</p>
-    </div>
-  </section>
-
-  <!-- Houses we source -->
-  <section class="houses" aria-label="The houses we source">
-    <p class="houses-kicker reveal">The houses we source</p>
-    <!-- written from the collections themselves, so a house added in the
-         panel takes its place in the line without being typed twice -->
-    <p class="houses-line reveal" id="housesLine">Armani Exchange <span>·</span> Coccinelle <span>·</span> Calvin Klein <span>·</span> U.S. Polo Assn. <span>·</span> Tommy Hilfiger <span>·</span> Twinset</p>
-  </section>
-
-  <!-- The Vitrine — the display wall, lit like the salon -->
-  <section class="vitrine" id="vitrine">
-    <div class="look-head">
-      <p class="look-kicker reveal" data-site="vitrine.kicker">The Vitrine</p>
-      <h2 class="look-title reveal" id="vitTitle">Four collections. <em>One standard.</em></h2>
-      <p class="look-lead reveal" data-site="vitrine.lead">Select a collection</p>
-    </div>
-    <!-- built from the collection registry in bags.js, so a collection added
-         in the admin panel takes its place on the wall on its own -->
-    <div class="vit-wall reveal" id="vitWall"></div>
-  </section>
-
-  <!-- Collection -->
-  <section class="collection" id="collection">
-    <div class="section-head">
-      <span class="section-index reveal" data-site="collection.index">I</span>
-      <h2 class="section-title reveal" data-site="collection.title">The Collection</h2>
-      <p class="section-lead reveal" data-site="collection.lead">A sample of what we source — ask, and we advise.</p>
-      <p class="swipe-hint reveal" id="swipeHint" aria-hidden="true">Swipe — <b id="swipeNow">01</b> / <span id="swipeTotal">13</span></p>
-    </div>
-    <div class="grid" id="grid"><!-- built by script.js --></div>
-  </section>
-
-  <!-- The Service -->
-  <section class="house" id="house">
-    <div class="section-head">
-      <span class="section-index reveal" data-site="service.index">II</span>
-      <h2 class="section-title reveal" data-site="service.title">The Service</h2>
-      <p class="section-lead reveal" data-site="service.lead">How A.z works.</p>
-    </div>
-    <div class="pillars" id="pillars"></div>
-    <div class="house-cta reveal">
-      <a class="btn btn--ghost" href="advisory.html" data-site="houseCta">How We Help — The Full Method</a>
-    </div>
-  </section>
-
-  <!-- A word from the curator — the personal signature of the house -->
-  <section class="word">
-    <div class="word-inner">
-      <span class="word-kicker reveal" data-site="word.kicker">A Word from the Curator</span>
-      <p class="word-text reveal" data-html="word.text">“ I open every box myself. If a piece does not make me pause,
-        it never reaches you. That is the whole method — <em>taste, patience, and refusal.</em> ”</p>
-      <img class="word-sign reveal" src="images/logo-ink.png" alt="A.z" />
-      <span class="word-role reveal" data-html="word.role">Founder &amp; Curator</span>
-    </div>
-  </section>
-
-  <!-- Enquire -->
-  <section class="enquire" id="enquire">
-    <div class="enquire-inner">
-      <span class="section-index reveal" data-site="enquire.index">III</span>
-      <h2 class="enquire-title reveal" data-html="enquire.title">Considering a piece?<br /><em>Let us advise you.</em></h2>
-      <p class="enquire-sub reveal" data-site="enquire.sub">Private consultations by appointment. Tell us what you are drawn to — we will guide you to the right piece and source it for you.</p>
-      <div class="enquire-links reveal" id="enquireLinks"></div>
-      <p class="enquire-note reveal" id="enquireNote"></p>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <img class="footer-logo" src="images/logo.png" alt="A.z" />
-    <div class="footer-rule" aria-hidden="true"></div>
-    <p class="footer-note" data-site="footer.note">Private luxury advisory — curated pieces, personal guidance, discreet service. By appointment.</p>
-    <nav class="footer-nav" id="footerNav" aria-label="Collections">
-      <a href="advisory.html">The Advisory</a>
-    </nav>
-    <span class="footer-copy" data-site="footer.copy">© A.z — By Appointment · Curated personally, piece by piece</span>
-  </footer>
-
-  <!-- Lightbox viewer -->
-  <div class="lb" id="lb" aria-hidden="true" role="dialog" aria-label="Piece viewer">
-    <button class="lb-close" id="lbClose" aria-label="Close">×</button>
-    <button class="lb-arrow lb-prev" id="lbPrev" aria-label="Previous view">‹</button>
-    <figure class="lb-fig">
-      <img id="lbImg" alt="" />
-      <figcaption class="lb-cap">
-        <span class="lb-name brand-name-link" id="lbName" title="About the House"></span>
-        <span class="lb-sub" id="lbSub"></span>
-        <span class="brand-hint" id="lbBrandHint">About the House ›</span>
-      </figcaption>
-      <div class="brand-panel" id="lbBrandPanel">
-        <span class="bp-kicker">The House</span>
-        <div class="bp-row"><span>Founded</span><span id="bpFounded"></span></div>
-        <div class="bp-row"><span>Origin</span><span id="bpOrigin"></span></div>
-        <p class="bp-standing" id="bpStanding"></p>
-        <ul class="bp-facts" id="bpFacts"></ul>
-        <div class="bp-award" id="bpAward" style="display:none"><b>Honours — this piece</b><span id="bpAwardText"></span></div>
-      </div>
-      <div class="lb-advisor" id="lbAdvisor">
-        <span class="lb-adv-kicker">The A.z Note</span>
-        <p class="lb-adv-note" id="lbAdvNote"></p>
-        <div class="lb-adv-row"><span>Who it's for</span><p id="lbAdvWho"></p></div>
-        <div class="lb-adv-row"><span>Why this piece</span><p id="lbAdvWhy"></p></div>
-        <img class="lb-adv-sign" src="images/logo-ink.png" alt="A.z" />
-      </div>
-      <dl class="lb-specs" id="lbSpecs"></dl>
-      <a class="lb-enquire" id="lbPage" href="#">Discover the Piece</a>
-    </figure>
-    <button class="lb-arrow lb-next" id="lbNext" aria-label="Next view">›</button>
-  </div>
-
-  <script src="content.js"></script>
-  <script src="fill.js"></script>
-  <script src="bags.js"></script>
-  <script src="script.js"></script>
-
-</body>
-</html>
+</main>
+<footer class="salon-footer"><a class="footer-signature" href="#entrance" aria-label="Return to A.z entrance"><img src="assets/logo-silver.png" alt="A.z" width="66" height="66"></a><p>Considered pieces. Personal guidance.</p><nav aria-label="Footer navigation"><a href="#collections">The collections</a><a href="#private-enquiry">Private enquiry</a><a href="#entrance">Back to the salon</a></nav><small>A.z · By appointment</small></footer>
+<dialog id="details" aria-labelledby="detailName">
+  <div class="modal-toolbar"><button class="close" id="closeDetails" aria-label="Close piece details">Close</button></div><div class="modal-scroll detail-layout">
+  <div class="detail-image"><img id="detailImage" src="assets/bag-retouched.webp" alt=""><span class="detail-reference">The private selection</span></div>
+  <div class="detail-copy"><p class="detail-house" id="detailHouse">Armani Exchange</p><h2 id="detailName">Logo Top-Handle</h2><div class="detail-colour-row"><span>Colour</span><p class="detail-colour" id="detailColour">Nero</p></div><p id="detailText"></p><dl class="detail-specs" id="detailSpecs" hidden></dl><p class="detail-service">Personal guidance on colour, availability and the next steps.</p><a class="detail-link" id="detailLink" href="mailto:alirezadk2020@gmail.com">Enquire about this piece</a><button class="back-room" id="backRoom">Return to the salon</button></div></div>
+</dialog>
+<dialog id="advice" aria-labelledby="adviceTitle">
+  <div class="modal-toolbar"><button class="close" id="closeAdvice" aria-label="Close enquiry information">Close</button></div><div class="modal-scroll advice-scroll">
+  <div class="advice-copy"><p class="eyebrow">By appointment</p><h2 id="adviceTitle">A personal<br>consultation.</h2><p>Tell us which piece you are considering. We can help with colour, availability and the next steps.</p><a class="detail-link" href="mailto:alirezadk2020@gmail.com?subject=A.z%20private%20enquiry">Write to your advisor</a><a class="advice-brief" id="adviceBrief" href="#private-enquiry">Prepare a detailed enquiry</a><p class="prototype-note">Your email app opens an editable draft. Nothing is sent automatically.</p></div></div>
+</dialog>
+<script src="salon.js?v=night-salon-1"></script><script src="bags.js?v=night-salon-1"></script><script src="salon-sections.js?v=night-salon-1"></script></body></html>
