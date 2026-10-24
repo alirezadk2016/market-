@@ -15,3 +15,12 @@ Original catalogue and campaign photographs are retained from the existing repos
 Generated with the built-in imagegen tool on 24 October 2026, then resized to 1440px and encoded WebP quality85. An original editorial material study, not catalogue merchandise or an actual business location. Used on service and advisory.
 
 Prompt: Create one photorealistic editorial still-life photograph for a contemporary luxury fashion advisory website. Wide landscape 3:2 composition. Very dark forest-green satin draped naturally over a low brushed stainless steel cylindrical plinth on a pale cool-grey stone floor beside a chalk-white plaster wall. Sculptural folds, restrained silver highlights, afternoon sunlight and diagonal architectural shadow, medium-format fashion art direction. Satin and cylinder predominantly right, calm negative space at left. No bags, sunglasses, watches, merchandise, people, plants, text, logos, borders or interface. Muted green and neutral whites only.
+
+
+## Current collection campaign covers · 24 October 2026
+
+assets/campaign-bags-v1.webp, campaign-eyewear-v1.webp, campaign-watches-v1.webp and campaign-headwear-v1.webp were created as original unbranded decorative category studies with the built-in imagegen tool. They are not photos of catalogue stock or official brand campaigns. Product registry and catalogue photographs remain unchanged. Category captions identify the collection rather than naming a brand over the generated imagery.
+
+Three square masters are 1254 × 1254; the eyewear master is 1672 × 941. Converted without enlargement to full-size WebP quality92 and responsive 640/960px WebP quality90. CSS uses full-bleed photography, dark caption gradients and responsive crops. Source sizes account for the wide tablet rows and paired tablet watch/headwear cards.
+
+Art direction: photorealistic medium-format editorial still life; charcoal honed stone and architectural background; soft ivory directional window light; warm black and navy fabrics; discreet silver or rose-gold metal; fine natural textures and physically credible floor contact. One black structured top-handle bag; one pair of black oval acetate sunglasses; one black-dial chronograph on a suede cushion; one navy six-panel cotton cap with beige underside. No text, logos, people, floating objects, round pedestals, white mattes or glossy CGI effects. Calm lower quarter for HTML captions. Generation prompts and masters are archived in the owner's project deliverables.

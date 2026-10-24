@@ -9,3 +9,5 @@ The dark photographic salon continues into four collections, a native catalogue 
 The architecture, watch support and material study are generated editorial/decorative imagery, not actual premises or merchandise. Bag and eyewear hero photographs use generatively retouched derivatives; small surface details can differ from the source. Original catalogue media remain available for alternate views. This is CSS perspective photography, not full 3D scanning.
 
 Validation: all referenced assets exist and scripts parse. Hero selections checked at 360/390/768/1440px without horizontal document overflow or broken completed images. Four catalogue counts, colour search, empty state, alternate photos, retained variant, native dialog Close/Escape, persistent phone close controls, FAQ disclosures and prefilled enquiry destinations checked in browser. Physical phone hardware and email app launch were not exercised.
+
+Collection cover photography: four original unbranded generated editorial studies, with responsive 640/960px and full-size WebP sources. The decorative covers do not replace the real catalogue photographs. See IMAGE_CREDITS.md.
