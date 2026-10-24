@@ -911,6 +911,13 @@
     w.appendChild(sField("Button under them", "houseCta"));
 
     w.appendChild(el("hr", "hr"));
+    w.appendChild(el("h3", null, "Common questions"));
+    w.appendChild(blockEditor(state.site.faq || (state.site.faq = []), [
+      { key: "question", label: "Question" },
+      { key: "answer", label: "Answer", area: true },
+    ], { addLabel: "Add a question" }));
+
+    w.appendChild(el("hr", "hr"));
     w.appendChild(el("h3", null, "A word from the curator"));
     w.appendChild(sField("Kicker", "word.kicker"));
     w.appendChild(sArea("The words", "word.text"));

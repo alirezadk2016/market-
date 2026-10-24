@@ -34,3 +34,9 @@ New image: images/atelier-materials.webp is an AI-generated editorial material s
 Catalogue filters live in the URL as house and q parameters, preserving the collection parameter and anchor. Returning from a product restores the previous edit instead of clearing the visitor's selection. Product photography has labelled 44px previous/next controls, a tabular photo counter, thumbnail selection and arrow-key navigation within the gallery. Single-photo variants hide redundant controls. Changing colour resets the photograph index.
 
 Brand information is opened by a native button with an expanded state. Details/dimensions and provenance/service use native disclosures: initially closed on phones and open on desktop, with user choices preserved until navigation/reload. This keeps the phone page concise without removing product information.
+
+## Enquiry and trust
+
+A two-column desktop enquiry becomes a single-column phone brief. Collection and optional preferences generate an editable mailto draft; no form submission or automatic message is implied. Native FAQ disclosures are driven by SITE.faq and editable in the existing admin content editor. Footer utility links aid return navigation. The branded 404 document uses root-relative links for nested missing addresses.
+
+Product colour is preserved in the URL and in dynamic share links. Local impressions are now explicitly private notes, collapsed by default, with optional ratings (never invented five-star scores), bounded compressed attachments, removable notes and truthful storage-failure feedback. Existing local notes retain compatible storage keys.

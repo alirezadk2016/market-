@@ -190,13 +190,30 @@
   </section>
 
   <!-- Enquire -->
+  <section class="faq-section" id="faq" aria-labelledby="faqTitle">
+    <header><p class="section-kicker">Before we begin</p><h2 id="faqTitle">Your questions,<br /><em>considered.</em></h2></header>
+    <div class="faq-list" id="faqList"></div>
+  </section>
+
   <section class="enquire" id="enquire">
     <div class="enquire-inner">
+      <div class="enquire-copy">
       <span class="section-index reveal" data-site="enquire.index">III</span>
       <h2 class="enquire-title reveal" data-html="enquire.title">Considering a piece?<br /><em>Let us advise you.</em></h2>
       <p class="enquire-sub reveal" data-site="enquire.sub">Private consultations by appointment. Tell us what you are drawn to — we will guide you to the right piece and source it for you.</p>
       <div class="enquire-links reveal" id="enquireLinks"></div>
       <p class="enquire-note reveal" id="enquireNote"></p>
+      </div>
+      <div class="enquiry-brief" id="enquiryBrief" aria-labelledby="briefTitle" hidden>
+        <p class="section-kicker">A private brief</p>
+        <h3 id="briefTitle">Tell us what draws you.</h3>
+        <label for="briefCollection">Collection</label>
+        <select id="briefCollection"><option value="">Help me choose</option></select>
+        <label for="briefDetails">Your preferences <span>(optional)</span></label>
+        <textarea id="briefDetails" rows="4" maxlength="1000" placeholder="A favourite piece, a colour, or an occasion…"></textarea>
+        <a class="btn btn--solid" id="briefEmail" href="#enquire">Compose my enquiry <span aria-hidden="true">↗</span></a>
+        <p class="brief-help">Opens your email app with an editable draft.</p>
+      </div>
     </div>
   </section>
 

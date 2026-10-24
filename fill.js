@@ -79,11 +79,15 @@
     if (!Array.isArray(SITE.nav) || !SITE.nav.length) return;
 
     /* a home-page anchor is only an anchor when that section is on this page */
-    const href = (h) => (h.charAt(0) === "#" && !document.querySelector(h) ? "index.html" + h : h);
-    const here = location.pathname.split("/").pop() || "index.html";
+    const href = (h) => {
+      const target = h.charAt(0) === '#' && !document.querySelector(h) ? 'index.html' + h : h;
+      return document.body.dataset.errorPage && !/^(#|\/|https?:|mailto:)/.test(target) ? '/' + target : target;
+    };
+    const normalize = path => path.replace(/\.html$/, '').replace(/\/$/, '') || 'index';
+    const here = normalize(location.pathname.split("/").pop() || "index.html");
     const draw = (n) => SITE.nav.map((l) => {
       const h = href(l.href);
-      const on = h === here || (h.charAt(0) !== "#" && h.split("#")[0] === here);
+      const on = h.charAt(0) !== '#' && normalize(h.split('#')[0]) === here;
       return '<a href="' + h + '"' + (on ? ' aria-current="page"' : "") + ">" + l.label + "</a>";
     }).join(n);
 
@@ -156,6 +160,17 @@
   })();
 
   /* a list rendered into a container, when both exist */
+  const faqHost = document.getElementById('faqList');
+  if (faqHost) {
+    const questions = Array.isArray(SITE.faq) ? SITE.faq.filter(item => item.question && item.answer) : [];
+    questions.forEach(item => {
+      const details = document.createElement('details'), summary = document.createElement('summary'), answer = document.createElement('p');
+      summary.textContent = item.question; answer.textContent = item.answer;
+      details.append(summary, answer); faqHost.append(details);
+    });
+    if (!questions.length) faqHost.closest('section').hidden = true;
+  }
+
   function list(id, items, draw) {
     const host = document.getElementById(id);
     if (!host || !Array.isArray(items) || !items.length) return;

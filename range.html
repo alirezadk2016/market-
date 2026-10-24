@@ -119,8 +119,14 @@
     "use strict";
     var qs = new URLSearchParams(location.search);
     var col = qs.get("c") || "bags";
-    if (!RANGES[col]) col = "bags";
+    if (!RANGES[col]) col = Object.keys(RANGES)[0];
     var range = RANGES[col];
+    if (!range) {
+      document.getElementById('rTitle').textContent = 'The next edit';
+      document.getElementById('rLead').textContent = 'Speak to an advisor about what you have in mind.';
+      document.getElementById('rSoon').style.display = '';
+      return;
+    }
 
     document.title = "A.z — " + range.title;
     document.getElementById("rTitle").textContent = range.title;
@@ -132,7 +138,7 @@
       var a = document.createElement("a");
       a.href = "range.html?c=" + k;
       a.textContent = RANGES[k].title.replace("The ", "");
-      if (k === col) a.className = "on";
+      if (k === col) { a.className = "on"; a.setAttribute('aria-current','page'); }
       nav.appendChild(a);
     });
 

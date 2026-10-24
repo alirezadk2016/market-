@@ -1,5 +1,19 @@
 /* Data-driven discovery with a separate phone action shelf. */
 (() => {
+  const brief = document.getElementById('enquiryBrief');
+  if (brief && typeof SITE !== 'undefined' && SITE.enquire?.email) {
+    const collection = document.getElementById('briefCollection'), message = document.getElementById('briefDetails'), action = document.getElementById('briefEmail');
+    if (typeof RANGES !== 'undefined') Object.entries(RANGES).forEach(([key,range]) => {
+      const option = document.createElement('option'); option.value = key; option.textContent = range.title; collection.append(option);
+    });
+    const compose = () => {
+      const chosen = collection.value ? collection.selectedOptions[0].textContent : 'help choosing a piece';
+      const body = 'Hello A.z,\n\nI would like advice on ' + chosen + '.' + (message.value.trim() ? '\n\n'+message.value.trim() : '');
+      action.href = 'mailto:' + SITE.enquire.email + '?subject=' + encodeURIComponent('A.z private enquiry — '+chosen) + '&body=' + encodeURIComponent(body);
+    };
+    collection.addEventListener('change',compose); message.addEventListener('input',compose); compose(); brief.hidden = false;
+  }
+
   const grid = document.querySelector('#grid, #rGrid, #ewGrid');
   if (grid) {
     const cards = [...grid.children].filter(card => card.classList.contains('card'));
@@ -15,7 +29,7 @@
       const emptyTitle = document.createElement('h3'); emptyTitle.textContent = 'A different piece, perhaps.';
       const emptyCopy = document.createElement('p'); emptyCopy.textContent = 'Try another house, colour or model, or clear your filters to see the full edit.';
       empty.append(emptyTitle, emptyCopy);
-      const source = typeof RANGES !== 'undefined' ? (grid.id === 'grid' ? BAGS : RANGES[grid.id === 'ewGrid' ? 'eyewear' : (new URLSearchParams(location.search).get('c') || 'bags')]?.items || []) : [];
+      const source = typeof RANGES !== 'undefined' ? (grid.id === 'grid' ? BAGS : RANGES[grid.id === 'ewGrid' ? 'eyewear' : (RANGES[new URLSearchParams(location.search).get('c')] ? new URLSearchParams(location.search).get('c') : Object.keys(RANGES)[0])]?.items || []) : [];
       const catalogue = cards.map((card,index) => ({card, house:card.querySelector('.card-name')?.textContent.trim() || '', text:[card.textContent,...(source[index]?.variants || []).map(variant => variant.color)].join(' ').toLowerCase()}));
       const initial = new URLSearchParams(location.search);
       let activeHouse = catalogue.some(item => item.house === initial.get('house')) ? initial.get('house') : '';
@@ -45,13 +59,21 @@
     }
   }
   if (!document.querySelector('.topbar')) return;
+  const footer = document.querySelector('.footer');
+  if (footer && !footer.querySelector('.footer-utilities')) {
+    const utilities = document.createElement('nav'); utilities.className = 'footer-utilities'; utilities.setAttribute('aria-label','Helpful links');
+    [['Questions','index.html#faq'],['Private enquiry','index.html#enquire'],['Back to top ↑','#']].forEach(([label,href]) => {
+      const link = document.createElement('a'); link.textContent = label; link.href = document.body.dataset.meta === 'meta' ? href.replace(/^index\.html/,'') : (document.body.dataset.errorPage && !href.startsWith('#') ? '/' + href : href); utilities.append(link);
+    });
+    footer.append(utilities);
+  }
   const dock = document.createElement('nav'); dock.className = 'mobile-dock'; dock.setAttribute('aria-label','Quick navigation');
   const isPiece = !!document.querySelector('.piece-grid');
   const items = isPiece
     ? [{label:'The collection',href:document.querySelector('.crumb')?.getAttribute('href') || 'index.html#collection'},
        {label:'Ask about this piece',href:document.querySelector('.p-cta .btn--solid')?.getAttribute('href') || 'index.html#enquire',primary:true}]
     : [{label:'The edit',href:'index.html#collection'},{label:'Collections',href:'index.html#vitrine'},{label:'Enquire',href:'index.html#enquire',primary:true}];
-  items.forEach(item => { const link = document.createElement('a'); link.textContent = item.label; link.href = document.body.dataset.meta === 'meta' ? item.href.replace(/^index\.html/,'') : item.href; if(item.primary)link.className='dock-primary'; dock.append(link); });
+  items.forEach(item => { const link = document.createElement('a'); link.textContent = item.label; link.href = document.body.dataset.meta === 'meta' ? item.href.replace(/^index\.html/,'') : (document.body.dataset.errorPage ? '/' + item.href : item.href); if(item.primary)link.className='dock-primary'; dock.append(link); });
   document.body.append(dock);
   if (isPiece) document.querySelector('#pSwatches')?.addEventListener('click', () => {
     dock.querySelector('.dock-primary').href = document.querySelector('.p-cta .btn--solid').href;

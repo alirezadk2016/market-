@@ -296,32 +296,34 @@
     <p class="share-done" id="shareDone">Link copied — send it to someone special.</p>
   </section>
 
-  <!-- Client impressions -->
-  <section class="reviews">
+  <!-- Private notes, stored only on this device -->
+  <details class="reviews private-notes">
+    <summary>Your private notes <span aria-hidden="true">+</span></summary>
     <div class="rev-head">
       <span class="section-index">✦</span>
-      <h2 class="rev-title">Client Impressions</h2>
+      <h2 class="rev-title">Keep a thought for later.</h2>
       <p class="rev-avg" id="revAvg"></p>
     </div>
 
     <form class="rev-form" id="revForm">
-      <h3>Leave your impression</h3>
+      <h3>What do you think of this piece?</h3>
       <div class="star-input" id="starInput" aria-label="Your rating">
         <button type="button" data-s="1" aria-label="One star">★</button><button type="button" data-s="2" aria-label="Two stars">★</button><button type="button" data-s="3" aria-label="Three stars">★</button><button type="button" data-s="4" aria-label="Four stars">★</button><button type="button" data-s="5" aria-label="Five stars">★</button>
       </div>
-      <input type="text" id="revName" placeholder="Your name" maxlength="40" />
-      <textarea id="revText" placeholder="How does the piece live with you?" maxlength="900"></textarea>
+      <label class="note-label" for="revText">Your note</label>
+      <textarea id="revText" placeholder="A colour to consider, an occasion, a detail you like…" maxlength="900"></textarea>
       <div class="rev-file">
         <input type="file" id="revPhotos" accept="image/*" multiple />
-        <label for="revPhotos">Add Photos</label>
+        <label for="revPhotos">Add photos (up to 3)</label>
         <div class="rev-previews" id="revPreviews"></div>
       </div>
-      <button type="submit" class="rev-submit">Save Impression</button>
+      <button type="submit" class="rev-submit">Save private note</button>
       <p class="rev-note">Saved on this device only. To share feedback with A.z, <a href="index.html#enquire">contact your advisor</a>.</p>
+      <p class="note-status" id="noteStatus" role="status" hidden></p>
     </form>
 
     <div class="rev-list" id="revList"></div>
-  </section>
+  </details>
 
   <footer class="footer">
     <img class="footer-logo" src="images/logo.png" alt="A.z" />
@@ -417,7 +419,7 @@
         sw = document.getElementById("pSwatches"),
         colorEl = document.getElementById("pColor");
     var variants = bag.variants || [];
-    let currentShots = [], currentPhoto = 0;
+    let currentShots = [], currentPhoto = 0, activeVariant = 0;
     const previousPhoto = document.getElementById('pPrevious'), nextPhoto = document.getElementById('pNext');
     function selectPhoto(index) {
       currentPhoto = Math.max(0, Math.min(index, currentShots.length - 1));
@@ -449,6 +451,11 @@
     }
     function renderVariant(i) {
       var v = variants[i] || {}, shots = v.shots || [];
+      activeVariant = i;
+      const selectedUrl = new URL(location.href);
+      if (variants.length > 1 && v.color) selectedUrl.searchParams.set('colour',v.color);
+      else selectedUrl.searchParams.delete('colour');
+      history.replaceState(history.state,'',selectedUrl);
       colorEl.textContent = v.color || "";
       currentShots = shots;
       thumbs.innerHTML = "";
@@ -470,6 +477,7 @@
       if (typeof SITE !== 'undefined' && SITE.enquire && SITE.enquire.email) {
         document.querySelector('.p-cta .btn--solid').href = 'mailto:' + SITE.enquire.email + '?subject=' + encodeURIComponent('A.z enquiry — ' + bag.name + ' ' + bag.note) + '&body=' + encodeURIComponent('I would like advice on ' + bag.name + ' ' + bag.note + ' in ' + (v.color || 'this colour') + '.');
       }
+      refreshShareLinks();
     }
     variants.forEach(function (v, i) {
       var b = document.createElement("button");
@@ -479,115 +487,56 @@
       sw.appendChild(b);
     });
     if (variants.length < 2) sw.style.display = "none";
-    renderVariant(0);
+    renderVariant(Math.max(0,variants.findIndex(variant => variant.color === qs.get('colour'))));
 
-    /* ---------- Share this piece ---------- */
-    (function () {
-      var url = location.href;
-      var msg = "A.z — " + (bag.name || "") + " " + (bag.note || "") + " · a piece I thought of you for: ";
-      document.getElementById("shWa").href = "https://wa.me/?text=" + encodeURIComponent(msg + url);
-      document.getElementById("shTg").href = "https://t.me/share/url?url=" + encodeURIComponent(url) + "&text=" + encodeURIComponent(msg);
-      document.getElementById("shFb").href = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url);
-      document.getElementById("shX").href = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(msg) + "&url=" + encodeURIComponent(url);
-      var done = document.getElementById("shareDone");
-      document.getElementById("shCopy").addEventListener("click", function () {
-        (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject())
-          .catch(function () { var t = document.createElement("textarea"); t.value = url; document.body.appendChild(t); t.select(); document.execCommand("copy"); t.remove(); })
-          .finally(function () { done.classList.add("on"); setTimeout(function () { done.classList.remove("on"); }, 2600); });
-      });
-      // native share sheet (mobile: includes Instagram, iMessage, everything)
-      if (navigator.share) {
-        var nb = document.getElementById("shNative"); nb.style.display = "";
-        nb.addEventListener("click", function () {
-          navigator.share({ title: document.title, text: msg, url: url }).catch(function () {});
-        });
+    function shareData() {
+      return {url:location.href, text:'A.z — '+(bag.name || '')+' · '+(variants[activeVariant].color || '')};
+    }
+    function refreshShareLinks() {
+      var d=shareData(), u=encodeURIComponent(d.url), t=encodeURIComponent(d.text);
+      document.getElementById('shWa').href='https://wa.me/?text='+encodeURIComponent(d.text+' '+d.url);
+      document.getElementById('shTg').href='https://t.me/share/url?url='+u+'&text='+t;
+      document.getElementById('shFb').href='https://www.facebook.com/sharer/sharer.php?u='+u;
+      document.getElementById('shX').href='https://twitter.com/intent/tweet?text='+t+'&url='+u;
+    }
+    document.getElementById('shCopy').addEventListener('click',async function(){
+      var d=shareData(),done=document.getElementById('shareDone'),ok=false;
+      try {await navigator.clipboard.writeText(d.url);ok=true;} catch(e) {
+        var input=document.createElement('textarea');input.value=d.url;document.body.appendChild(input);input.select();
+        try {ok=document.execCommand('copy');}catch(e){} input.remove();
       }
-    })();
+      done.textContent=ok?'Link copied':d.url;done.classList.add('on');
+    });
+    if(navigator.share){var nativeButton=document.getElementById('shNative');nativeButton.style.display='';nativeButton.addEventListener('click',function(){var d=shareData();navigator.share({title:document.title,text:d.text,url:d.url}).catch(function(){});});}
 
-    /* ---------- Client impressions (stored on this device) ---------- */
-    var KEY = "az_reviews_" + (col === "bags" ? "" : col + "_") + id;
-    var list = document.getElementById("revList"), avgEl = document.getElementById("revAvg");
-    function load() { try { const saved = JSON.parse(localStorage.getItem(KEY) || "[]"); return Array.isArray(saved) ? saved.filter(item => item && typeof item === 'object' && Number.isFinite(item.s) && item.s >= 1 && item.s <= 5) : []; } catch (e) { return []; } }
-    function save(a) { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) {} }
-    var cache = load(); // in-memory source of truth — works even if storage is blocked (private mode)
-    function starsTxt(n) { return "★★★★★".slice(0, n) + "☆☆☆☆☆".slice(0, 5 - n); }
-    function render() {
-      var a = cache;
-      list.innerHTML = "";
-      if (!a.length) {
-        /* one empty state, said once — it was being written twice, above the
-           form and again below it */
-        avgEl.textContent = "This piece is waiting for its first admirer.";
-        return;
-      }
-      var avg = a.reduce(function (s, r) { return s + r.s; }, 0) / a.length;
-      avgEl.innerHTML = '<span class="stars">' + starsTxt(Math.round(avg)) + "</span> &nbsp;" + avg.toFixed(1) + " · " + a.length + (a.length === 1 ? " impression" : " impressions");
-      a.slice().reverse().forEach(function (r) {
-        var it = document.createElement("article"); it.className = "rev-item";
-        var top = document.createElement("div"); top.className = "rev-top";
-        var nm = document.createElement("span"); nm.className = "rev-name"; nm.textContent = r.n || "A client";
-        var st = document.createElement("span"); st.className = "rev-stars"; st.textContent = starsTxt(r.s);
-        var dt = document.createElement("span"); dt.className = "rev-date"; dt.textContent = r.d || "";
-        top.appendChild(nm); top.appendChild(st); top.appendChild(dt); it.appendChild(top);
-        if (r.t) { var tx = document.createElement("p"); tx.className = "rev-text"; tx.textContent = r.t; it.appendChild(tx); }
-        if (r.ph && r.ph.length) {
-          var pw = document.createElement("div"); pw.className = "rev-photos";
-          r.ph.forEach(function (u) { var im = document.createElement("img"); im.src = u; im.alt = ""; pw.appendChild(im); });
-          it.appendChild(pw);
-        }
-        list.appendChild(it);
+    /* Private notes never represent published customer reviews. */
+    var KEY='az_reviews_'+(col==='bags'?'':col+'_')+id;
+    var list=document.getElementById('revList'),avgEl=document.getElementById('revAvg'),status=document.getElementById('noteStatus');
+    function announce(message){status.hidden=false;status.textContent=message;}
+    function load(){try{var a=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(a)?a.filter(function(r){return r&&Number.isInteger(r.s)&&r.s>=0&&r.s<=5;}).map(function(r){return {s:r.s,t:typeof r.t==='string'?r.t:'',d:typeof r.d==='string'?r.d:'',ph:Array.isArray(r.ph)?r.ph.filter(function(u){return typeof u==='string'&&/^data:image\//.test(u);}).slice(0,3):[]};}):[];}catch(e){return [];}}
+    function save(){try{localStorage.setItem(KEY,JSON.stringify(cache));return true;}catch(e){return false;}}
+    var cache=load(),stars=0,photos=[],processingPhotos=false;
+    var sIn=document.getElementById('starInput'),pv=document.getElementById('revPreviews'),photoInput=document.getElementById('revPhotos');
+    function render(){
+      list.replaceChildren();avgEl.textContent=cache.length?cache.length+' private '+(cache.length===1?'note':'notes'):'Your thoughts stay on this device.';
+      cache.forEach(function(r,index){
+        var item=document.createElement('article');item.className='rev-item';
+        var title=document.createElement('p');title.className='rev-top';title.textContent='Your note · '+r.d+(r.s?' · '+r.s+'/5':'');item.appendChild(title);
+        var text=document.createElement('p');text.className='rev-text';text.textContent=r.t;item.appendChild(text);
+        var images=document.createElement('div');images.className='rev-photos';r.ph.forEach(function(u){var image=document.createElement('img');image.src=u;image.alt='Photo attached to your private note';images.appendChild(image);});item.appendChild(images);
+        var remove=document.createElement('button');remove.type='button';remove.className='note-remove';remove.textContent='Remove note';remove.addEventListener('click',function(){cache.splice(index,1);var stored=save();render();announce(stored?'Private note removed.':'Removed for this visit. Device storage is unavailable.');});item.appendChild(remove);list.appendChild(item);
       });
     }
+    sIn.querySelectorAll('button').forEach(function(button){button.setAttribute('aria-pressed','false');button.addEventListener('click',function(){stars=stars===+button.dataset.s?0:+button.dataset.s;sIn.querySelectorAll('button').forEach(function(b){b.classList.toggle('lit',+b.dataset.s<=stars);b.setAttribute('aria-pressed',String(+b.dataset.s===stars));});});});
+    function previews(){pv.replaceChildren();photos.forEach(function(u,i){var wrap=document.createElement('div'),image=document.createElement('img'),remove=document.createElement('button');image.src=u;image.alt='Attachment '+(i+1);remove.type='button';remove.textContent='×';remove.setAttribute('aria-label','Remove attachment '+(i+1));remove.addEventListener('click',function(){photos.splice(i,1);previews();});wrap.append(image,remove);pv.appendChild(wrap);});}
+    photoInput.addEventListener('change',async function(){
+      var files=Array.from(photoInput.files).filter(function(f){return f.type.startsWith('image/')&&f.size<=10000000;}).slice(0,3-photos.length);
+      processingPhotos=true;photoInput.disabled=true;
+      var results=await Promise.all(files.map(function(file){return new Promise(function(resolve){var reader=new FileReader();reader.onerror=function(){resolve(null);};reader.onload=function(){var image=new Image();image.onerror=function(){resolve(null);};image.onload=function(){try{var k=Math.min(1,800/Math.max(image.width,image.height)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(image.width*k));canvas.height=Math.max(1,Math.round(image.height*k));canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);resolve(canvas.toDataURL('image/jpeg',.78));}catch(e){resolve(null);}};image.src=reader.result;};reader.readAsDataURL(file);});}));
+      photos=photos.concat(results.filter(Boolean));previews();processingPhotos=false;photoInput.disabled=false;photoInput.value='';announce('Up to 3 photos, each under 10 MB. '+photos.length+' attached.');
+    });
+    document.getElementById('revForm').addEventListener('submit',function(e){e.preventDefault();if(processingPhotos){announce('Please wait while your photos are prepared.');return;}var text=document.getElementById('revText').value.trim();if(!stars&&!text&&!photos.length){announce('Add a note, a rating or a photo first.');return;}cache.push({t:text,s:stars,d:new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}),ph:photos.slice()});var stored=save();photos=[];stars=0;previews();sIn.querySelectorAll('button').forEach(function(b){b.classList.remove('lit');b.setAttribute('aria-pressed','false');});document.getElementById('revText').value='';render();announce(stored?'Private note saved on this device.':'Saved for this visit only. Device storage is unavailable.');});
     render();
-
-    /* star input */
-    var stars = 0;
-    var sIn = document.getElementById("starInput");
-    sIn.querySelectorAll("button").forEach(function (b) {
-      b.addEventListener("click", function () {
-        stars = +b.dataset.s;
-        sIn.querySelectorAll("button").forEach(function (x) { x.classList.toggle("lit", +x.dataset.s <= stars); });
-      });
-    });
-
-    /* photo previews (compressed so they store safely) */
-    var photos = [];
-    var pv = document.getElementById("revPreviews");
-    document.getElementById("revPhotos").addEventListener("change", function (e) {
-      Array.prototype.slice.call(e.target.files, 0, 3).forEach(function (f) {
-        var r = new FileReader();
-        r.onload = function () {
-          var img = new Image();
-          img.onload = function () {
-            var M = 800, k = Math.min(1, M / Math.max(img.width, img.height));
-            var c = document.createElement("canvas");
-            c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
-            c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
-            var u = c.toDataURL("image/jpeg", .78);
-            photos.push(u);
-            var im = document.createElement("img"); im.src = u; pv.appendChild(im);
-          };
-          img.src = r.result;
-        };
-        r.readAsDataURL(f);
-      });
-      e.target.value = "";
-    });
-
-    document.getElementById("revForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-      var t = document.getElementById("revText").value.trim();
-      if (!stars && !t) return;
-      cache.push({ n: document.getElementById("revName").value.trim(), t: t, s: stars || 5,
-               d: new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }),
-               ph: photos });
-      save(cache);
-      photos = []; pv.innerHTML = ""; stars = 0;
-      sIn.querySelectorAll("button").forEach(function (x) { x.classList.remove("lit"); });
-      document.getElementById("revName").value = ""; document.getElementById("revText").value = "";
-      render();
-      list.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
   })();
   </script>
 <script src="atelier.js"></script>

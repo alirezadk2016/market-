@@ -35,3 +35,6 @@ The birthday page and its exclusive media have been removed.
 ## Notes
 
 Product impressions are stored locally on the current device; they are not sent to the house. Enquiry uses the configured address in `content.js`. Admin publishing settings and credentials must be configured separately; no credentials belong in source control.
+
+### Enquiries and private notes
+FAQ content is in `SITE.faq` and the admin content editor. The enquiry brief opens an editable email draft and requires an email app; it is not a backend form. Product links preserve the selected colour. Notes and attached photos stay in browser storage, with a visit-only fallback when storage is unavailable. They are not public customer reviews. `404.html` supplies the branded missing-page document; production routing must be confirmed after deployment.

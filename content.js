@@ -88,6 +88,13 @@ const SITE = {
   ],
   houseCta: "How We Help — The Full Method",
 
+  faq: [
+    { question: "Can I purchase directly on this website?", answer: "This is a curated catalogue with personal advice, rather than an online checkout. Use the enquiry link on a piece to begin the conversation." },
+    { question: "Can I ask about a particular colour?", answer: "Yes. Select a colour on the product page. Its enquiry link includes the piece and your selected colour in an editable email draft." },
+    { question: "What should I include in my enquiry?", answer: "A piece you like, a preferred colour, an occasion or the kind of advice you need is a useful starting point. You can add as much or as little detail as you wish." },
+    { question: "How is an email enquiry sent?", answer: "Email enquiry links open your email app. Review the draft and send it there. The website does not send a message automatically." },
+  ],
+
   word: {
     kicker: "A Word from the Curator",
     text: "\u201c I open every box myself. If a piece does not make me pause, it never reaches you. That is the whole method — <em>taste, patience, and refusal.</em> \u201d",
