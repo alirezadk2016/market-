@@ -1,43 +1,11 @@
-# A.z — Private Luxury Advisory
+# A.z · The Night Salon
 
-A static, self-hosted-font luxury accessories catalogue with private enquiry links. No build step or package installation is required.
+Static luxury catalogue for https://market-one-indol.vercel.app/. No build step or package installation is required. Serve the repository root.
 
-## Local preview
+The dark photographic salon continues into four collections, a native catalogue browser, advisory, editable email-draft enquiry and FAQs. Mobile uses a separate stacked composition with labelled selection controls. Prices and availability require an enquiry; no message is sent by the site.
 
-Serve this directory with a static web server and open index.html. For example: `python -m http.server 8766`.
+`bags.js` remains the canonical catalogue registry, including the existing admin publishing path. Product images remain in `images/`; new salon graphics and fonts are in `assets/`. `salon.js` handles the spatial entrance and featured product sheets; `salon-sections.js` handles the catalogue, enquiry and legacy bookmarks. Old range/piece/eyewear/advisory addresses open the corresponding new view. Piece indexes and selected colour are preserved.
 
-## Structure
+The architecture, watch support and material study are generated editorial/decorative imagery, not actual premises or merchandise. Bag and eyewear hero photographs use generatively retouched derivatives; small surface details can differ from the source. Original catalogue media remain available for alternate views. This is CSS perspective photography, not full 3D scanning.
 
-- `index.html`: editorial opening, collection discovery, services and enquiry.
-- `range.html`: data-driven collection pages.
-- `eyewear.html`: campaign and eyewear catalogue.
-- `piece.html`: product details, variants, gallery and product-specific email enquiry.
-- `advisory.html`: consultation approach.
-- `admin.html`: catalogue/content workroom. Nothing publishes until its Publish action is used.
-- `bags.js` and `content.js`: real catalogue and site copy.
-- `fill.js`: shared chrome, mobile navigation and content binding.
-- `script.js`: home catalogue, interactive scene and accessible quick view.
-- `atelier.js`: search, house filters and the mobile-only action shelf.
-- `styles.css` and `atelier.css`: base presentation and editorial design system.
-- `admin.css` and `admin-atelier.css`: workroom styling.
-- `PROJECT_DESIGN.md`: project-specific design decisions.
-
-## Mobile and desktop
-
-Desktop uses a wide editorial opening and split service layout. Phone screens use a compact opening, horizontal filters, a two-column product grid, contained product photography and a safe-area-aware bottom action shelf. Original campaign image proportions are preserved so interactive markers stay aligned.
-
-## Imagery
-
-Original product photographs stay in `images/`. `images/atelier-materials.webp` is an AI-generated editorial material study, not an actual workshop or a product listing photograph. It is used alongside service/advisory copy. See `IMAGE_CREDITS.md` for its prompt and provenance.
-
-The birthday page and its exclusive media have been removed.
-
-## Notes
-
-Product impressions are stored locally on the current device; they are not sent to the house. Enquiry uses the configured address in `content.js`. Admin publishing settings and credentials must be configured separately; no credentials belong in source control.
-
-### Enquiries and private notes
-FAQ content is in `SITE.faq` and the admin content editor. The enquiry brief opens an editable email draft and requires an email app; it is not a backend form. Product links preserve the selected colour. Notes and attached photos stay in browser storage, with a visit-only fallback when storage is unavailable. They are not public customer reviews. `404.html` supplies the branded missing-page document; production routing must be confirmed after deployment.
-
-### Studio visual system
-`studio.css` is the final public-facing theme and loads after the legacy baseline and interaction styles. `studio.js` owns the explicit featured-piece selector. The hero resolves actual catalogue items by house/model so reordering a collection does not change its identity. Six initial home cards expand with View all; searching/filtering continues to cover the full catalogue. Product return links accept only known same-origin catalogue paths. The editorial satin/chrome photograph is generated atmosphere, not stock or product evidence (see IMAGE_CREDITS.md).
+Validation: all referenced assets exist and scripts parse. Hero selections checked at 360/390/768/1440px without horizontal document overflow or broken completed images. Four catalogue counts, colour search, empty state, alternate photos, retained variant, native dialog Close/Escape, persistent phone close controls, FAQ disclosures and prefilled enquiry destinations checked in browser. Physical phone hardware and email app launch were not exercised.
