@@ -28,3 +28,9 @@ The birthday experience and its exclusive media were removed at the owner's requ
 Phone: a safe-area-aware bottom action shelf, compact two-line opening, portrait imagery, horizontally scrollable house filters, a two-column product edit, square contained product images and direct product-specific enquiry links. Desktop keeps the wide editorial composition, staggered collection gallery and split photograph/method section.
 
 New image: images/atelier-materials.webp is an AI-generated editorial material study, used as atmosphere alongside service and advisory copy. It is not a product photograph, an actual studio photograph or evidence of craftsmanship. Original product and campaign images remain. Generated with the built-in imagegen tool; compressed to WebP for delivery.
+
+## Product browsing continuity
+
+Catalogue filters live in the URL as house and q parameters, preserving the collection parameter and anchor. Returning from a product restores the previous edit instead of clearing the visitor's selection. Product photography has labelled 44px previous/next controls, a tabular photo counter, thumbnail selection and arrow-key navigation within the gallery. Single-photo variants hide redundant controls. Changing colour resets the photograph index.
+
+Brand information is opened by a native button with an expanded state. Details/dimensions and provenance/service use native disclosures: initially closed on phones and open on desktop, with user choices preserved until navigation/reload. This keeps the phone page concise without removing product information.

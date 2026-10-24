@@ -196,13 +196,21 @@
     <a class="crumb" href="index.html#collection">← The Collection</a>
     <div class="piece-grid">
       <section class="piece-gallery">
-        <div class="p-main"><img id="pMain" alt="" /><p class="p-media-status" id="pMediaStatus" role="status" hidden>Photograph unavailable. Ask your advisor for a closer look.</p></div>
+        <div class="p-main">
+          <img id="pMain" alt="" />
+          <p class="p-media-status" id="pMediaStatus" role="status" hidden>Photograph unavailable. Ask your advisor for a closer look.</p>
+          <nav class="p-gallery-controls" id="pGalleryControls" aria-label="Product photographs" hidden>
+            <button type="button" id="pPrevious" aria-label="Previous photograph">←</button>
+            <span id="pPhotoCount" aria-live="polite"></span>
+            <button type="button" id="pNext" aria-label="Next photograph">→</button>
+          </nav>
+        </div>
         <div class="p-thumbs" id="pThumbs"></div>
       </section>
 
       <section class="piece-info">
         <span class="p-index" id="pIndex"></span>
-        <p class="p-house"><span class="brand-name-link" id="pName" title="About the House"></span><span class="brand-hint" id="pBrandHint">About the House ›</span></p>
+        <p class="p-house"><span id="pName"></span><button type="button" class="brand-hint" id="pBrandHint" aria-expanded="false" aria-controls="pBrandPanel">About the House <span aria-hidden="true">↗</span></button></p>
         <h1 class="p-name" id="pModel"></h1>
         <div class="brand-panel" id="pBrandPanel">
           <span class="bp-kicker">The House</span>
@@ -224,7 +232,10 @@
           <img class="lb-adv-sign" src="images/logo-ink.png" alt="A.z" />
         </div>
 
-        <dl class="p-specs" id="pSpecs"></dl>
+        <details class="piece-disclosure" open>
+          <summary>Details &amp; dimensions</summary>
+          <dl class="p-specs" id="pSpecs"></dl>
+        </details>
 
         <div class="p-retail" id="pRetail" style="display:none">
           <span class="p-retail-kicker">A.z Recommendation</span>
@@ -236,7 +247,9 @@
           <p class="p-retail-note">Prefer guidance first? <a href="index.html#enquire">Speak to us</a> before you decide.</p>
         </div>
 
-        <div class="p-assure">
+        <details class="piece-disclosure" open>
+          <summary>Provenance &amp; private service</summary>
+          <div class="p-assure">
           <div class="assure">
             <h4>Authenticity &amp; Provenance</h4>
             <p>Every piece is sourced new, inspected by hand, and presented with its original tags and dust bag. A.z stands personally behind each acquisition.</p>
@@ -245,7 +258,8 @@
             <h4>The A.z Service</h4>
             <p>Private advisory before you decide, discreet sourcing when you do, and careful hand-over — by appointment, at your pace. You are buying judgement, not just a bag.</p>
           </div>
-        </div>
+          </div>
+        </details>
 
         <div class="p-cta">
           <a class="btn btn--solid" href="index.html#enquire">Enquire About This Piece</a>
@@ -338,6 +352,9 @@
     var id = parseInt(qs.get("id") || "0", 10);
     if (isNaN(id) || id < 0 || id >= SRC.length) id = 0;
     var bag = SRC[id];
+    document.querySelectorAll('.piece-disclosure').forEach(disclosure => {
+      disclosure.open = !matchMedia('(max-width:560px)').matches;
+    });
 
     /* breadcrumb points back to this piece's own collection */
     if (col !== "bags") {
@@ -374,8 +391,7 @@
         var ul = document.getElementById("pbFacts");
         (b.facts || []).forEach(function (f) { var li = document.createElement("li"); li.textContent = f; ul.appendChild(li); });
         if (bag.award) { document.getElementById("pbAwardText").textContent = bag.award; document.getElementById("pbAward").style.display = ""; }
-        var tgl = function () { panel.classList.toggle("open"); };
-        document.getElementById("pName").addEventListener("click", tgl);
+        var tgl = function () { const open = panel.classList.toggle("open"); hint.setAttribute('aria-expanded',String(open)); };
         hint.addEventListener("click", tgl);
       }
     })();
@@ -401,6 +417,27 @@
         sw = document.getElementById("pSwatches"),
         colorEl = document.getElementById("pColor");
     var variants = bag.variants || [];
+    let currentShots = [], currentPhoto = 0;
+    const previousPhoto = document.getElementById('pPrevious'), nextPhoto = document.getElementById('pNext');
+    function selectPhoto(index) {
+      currentPhoto = Math.max(0, Math.min(index, currentShots.length - 1));
+      setMain(currentShots[currentPhoto] || '');
+      thumbs.querySelectorAll('.thumb').forEach((button,index) => {
+        button.classList.toggle('active',index === currentPhoto);
+        button.setAttribute('aria-pressed',String(index === currentPhoto));
+      });
+      document.getElementById('pPhotoCount').textContent = String(currentPhoto + 1).padStart(2,'0')+' / '+String(currentShots.length).padStart(2,'0');
+      previousPhoto.disabled = currentPhoto <= 0;
+      nextPhoto.disabled = currentPhoto >= currentShots.length - 1;
+      document.getElementById('pGalleryControls').hidden = currentShots.length < 2;
+    }
+    previousPhoto.addEventListener('click',() => selectPhoto(currentPhoto - 1));
+    nextPhoto.addEventListener('click',() => selectPhoto(currentPhoto + 1));
+    document.querySelector('.piece-gallery').addEventListener('keydown',event => {
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        event.preventDefault(); selectPhoto(currentPhoto + (event.key === 'ArrowRight' ? 1 : -1));
+      }
+    });
     const imageStatus = document.getElementById('pMediaStatus');
     main.addEventListener('load', function(){ imageStatus.hidden = true; });
     main.addEventListener('error', function(){ imageStatus.hidden = false; imageStatus.textContent = 'Photograph unavailable. Ask your advisor for a closer look.'; });
@@ -413,7 +450,7 @@
     function renderVariant(i) {
       var v = variants[i] || {}, shots = v.shots || [];
       colorEl.textContent = v.color || "";
-      setMain(shots[0] || "");
+      currentShots = shots;
       thumbs.innerHTML = "";
       shots.forEach(function (s, k) {
         var b = document.createElement("button");
@@ -424,13 +461,12 @@
         b.setAttribute('aria-pressed', String(k === 0));
         b.appendChild(im);
         b.addEventListener("click", function () {
-          thumbs.querySelectorAll(".thumb").forEach(function (x) { x.classList.remove("active"); x.setAttribute('aria-pressed','false'); });
-          b.setAttribute('aria-pressed','true');
-          b.classList.add("active"); setMain(s);
+          selectPhoto(k);
         });
         thumbs.appendChild(b);
       });
       sw.querySelectorAll(".swatch").forEach(function (x, k) { x.classList.toggle("active", k === i); x.setAttribute('aria-pressed',String(k === i)); });
+      selectPhoto(0);
       if (typeof SITE !== 'undefined' && SITE.enquire && SITE.enquire.email) {
         document.querySelector('.p-cta .btn--solid').href = 'mailto:' + SITE.enquire.email + '?subject=' + encodeURIComponent('A.z enquiry — ' + bag.name + ' ' + bag.note) + '&body=' + encodeURIComponent('I would like advice on ' + bag.name + ' ' + bag.note + ' in ' + (v.color || 'this colour') + '.');
       }

@@ -17,7 +17,9 @@
       empty.append(emptyTitle, emptyCopy);
       const source = typeof RANGES !== 'undefined' ? (grid.id === 'grid' ? BAGS : RANGES[grid.id === 'ewGrid' ? 'eyewear' : (new URLSearchParams(location.search).get('c') || 'bags')]?.items || []) : [];
       const catalogue = cards.map((card,index) => ({card, house:card.querySelector('.card-name')?.textContent.trim() || '', text:[card.textContent,...(source[index]?.variants || []).map(variant => variant.color)].join(' ').toLowerCase()}));
-      let activeHouse = '';
+      const initial = new URLSearchParams(location.search);
+      let activeHouse = catalogue.some(item => item.house === initial.get('house')) ? initial.get('house') : '';
+      input.value = initial.get('q') || '';
       function apply() {
         const query = input.value.trim().toLowerCase(); let visible = 0;
         catalogue.forEach(item => {
@@ -27,6 +29,10 @@
         count.textContent = String(visible).padStart(2,'0') + ' of ' + String(cards.length).padStart(2,'0') + ' pieces' + (activeHouse ? ' · '+activeHouse : '');
         empty.hidden = visible !== 0; reset.hidden = !query && !activeHouse;
         bar.querySelectorAll('button').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.house === activeHouse)));
+        const url = new URL(location.href);
+        if (query) url.searchParams.set('q', input.value.trim()); else url.searchParams.delete('q');
+        if (activeHouse) url.searchParams.set('house', activeHouse); else url.searchParams.delete('house');
+        history.replaceState(history.state, '', url);
       }
       ['', ...new Set(catalogue.map(item => item.house).filter(Boolean))].forEach(house => {
         const button = document.createElement('button'); button.type = 'button'; button.textContent = house || 'All pieces'; button.dataset.house = house;
