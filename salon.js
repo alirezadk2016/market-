@@ -59,10 +59,10 @@
     { key: 'watches', title: 'The Timepieces', label: 'Timepieces', copy: 'Every moment, considered.' }
   ];
   const images = scenes.map(scene => scene.querySelector('.cinema-image'));
-  const cameras = scenes.map(scene => scene.querySelector('.cinema-camera'));
   const indicators = selectors.map(button => button.querySelector('.cinema-progress'));
   const status = document.getElementById('cinemaStatus');
   const inspect = document.getElementById('inspect');
+  const resetView = document.getElementById('cinemaResetView');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
   const sceneDuration = 8500;
@@ -85,6 +85,10 @@
   let progressAnimation = null;
   let pointerFrame = 0;
   let pointerPosition = null;
+  let pointerEngaged = false;
+  let orbitDrag = null;
+  let orbitAnchor = { yaw: 0, pitch: 0 };
+  let orbitPose = { yaw: 0, pitch: 0 };
   let touchStart = null;
   let suppressClickUntil = 0;
   let keyboardInput = false;
@@ -110,10 +114,59 @@
       motion.title = motionNote.textContent;
     } else {
       word.textContent = userPaused ? 'Play' : 'Pause';
-      suffix.textContent = ' motion';
-      motion.setAttribute('aria-label', userPaused ? 'Play gallery motion' : 'Pause gallery motion');
+      suffix.textContent = ' autoplay';
+      motion.setAttribute('aria-label', userPaused ? 'Play automatic gallery motion' : 'Pause automatic gallery motion');
       motion.removeAttribute('aria-describedby');
       motion.removeAttribute('title');
+    }
+  }
+
+  // Autoplay and a person's deliberate camera gesture are separate intents.
+  function canOrbit() {
+    return ready && !loading && !reduce.matches && finePointer.matches && innerWidth > 900 &&
+      inViewport && !documentHidden && !pageHidden && !modalOpen;
+  }
+
+  function setOrbitPose(yaw, pitch) {
+    orbitPose = {
+      yaw: Math.max(-8, Math.min(8, yaw)),
+      pitch: Math.max(-3.4, Math.min(3.4, pitch))
+    };
+    stage.style.setProperty('--orbit-yaw', orbitPose.yaw.toFixed(3) + 'deg');
+    stage.style.setProperty('--orbit-pitch', orbitPose.pitch.toFixed(3) + 'deg');
+    stage.style.setProperty('--orbit-x', (orbitPose.yaw * 2.4).toFixed(2) + 'px');
+    stage.style.setProperty('--orbit-y', (-orbitPose.pitch * 2.5).toFixed(2) + 'px');
+    // Extra coverage follows the viewing angle, preserving the original resting composition.
+    stage.style.setProperty('--orbit-scale', (1 + Math.abs(orbitPose.yaw) * .008 + Math.abs(orbitPose.pitch) * .005).toFixed(4));
+    if (resetView) resetView.disabled = Math.abs(orbitPose.yaw) + Math.abs(orbitPose.pitch) < .1;
+  }
+
+  function resetOrbit() {
+    if (pointerFrame) cancelAnimationFrame(pointerFrame);
+    pointerFrame = 0;
+    pointerPosition = null;
+    pointerEngaged = false;
+    const captured = orbitDrag?.id;
+    orbitDrag = null;
+    stage.classList.remove('is-dragging', 'is-orbiting');
+    if (captured != null && stage.hasPointerCapture?.(captured)) stage.releasePointerCapture(captured);
+    orbitAnchor = { yaw: 0, pitch: 0 };
+    setOrbitPose(0, 0);
+  }
+
+  function updateOrbit() {
+    pointerFrame = 0;
+    if (!canOrbit() || !pointerPosition) return;
+    const bounds = orbitDrag?.bounds || stage.getBoundingClientRect();
+    if (orbitDrag) {
+      const dx = pointerPosition.x - orbitDrag.x;
+      const dy = pointerPosition.y - orbitDrag.y;
+      orbitDrag.moved ||= Math.hypot(dx, dy) > 5;
+      setOrbitPose(orbitDrag.yaw + dx / bounds.width * 22, orbitDrag.pitch - dy / bounds.height * 10);
+    } else {
+      const x = Math.max(-1, Math.min(1, ((pointerPosition.x - bounds.left) / bounds.width - .5) * 2));
+      const y = Math.max(-1, Math.min(1, ((pointerPosition.y - bounds.top) / bounds.height - .5) * 2));
+      setOrbitPose(orbitAnchor.yaw - x * 2.8, orbitAnchor.pitch + y * 1.4);
     }
   }
 
@@ -146,14 +199,14 @@
   }
 
   function syncPlayback() {
+    const interactive = canOrbit();
+    hero.dataset.orbitEnabled = String(interactive);
+    if (!interactive) resetOrbit();
     const allowed = ready && !loading && !userPaused && !reduce.matches &&
-      inViewport && !documentHidden && !pageHidden && !modalOpen;
+      inViewport && !documentHidden && !pageHidden && !modalOpen && !pointerEngaged;
     if (!allowed) {
       clearAdvanceClock();
       progressAnimation?.pause();
-      if (pointerFrame) cancelAnimationFrame(pointerFrame);
-      pointerFrame = 0;
-      pointerPosition = null;
     } else if (advanceTimer === null) {
       progressAnimation?.play();
       startedAt = performance.now();
@@ -292,6 +345,23 @@
     });
   });
   stage.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      resetOrbit();
+      syncPlayback();
+      if (status) status.textContent = 'Gallery view centred.';
+      return;
+    }
+    if (event.shiftKey && ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(event.key) && canOrbit()) {
+      event.preventDefault();
+      userPaused = true;
+      const yaw = orbitPose.yaw + (event.key === 'ArrowRight' ? -1.5 : event.key === 'ArrowLeft' ? 1.5 : 0);
+      const pitch = orbitPose.pitch + (event.key === 'ArrowDown' ? .75 : event.key === 'ArrowUp' ? -.75 : 0);
+      setOrbitPose(yaw, pitch);
+      orbitAnchor = { ...orbitPose };
+      syncPlayback();
+      return;
+    }
     if (!['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(event.key)) return;
     event.preventDefault();
     const next = event.key === 'Home' ? 0 : event.key === 'End' ? collectionScenes.length - 1 :
@@ -300,7 +370,11 @@
   });
 
   document.addEventListener('keydown', () => { keyboardInput = true; pointerMotionIntent = null; }, { capture: true });
-  document.addEventListener('pointerdown', () => { keyboardInput = false; pointerMotionIntent = null; }, { capture: true, passive: true });
+  document.addEventListener('pointerdown', () => {
+    keyboardInput = false;
+    pointerMotionIntent = null;
+    suppressClickUntil = 0;
+  }, { capture: true, passive: true });
   hero.addEventListener('focusin', event => {
     const enteredFromOutside = !hero.contains(event.relatedTarget);
     if (enteredFromOutside && (keyboardInput || event.target.matches(':focus-visible'))) pauseByUser();
@@ -320,7 +394,11 @@
     if (event.pointerType !== 'touch' || !event.isPrimary) return;
     touchStart = { x: event.clientX, y: event.clientY, id: event.pointerId };
   });
-  stage.addEventListener('pointercancel', () => { touchStart = null; });
+  stage.addEventListener('pointercancel', () => {
+    touchStart = null;
+    resetOrbit();
+    syncPlayback();
+  });
   stage.addEventListener('pointerup', event => {
     if (!touchStart || event.pointerType !== 'touch' || event.pointerId !== touchStart.id) return;
     const x = event.clientX - touchStart.x;
@@ -336,28 +414,72 @@
     event.stopImmediatePropagation();
   }, true);
 
-  stage.addEventListener('pointermove', event => {
-    if (!playing || !finePointer.matches || event.pointerType !== 'mouse' || innerWidth <= 900) return;
-    pointerPosition = { x: event.clientX, y: event.clientY };
-    if (pointerFrame) return;
-    pointerFrame = requestAnimationFrame(() => {
-      pointerFrame = 0;
-      if (!playing || !pointerPosition) return;
-      const bounds = stage.getBoundingClientRect();
-      const x = Math.max(-1, Math.min(1, ((pointerPosition.x - bounds.left) / bounds.width - .5) * 2));
-      const y = Math.max(-1, Math.min(1, ((pointerPosition.y - bounds.top) / bounds.height - .5) * 2));
-      cameras[current].style.setProperty('--pan-x', (x * 6).toFixed(2) + 'px');
-      cameras[current].style.setProperty('--pan-y', (y * 4).toFixed(2) + 'px');
-    });
+  stage.addEventListener('pointerenter', event => {
+    if (event.pointerType !== 'mouse' || !canOrbit()) return;
+    pointerEngaged = true;
+    stage.classList.add('is-orbiting');
+    syncPlayback();
   });
-  stage.addEventListener('pointerleave', () => {
-    if (!playing) return;
+  stage.addEventListener('pointermove', event => {
+    if (event.pointerType !== 'mouse' || !canOrbit()) return;
+    if (orbitDrag && event.pointerId !== orbitDrag.id) return;
+    if (!pointerEngaged) {
+      pointerEngaged = true;
+      stage.classList.add('is-orbiting');
+      syncPlayback();
+    }
+    pointerPosition = { x: event.clientX, y: event.clientY };
+    if (!pointerFrame) pointerFrame = requestAnimationFrame(updateOrbit);
+  });
+  stage.addEventListener('pointerdown', event => {
+    if (event.pointerType !== 'mouse' || event.button !== 0 || !event.isPrimary || !canOrbit()) return;
+    event.preventDefault();
     if (pointerFrame) cancelAnimationFrame(pointerFrame);
     pointerFrame = 0;
-    pointerPosition = null;
-    cameras[current].style.setProperty('--pan-x', '0px');
-    cameras[current].style.setProperty('--pan-y', '0px');
+    pointerEngaged = true;
+    orbitDrag = {
+      id: event.pointerId, x: event.clientX, y: event.clientY,
+      yaw: orbitPose.yaw, pitch: orbitPose.pitch, moved: false, bounds: stage.getBoundingClientRect()
+    };
+    stage.classList.add('is-orbiting', 'is-dragging');
+    stage.setPointerCapture(event.pointerId);
+    syncPlayback();
   });
+  stage.addEventListener('pointerup', event => {
+    if (!orbitDrag || event.pointerId !== orbitDrag.id) return;
+    pointerPosition = { x: event.clientX, y: event.clientY };
+    if (pointerFrame) cancelAnimationFrame(pointerFrame);
+    updateOrbit();
+    if (orbitDrag.moved) suppressClickUntil = performance.now() + 350;
+    const id = orbitDrag.id;
+    const bounds = orbitDrag.bounds;
+    const x = Math.max(-1, Math.min(1, ((event.clientX - bounds.left) / bounds.width - .5) * 2));
+    const y = Math.max(-1, Math.min(1, ((event.clientY - bounds.top) / bounds.height - .5) * 2));
+    // Preserve the last drag angle when hover takes over at the same pointer position.
+    orbitAnchor = { yaw: orbitPose.yaw + x * 2.8, pitch: orbitPose.pitch - y * 1.4 };
+    orbitDrag = null;
+    pointerPosition = null;
+    stage.classList.remove('is-dragging');
+    if (stage.hasPointerCapture(id)) stage.releasePointerCapture(id);
+  });
+  stage.addEventListener('lostpointercapture', event => {
+    if (!orbitDrag || event.pointerId !== orbitDrag.id) return;
+    resetOrbit();
+    syncPlayback();
+  });
+  stage.addEventListener('pointerleave', () => {
+    if (orbitDrag) return;
+    resetOrbit();
+    syncPlayback();
+  });
+  resetView?.addEventListener('click', () => {
+    resetOrbit();
+    syncPlayback();
+    if (status) status.textContent = 'Gallery view centred.';
+  });
+  finePointer.addEventListener('change', () => { resetOrbit(); syncPlayback(); });
+  window.addEventListener('resize', () => { resetOrbit(); syncPlayback(); }, { passive: true });
+  window.addEventListener('blur', () => { resetOrbit(); syncPlayback(); });
 
   document.addEventListener('visibilitychange', () => {
     documentHidden = document.visibilityState === 'hidden';
