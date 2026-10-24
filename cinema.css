@@ -1,0 +1,121 @@
+/* One integrated photographic scene; motion belongs to the camera, not the merchandise. */
+.salon.salon--cinema{position:relative;isolation:isolate;overflow:hidden;height:min(980px,100svh);min-height:760px;max-height:980px;background:#090c0e}
+.salon--cinema .cinema-stage{position:absolute;inset:0 0 9%;z-index:0;overflow:hidden;touch-action:pan-y;outline-offset:-8px}
+.salon--cinema .cinema-stage:focus-visible{outline:1px solid rgba(238,234,225,.7)}
+.salon--cinema .cinema-scene{position:absolute;inset:0;z-index:0;opacity:0;pointer-events:none;transition:opacity 900ms cubic-bezier(.22,.8,.25,1)}
+.salon--cinema .cinema-scene.is-active{z-index:1;opacity:1}
+.salon--cinema .cinema-camera{position:absolute;inset:-8px;transform:translate3d(var(--pan-x,0px),var(--pan-y,0px),0);transition:transform .65s cubic-bezier(.22,.8,.25,1)}
+.salon--cinema:not(.is-playing) .cinema-camera{transition:none}
+.salon--cinema .cinema-camera picture{display:block;width:100%;height:100%}
+.salon--cinema .cinema-image{display:block;width:100%;height:100%;max-width:none;object-fit:cover;object-position:65% 50%;transform-origin:65% 55%;user-select:none;-webkit-user-drag:none;animation:az-cinema-drift 18s ease-in-out infinite alternate;animation-play-state:paused}
+.salon--cinema.is-playing .cinema-scene.is-active .cinema-image{animation-play-state:running;will-change:transform}
+.salon--cinema .cinema-shade{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(90deg,rgba(5,7,8,.63),rgba(5,7,8,.24) 29%,transparent 52%),linear-gradient(0deg,rgba(4,6,7,.91),rgba(4,6,7,.43) 17%,transparent 43%),linear-gradient(180deg,rgba(4,6,7,.45),transparent 27%)}
+.salon--cinema .intro{position:absolute;z-index:3;left:5vw;right:auto;top:28%;max-width:440px;pointer-events:none}
+.salon--cinema .intro .eyebrow{margin:0 0 24px;font-size:10px;letter-spacing:.14em;color:#bdc4b7}
+.salon--cinema .intro h1{margin:0;font:500 clamp(78px,6vw,90px)/.98 Cormorant,Georgia,serif;letter-spacing:-.028em;color:#eeeae1}
+.salon--cinema .intro .lead{display:block;max-width:29ch;margin:26px 0 0;font-size:13px;line-height:1.9;color:#c1c8ba}
+.salon--cinema .footer-console{position:absolute;left:5vw;right:5vw;bottom:6%;z-index:5;display:grid;grid-template-columns:minmax(200px,1fr) auto auto;grid-template-areas:'label navigation inspect' 'label navigation motion';align-items:end;gap:10px 40px;padding-top:24px;border-top:1px solid rgba(238,234,225,.18)}
+.salon--cinema .piece-label{grid-area:label;order:0;max-width:370px;align-self:end}
+.salon--cinema .piece-label .house{margin:0 0 9px;font-size:9px;line-height:1.6;letter-spacing:.12em;color:#b5c0ac}
+.salon--cinema .piece-label h2{margin:0;font:500 44px/1.04 Cormorant,Georgia,serif;letter-spacing:-.022em;color:#eeeae1}
+.salon--cinema .piece-label .colour{margin:12px 0 0;font-size:12px;line-height:1.7;color:#adb9a3}
+.salon--cinema .gallery-navigation{grid-area:navigation;order:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:end;justify-content:initial;gap:18px;width:360px;max-width:100%;align-self:end}
+.salon--cinema .selection-tab{position:relative;display:flex;align-items:baseline;justify-content:flex-start;gap:8px;min-width:0;min-height:52px;padding:12px 0 15px;text-align:left;color:#879480;transition:color .18s}
+.salon--cinema .selection-tab::after{content:none}
+.salon--cinema .selection-tab:hover,.salon--cinema .selection-tab[aria-pressed=true]{color:#eeeae1}
+.salon--cinema .selection-tab:focus-visible{outline:2px solid #eeeae1;outline-offset:5px}
+.salon--cinema .selection-number{flex:none;font:500 27px/1 Cormorant,Georgia,serif;font-variant-numeric:tabular-nums}
+.salon--cinema .selection-title{min-width:0;font-size:9px;line-height:1.4;letter-spacing:.055em;text-transform:uppercase;white-space:nowrap}
+.salon--cinema .cinema-progress-track{position:absolute;left:0;right:0;bottom:0;display:block;height:1px;overflow:hidden;background:rgba(238,234,225,.22)}
+.salon--cinema .cinema-progress{display:block;width:100%;height:100%;background:#e5e8dc;transform:scaleX(0);transform-origin:left center;transition:none}
+.salon--cinema .inspect{grid-area:inspect;order:0;min-width:230px;min-height:54px;width:auto;padding:16px 24px;justify-self:end;align-self:end;border:1px solid rgba(238,234,225,.42);border-radius:1px;background:rgba(10,15,15,.25);box-shadow:none;color:#eeeae1;font-size:12px;letter-spacing:.025em;transition:background .2s,color .2s,border-color .2s,scale .15s}
+.salon--cinema .inspect:hover{background:#e9e5da;color:#111;border-color:#e9e5da}
+.salon--cinema .inspect:focus-visible{outline:2px solid #eeeae1;outline-offset:5px}
+.salon--cinema .action-rule{width:24px;opacity:.7}
+.salon--cinema .inspect:hover .action-rule{width:30px}
+.salon--cinema .cinema-motion{grid-area:motion;order:0;display:inline-flex;align-items:center;justify-content:flex-end;justify-self:end;align-self:end;gap:0;min-width:112px;min-height:44px;padding:7px 0;border:0;border-bottom:1px solid transparent;background:none;color:#a9b59f;font:400 10px/1.6 Jost,Arial,sans-serif;letter-spacing:.02em;text-align:right;white-space:nowrap;transition:color .18s,border-color .18s,scale .15s}
+.salon--cinema .motion-suffix{margin-left:3px}
+.salon--cinema .cinema-motion:hover{color:#eeeae1;border-bottom-color:rgba(238,234,225,.28)}
+.salon--cinema .cinema-motion:focus-visible{outline:2px solid #eeeae1;outline-offset:4px}
+.salon--cinema .cinema-motion:active{scale:.96}
+@keyframes az-cinema-drift{from{transform:scale(1.005) translate3d(0,0,0)}to{transform:scale(1.04) translate3d(-.45%,.25%,0)}}
+@keyframes az-cinema-drift-portrait{from{transform:scale(1.005) translate3d(0,0,0)}to{transform:scale(1.02) translate3d(0,.15%,0)}}
+@media(min-width:901px) and (max-width:1100px){
+ .salon.salon--cinema{height:min(800px,100svh);min-height:680px;max-height:800px}
+ .salon--cinema .intro{top:24%;max-width:330px}
+ .salon--cinema .intro h1{font-size:68px}
+ .salon--cinema .intro .eyebrow{margin-bottom:20px}
+ .salon--cinema .intro .lead{font-size:12px;margin-top:22px}
+ .salon--cinema .footer-console{grid-template-columns:minmax(180px,1fr) auto auto;gap:10px 24px;padding-top:20px}
+ .salon--cinema .piece-label h2{font-size:36px}
+ .salon--cinema .piece-label .colour{font-size:11px;margin-top:10px}
+ .salon--cinema .gallery-navigation{width:310px;gap:14px}
+ .salon--cinema .selection-number{font-size:24px}
+ .salon--cinema .selection-title{font-size:8px;letter-spacing:.04em}
+ .salon--cinema .inspect{min-width:200px;padding:15px 18px;font-size:11px}
+}
+@media(max-width:900px){
+ .salon.salon--cinema{height:100svh;min-height:760px;max-height:none}
+ .salon--cinema .cinema-camera{inset:-1px;transform:none!important;transition:none}
+ .salon--cinema .cinema-image{object-position:50% 42%;transform-origin:50% 55%;animation-name:az-cinema-drift-portrait}
+ .salon--cinema .cinema-shade{background:linear-gradient(180deg,rgba(4,6,7,.65),rgba(4,6,7,.36) 28%,transparent 46%),linear-gradient(0deg,rgba(4,6,7,.91),rgba(4,6,7,.44) 17%,transparent 42%)}
+ .salon--cinema .intro{left:5vw;top:128px;max-width:420px}
+ .salon--cinema .intro h1{font-size:68px}
+ .salon--cinema .intro .eyebrow{font-size:9px;margin-bottom:18px}
+ .salon--cinema .intro .lead{display:none}
+ .salon--cinema .footer-console{left:5vw;right:5vw;bottom:5%;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'label inspect' 'navigation motion';gap:18px 32px;padding-top:20px}
+ .salon--cinema .piece-label h2{font-size:38px}
+ .salon--cinema .piece-label .house{margin-bottom:6px}
+ .salon--cinema .piece-label .colour{font-size:11px;margin-top:8px}
+ .salon--cinema .gallery-navigation{width:360px;gap:18px}
+ .salon--cinema .cinema-motion{min-width:112px;min-height:48px}
+}
+@media(max-width:700px){
+ .salon--cinema .intro{top:110px;left:24px;right:24px;max-width:none}
+ .salon--cinema .intro h1{font-size:54px;line-height:.98;letter-spacing:-.025em}
+ .salon--cinema .intro .eyebrow{font-size:9px;margin-bottom:18px;letter-spacing:.12em}
+ .salon--cinema .footer-console{left:24px;right:24px;bottom:24px;display:grid;grid-template-columns:minmax(0,1fr) 52px;grid-template-areas:'label label' 'navigation motion' 'inspect inspect';align-items:center;gap:12px;padding:0;border:0}
+ .salon--cinema .piece-label{max-width:none;align-self:end}
+ .salon--cinema .piece-label .house{display:none}
+ .salon--cinema .piece-label h2{font-size:30px;line-height:1.04}
+ .salon--cinema .piece-label .colour{font-size:11px;line-height:1.6;margin-top:8px}
+ .salon--cinema .gallery-navigation{width:auto;max-width:none;gap:10px;align-self:center}
+ .salon--cinema .selection-tab{min-height:48px;gap:6px;padding:12px 0 13px}
+ .salon--cinema .selection-number{font-size:20px}
+ .salon--cinema .selection-title{font-size:8px;letter-spacing:.025em;line-height:1.35}
+ .salon--cinema .inspect{width:100%;min-width:0;min-height:52px;justify-self:stretch;padding:14px 18px;font-size:11px}
+ .salon--cinema .cinema-motion{width:52px;min-width:52px;min-height:48px;justify-content:flex-end;justify-self:end;align-self:center;padding:8px 0;font-size:10px}
+ .salon--cinema .motion-suffix{display:none}
+}
+@media(max-width:375px){
+ .salon--cinema .intro h1{font-size:51px}
+ .salon--cinema .selection-tab{gap:5px}
+ .salon--cinema .selection-number{font-size:19px}
+ .salon--cinema .selection-title{font-size:7.5px;letter-spacing:.015em}
+}
+@media(min-width:701px) and (max-width:900px) and (max-height:800px){.salon--cinema .intro{top:112px}.salon--cinema .intro h1{font-size:60px}.salon--cinema .intro .eyebrow{margin-bottom:16px}.salon--cinema .footer-console{bottom:28px}}
+@media(prefers-reduced-motion:reduce){
+ .salon--cinema .cinema-scene{transition:none!important}
+ .salon--cinema .cinema-image{animation:none!important;transform:none!important;will-change:auto!important}
+ .salon--cinema .cinema-camera{transform:none!important;transition:none!important}
+ .salon--cinema .selection-tab,.salon--cinema .inspect,.salon--cinema .cinema-motion,.salon--cinema .action-rule{transition:none!important}
+ .salon--cinema .selection-tab[aria-pressed=true] .cinema-progress{transform:scaleX(1)!important}
+}
+
+.salon--cinema .cinema-stage{mask-image:linear-gradient(180deg,#000 0%,#000 91%,transparent 100%)}
+.salon--cinema .cinema-motion:disabled{color:#7c8973;cursor:default;border-color:transparent;scale:1}
+@media(min-width:901px) and (max-width:1100px){.salon--cinema .cinema-stage{bottom:16%}.salon--cinema .intro{max-width:310px}.salon--cinema .intro h1{font-size:64px}.salon--cinema .cinema-image{object-position:70% 50%}}
+@media(min-width:701px) and (max-width:900px){.salon--cinema .cinema-stage{inset:0}.salon--cinema .piece-label .house{display:none}.salon--cinema .footer-console{bottom:24px}.salon--cinema .piece-label h2{font-size:34px}}
+@media(max-width:700px){.salon--cinema .cinema-stage{inset:7% 0 10%;max-height:178vw;mask-image:linear-gradient(180deg,transparent 0%,#000 6%,#000 91%,transparent 100%)}}
+
+@media(min-width:701px) and (max-width:900px) and (min-aspect-ratio:4/5){
+ .salon--cinema .intro{top:132px;max-width:310px}
+ .salon--cinema .intro .eyebrow{display:none}
+ .salon--cinema .intro h1{font-size:54px}
+ .salon--cinema .cinema-camera picture{width:min(100%,calc((100svh - 24px)*.66667));height:calc(100% - 24px);margin-inline:auto;mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+}
+
+@media(min-width:701px) and (max-width:900px) and (max-height:760px){.salon--cinema .intro{top:112px}.salon--cinema .intro h1{font-size:50px}}
+@media(max-width:700px){.salon--cinema .cinema-motion:disabled .motion-suffix{display:inline}}
+
+body:has(.salon--cinema) .header:not(.scrolled){background:linear-gradient(180deg,rgba(3,5,6,.82),rgba(3,5,6,.34))}
