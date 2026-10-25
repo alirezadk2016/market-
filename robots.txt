@@ -4,4 +4,4 @@ Allow: /
 Disallow: /admin
 Disallow: /admin.html
 
-Sitemap: https://market-one-indol.vercel.app/sitemap.xml
+Sitemap: https://market-web-mak.vercel.app/sitemap.xml

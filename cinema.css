@@ -9,22 +9,22 @@
 .salon--cinema .cinema-image{display:block;width:100%;height:100%;max-width:none;object-fit:cover;object-position:65% 50%;transform-origin:65% 55%;user-select:none;-webkit-user-drag:none;animation:az-cinema-drift 18s ease-in-out infinite alternate;animation-play-state:paused}
 .salon--cinema.is-playing .cinema-scene.is-active .cinema-image{animation-play-state:running;will-change:transform}
 .salon--cinema .cinema-shade{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(90deg,rgba(5,7,8,.63),rgba(5,7,8,.24) 29%,transparent 52%),linear-gradient(0deg,rgba(4,6,7,.91),rgba(4,6,7,.43) 17%,transparent 43%),linear-gradient(180deg,rgba(4,6,7,.45),transparent 27%)}
-.salon--cinema .intro{position:absolute;z-index:3;left:5vw;right:auto;top:28%;max-width:440px;pointer-events:none}
+.salon--cinema .intro{position:absolute;z-index:3;left:5vw;right:auto;top:28%;max-width:480px;pointer-events:none}
 .salon--cinema .intro .eyebrow{margin:0 0 24px;font-size:12px;letter-spacing:.12em;color:#c8c8bb}
-.salon--cinema .intro h1{margin:0;font:500 clamp(78px,6vw,90px)/.98 Cormorant,Georgia,serif;letter-spacing:-.028em;color:#eeeae1}
+.salon--cinema .intro h1{margin:0;font:600 clamp(78px,6vw,90px)/.946 Archivo,'Helvetica Neue',Arial,sans-serif;letter-spacing:-.04em;color:#eeeae1}
 .salon--cinema .intro .lead{display:block;max-width:32ch;margin:26px 0 0;font-size:15px;line-height:1.75;color:#cbc9bd}
 .salon--cinema .cinema-orbit-tools{display:none}
 .salon--cinema .footer-console{position:absolute;left:5vw;right:5vw;bottom:6%;z-index:5;display:grid;grid-template-columns:minmax(200px,1fr) auto auto;grid-template-areas:'label navigation inspect' 'label navigation motion';align-items:end;gap:10px 40px;padding-top:24px;border-top:1px solid rgba(238,234,225,.18)}
 .salon--cinema .piece-label{grid-area:label;order:0;max-width:370px;align-self:end}
 .salon--cinema .piece-label .house{margin:0 0 9px;font-size:12px;line-height:1.6;letter-spacing:.1em;color:#c6c6b8}
-.salon--cinema .piece-label h2{margin:0;font:500 44px/1.04 Cormorant,Georgia,serif;letter-spacing:-.022em;color:#eeeae1}
+.salon--cinema .piece-label h2{margin:0;font:600 44px/1.004 Archivo,'Helvetica Neue',Arial,sans-serif;letter-spacing:-.034em;color:#eeeae1}
 .salon--cinema .piece-label .colour{margin:12px 0 0;font-size:14px;line-height:1.6;color:#bebfb3}
 .salon--cinema .gallery-navigation{grid-area:navigation;order:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:end;justify-content:initial;gap:16px;width:520px;max-width:100%;align-self:end}
 .salon--cinema .selection-tab{position:relative;display:flex;align-items:baseline;justify-content:flex-start;gap:8px;min-width:0;min-height:52px;padding:12px 0 15px;text-align:left;color:#879480;transition:color .18s}
 .salon--cinema .selection-tab::after{content:none}
 .salon--cinema .selection-tab:hover,.salon--cinema .selection-tab[aria-pressed=true]{color:#eeeae1}
 .salon--cinema .selection-tab:focus-visible{outline:2px solid #eeeae1;outline-offset:5px}
-.salon--cinema .selection-number{flex:none;font:500 27px/1 Cormorant,Georgia,serif;font-variant-numeric:tabular-nums}
+.salon--cinema .selection-number{flex:none;font:600 27px/.965 Archivo,'Helvetica Neue',Arial,sans-serif;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .salon--cinema .selection-title{min-width:0;font-size:12px;line-height:1.4;letter-spacing:0;text-transform:none;white-space:nowrap}
 .salon--cinema .selection-title-short{display:none}
 .salon--cinema .cinema-progress-track{position:absolute;left:0;right:0;bottom:0;display:block;height:1px;overflow:hidden;background:rgba(238,234,225,.22)}
@@ -34,7 +34,7 @@
 .salon--cinema .inspect:focus-visible{outline:2px solid #eeeae1;outline-offset:5px}
 .salon--cinema .action-rule{width:24px;opacity:.7}
 .salon--cinema .inspect:hover .action-rule{width:30px}
-.salon--cinema .cinema-motion{grid-area:motion;order:0;display:inline-flex;align-items:center;justify-content:flex-end;justify-self:end;align-self:end;gap:0;min-width:112px;min-height:44px;padding:7px 0;border:0;border-bottom:1px solid transparent;background:none;color:#c5c6b9;font:400 12px/1.6 Jost,Arial,sans-serif;letter-spacing:.01em;text-align:right;white-space:nowrap;transition:color .18s,border-color .18s,scale .15s}
+.salon--cinema .cinema-motion{grid-area:motion;order:0;display:inline-flex;align-items:center;justify-content:flex-end;justify-self:end;align-self:end;gap:0;min-width:112px;min-height:44px;padding:7px 0;border:0;border-bottom:1px solid transparent;background:none;color:#c5c6b9;font:400 12px/1.6 Archivo,'Helvetica Neue',Arial,sans-serif;letter-spacing:.01em;text-align:right;white-space:nowrap;transition:color .18s,border-color .18s,scale .15s}
 .salon--cinema .motion-suffix{margin-left:3px}
 .salon--cinema .cinema-motion:hover{color:#eeeae1;border-bottom-color:rgba(238,234,225,.28)}
 .salon--cinema .cinema-motion:focus-visible{outline:2px solid #eeeae1;outline-offset:4px}
@@ -108,7 +108,7 @@
 
 .salon--cinema .cinema-stage{mask-image:linear-gradient(180deg,#000 0%,#000 91%,transparent 100%)}
 .salon--cinema .cinema-motion:disabled{color:#7c8973;cursor:default;border-color:transparent;scale:1}
-@media(min-width:901px) and (max-width:1100px){.salon--cinema .cinema-stage{bottom:16%}.salon--cinema .intro{max-width:310px}.salon--cinema .intro h1{font-size:64px}.salon--cinema .cinema-image{object-position:70% 50%}}
+@media(min-width:901px) and (max-width:1100px){.salon--cinema .cinema-stage{bottom:16%}.salon--cinema .intro{max-width:350px}.salon--cinema .intro h1{font-size:64px}.salon--cinema .cinema-image{object-position:70% 50%}}
 @media(min-width:701px) and (max-width:900px){.salon--cinema .cinema-stage{inset:0}.salon--cinema .piece-label .house{display:none}.salon--cinema .footer-console{bottom:24px}.salon--cinema .piece-label h2{font-size:34px}}
 @media(max-width:700px){.salon--cinema .cinema-stage{inset:7% 0 10%;max-height:178vw;mask-image:linear-gradient(180deg,transparent 0%,#000 6%,#000 91%,transparent 100%)}}
 

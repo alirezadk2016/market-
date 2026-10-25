@@ -1,0 +1,11 @@
+# The salon is served from index.html alone; these belong to the previous site,
+# whose pages are now redirect stubs. Kept in the repository as history, but
+# there is no reason to publish them.
+styles.css
+script.js
+atelier.css
+atelier.js
+studio.css
+studio.js
+fill.js
+content.js

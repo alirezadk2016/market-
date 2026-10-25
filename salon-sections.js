@@ -307,6 +307,22 @@
     const disclosure = pieceView.querySelector('.catalogue-specs');
     disclosure.hidden = !specifications.children.length;
     disclosure.open = false;
+    // A.z does not sell: the whole service is knowing where a piece is worth
+    // buying from. Where the registry names a retailer, that is the answer,
+    // and withholding it behind an enquiry helps nobody.
+    const retailerRow = document.getElementById('catalogueRetailer');
+    const retailerLink = document.getElementById('catalogueRetailerLink');
+    if (retailerRow && retailerLink) {
+      const retailer = item.retailer;
+      const usable = Boolean(retailer && typeof retailer.url === 'string' && /^https:\/\//.test(retailer.url));
+      retailerRow.hidden = !usable;
+      if (usable) {
+        retailerLink.href = retailer.url;
+        retailerLink.textContent = retailer.name || 'View the piece';
+        retailerLink.setAttribute('aria-label',
+          (retailer.name || 'The retailer') + ' — opens in a new tab');
+      }
+    }
     showVariant(variants[variantIndex] || variants[0], variants[variantIndex] ? variantIndex : 0);
     pane.scrollTop = 0;
     const heading = document.getElementById('cataloguePieceTitle');
