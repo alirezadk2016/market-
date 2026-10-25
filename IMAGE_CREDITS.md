@@ -57,3 +57,9 @@ Three.js revision 180 (version 0.180.0) is vendored locally in `assets/vendor/th
 
 ## Homepage section-variety follow-up ·25October2026
 The current collection index uses five untouched photographs from the canonical product registry, not the decorative campaign covers. The material chapter reuses images/studio-materials.webp, whose original generation provenance is recorded above. The duplicate black-leather detail pair and broad salon advisory photograph are no longer active in these homepage sections; their archived assets and provenance remain preserved. No new raster artwork or product-photo edits were made for this correction.
+
+## A study in time ·25October2026
+
+The lower-page watch journey replaces the static material chapter with an original, unbranded mechanical concept authored as actual Three.js meshes. It is not a model, scan or technical representation of the listed Swarovski quartz watch. Product registry photographs and descriptions remain separate and unchanged.
+
+Two original fallback artworks, timepiece-exterior-v1 and timepiece-exploded-v1, were created with the built-in image_gen tool. The first depicts a graphite, steel/champagne skeleton watch with a leather strap in controlled studio light; the second uses that original as the edit reference and separates the glass, dial and hands above an imagined movement. Neither image represents a real brand model, premises or supplier photograph. Both have 1536px,960px and640px WebP exports in assets/. Source PNGs, complete prompts, edit-reference role and output dimensions/bytes are archived in the owner's outputs/timepiece-artwork/ directory. The runtime model uses procedurally authored geometry and lighting rather than inferred product internals.
