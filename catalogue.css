@@ -80,8 +80,10 @@
 .catalogue-empty button{margin-top:20px;min-height:44px;padding:10px 0;border-bottom:1px solid #9ba990;font-size:12px;color:#d2dcc8}
 #collectionRoom .catalogue-piece{padding-top:28px}
 #collectionRoom .catalogue-piece-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:56px;align-items:start}
-#collectionRoom .catalogue-main-photo{background:#f0f0eb;aspect-ratio:1;display:grid;place-items:center;overflow:hidden}
-#collectionRoom .catalogue-main-photo img{display:block;width:100%;height:100%;object-fit:contain}
+#collectionRoom .catalogue-piece-gallery,#collectionRoom .catalogue-piece-copy{min-width:0}
+/* Reserve the frame before decoding; a portrait's intrinsic height must not size a grid track. */
+#collectionRoom .catalogue-main-photo{position:relative;background:#f0f0eb;aspect-ratio:1;display:block;overflow:hidden}
+#collectionRoom .catalogue-main-photo img{position:absolute;inset:0;display:block;width:100%;height:100%;min-width:0;min-height:0;object-fit:contain}
 #collectionRoom .catalogue-thumbnails{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
 #collectionRoom .catalogue-thumbnails:empty{display:none}
 #collectionRoom .catalogue-thumbnails button{width:56px;height:62px;padding:0;border:1px solid rgba(238,234,225,.14);background:#f0f0eb}
@@ -138,7 +140,7 @@
  #collectionRoom .catalogue-empty{padding:42px 0 48px}
  .catalogue-empty h3{font-size:36px}
  #collectionRoom .catalogue-piece{padding-top:20px}
- #collectionRoom .catalogue-piece-grid{grid-template-columns:1fr;gap:28px}
+ #collectionRoom .catalogue-piece-grid{grid-template-columns:minmax(0,1fr);gap:28px}
  #collectionRoom .catalogue-thumbnails{gap:10px;margin-top:14px}
  #collectionRoom .catalogue-thumbnails button{width:52px;height:58px}
  #collectionRoom .catalogue-piece-copy h3{font-size:46px;margin-top:14px}
