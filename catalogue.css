@@ -164,7 +164,12 @@
 #collectionRoom .collection-dialog-head h2{font-size:42px;letter-spacing:-.03em}
 #collectionRoom .catalogue-discovery{padding-block:22px 18px}
 #collectionRoom .catalogue-card{padding:0;border:1px solid rgba(238,234,225,.15);background:var(--card-paper);box-shadow:0 12px 28px rgba(0,0,0,.09)}
-#collectionRoom .catalogue-photo-well{background:linear-gradient(145deg,rgb(var(--photo-source-paper,237 235 231)),#e2ded3)}
+/* The second stop used to be a fixed warm grey, so a photograph whose own
+   studio paper is lighter than it ended up as a visible rectangle with a seam
+   down each side — a 50px band on a 410px card. Deriving the stop from the
+   photograph's sampled paper keeps the field alive without ever out-running
+   the paper by more than a few levels, whatever the shot. */
+#collectionRoom .catalogue-photo-well{background:linear-gradient(145deg,rgb(var(--photo-source-paper,237 235 231)),color-mix(in srgb,rgb(var(--photo-source-paper,237 235 231)) 94%,#a89e8c))}
 #collectionRoom .catalogue-photo-well::after{border-color:rgba(0,0,0,.08)}
 #collectionRoom .catalogue-photo-well.is-portrait img{object-fit:contain;object-position:center;padding:16px}
 #collectionRoom .catalogue-photo-well.is-source-framed img{position:absolute;inset:0;width:100%;height:100%;padding:0;object-fit:contain;object-position:center;transform-origin:center;transform:translate(var(--photo-fit-x,0%),var(--photo-fit-y,0%)) scale(calc(var(--photo-fit-scale,1)*var(--photo-hover,1)))}
@@ -272,3 +277,12 @@
 @media(hover:hover){#collectionRoom .catalogue-card-action:hover .catalogue-photo-well{--photo-hover:1.015}}
 @media(max-width:375px){.catalogue-viewer-header{padding-inline:16px;gap:12px}.catalogue-viewer-title{font-size:23px}.catalogue-viewer-header button{min-width:48px}.catalogue-viewer-footer{padding-inline:16px}}
 @media(prefers-reduced-motion:reduce){.catalogue-photo-actions button,#catalogueImageViewer *,#collectionRoom .catalogue-thumbnails button{transition:none!important;scroll-behavior:auto!important}}
+
+/* Where A.z recommends buying the piece. Quiet, under the enquiry — the
+   advice is the service, the link is simply the end of it. */
+#collectionRoom .catalogue-retailer{display:grid;gap:7px;margin:22px 0 0;padding-top:20px;border-top:1px solid rgba(240,238,232,.14)}
+#collectionRoom .catalogue-retailer[hidden]{display:none!important}
+#collectionRoom .catalogue-retailer span{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#93a08f}
+#collectionRoom .catalogue-retailer a{display:inline-flex;align-items:center;gap:11px;justify-self:start;min-height:44px;padding:9px 0;font-size:15px;color:#e4e7db;border-bottom:1px solid rgba(240,238,232,.3);transition:color .2s,border-color .2s}
+#collectionRoom .catalogue-retailer a::after{content:'↗';font-size:14px;color:#a9b5a2}
+#collectionRoom .catalogue-retailer a:hover{color:#fff;border-bottom-color:#eeeae1}

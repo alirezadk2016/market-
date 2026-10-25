@@ -16,6 +16,22 @@
   });
   if (!window.WebGL2RenderingContext) return;
 
+  // The gallery costs 703KB of three.js plus a second pass over the hero
+  // photography as textures. The photographic hero underneath is already the
+  // finished picture, so on a metered or modest device we simply keep it and
+  // never pay for the upgrade — nothing is missing, it just does not move.
+  function worthTheWeight() {
+    const link = navigator.connection;
+    if (link) {
+      if (link.saveData) return false;
+      if (/(^|-)2g$/.test(link.effectiveType || '')) return false;
+    }
+    if (typeof navigator.deviceMemory === 'number' && navigator.deviceMemory < 4) return false;
+    if (typeof navigator.hardwareConcurrency === 'number' && navigator.hardwareConcurrency < 4) return false;
+    return true;
+  }
+  if (!worthTheWeight()) return;
+
   const base = new URL('.', document.currentScript?.src || location.href);
   const asset = path => new URL(path, base).href;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
@@ -447,5 +463,11 @@
     wake();
   }
 
-  start().catch(() => fallback('initialisation'));
+  // Hold the upgrade until the browser has finished the page it was asked for.
+  // The hero photograph is the LCP element; three.js competing with it for
+  // bandwidth only delays the thing the visitor actually came to look at.
+  function begin() { start().catch(() => fallback('initialisation')); }
+  const queue = () => (window.requestIdleCallback || (fn => setTimeout(fn, 320)))(begin, { timeout: 2500 });
+  if (document.readyState === 'complete') queue();
+  else window.addEventListener('load', queue, { once: true });
 })();

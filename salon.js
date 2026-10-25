@@ -272,7 +272,25 @@
     inspect.setAttribute('aria-label', 'Explore the ' + scene.label + ' collection');
   }
 
+  // Scenes beyond the first ship their photograph in data-src so that four
+  // heroes do not download for the one on screen. Promote it the moment the
+  // scene is actually wanted; after that this is a no-op.
+  function hydrateSceneImage(image) {
+    const picture = image.parentElement;
+    if (picture && picture.tagName === 'PICTURE') {
+      picture.querySelectorAll('source[data-srcset]').forEach(source => {
+        source.srcset = source.dataset.srcset;
+        delete source.dataset.srcset;
+      });
+    }
+    if (image.dataset.src) {
+      image.src = image.dataset.src;
+      delete image.dataset.src;
+    }
+  }
+
   function decodeSceneImage(image) {
+    hydrateSceneImage(image);
     const source = image.currentSrc || image.src;
     const cached = imagePromises.get(image);
     if (cached && cached.source === source) return cached.promise;
@@ -346,8 +364,14 @@
       resetProgress();
       syncPlayback();
       if (manual && status) status.textContent = collectionScenes[current].title + ' selected.';
-      // Defer the other downloads until the first useful frame is decoded.
-      images.forEach((image, i) => { if (i !== current) image.loading = 'eager'; });
+      // Warm only the scene that comes next, once the browser is idle. The
+      // other two stay unrequested until they are the one being asked for, so
+      // a visitor who never reaches them never pays for them.
+      const upcoming = images[(current + 1) % images.length];
+      if (upcoming && upcoming.dataset.src) {
+        (window.requestIdleCallback || (fn => setTimeout(fn, 600)))(
+          () => hydrateSceneImage(upcoming), { timeout: 4000 });
+      }
     } catch (error) {
       if (ownRevision !== revision) return;
       loading = false;
