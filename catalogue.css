@@ -5,7 +5,7 @@
 #collectionRoom .collection-toolbar{height:auto;min-height:96px;flex:none;padding:20px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;background:var(--gallery);border-bottom:1px solid var(--gallery-rule)}
 #collectionRoom .collection-dialog-head{padding:0;margin:0;min-width:0}
 #collectionRoom .collection-dialog-head .salon-overline{font-size:9px;letter-spacing:.14em;color:var(--gallery-muted);margin:0 0 6px}
-#collectionRoom .collection-dialog-head h2{font:500 40px/1.04 Cormorant,Georgia,serif;letter-spacing:-.025em;margin:0}
+#collectionRoom .collection-dialog-head h2{font:500 40px/1.04 Bodoni,'Didot','Bodoni MT',Georgia,serif;letter-spacing:-.025em;margin:0}
 .collection-toolbar-actions{display:flex;align-items:center;gap:24px}
 #collectionRoom .collection-close{min-width:64px;min-height:44px;position:static;padding:10px 4px;font-size:11px;color:#d0d6c9;border-bottom:1px solid rgba(238,234,225,.3)}
 #collectionRoom .collection-close:hover{color:#fff;border-bottom-color:var(--paper)}
@@ -30,7 +30,7 @@
 #collectionRoom .catalogue-search label,#collectionRoom .catalogue-filter-fields label{display:block;margin:0 0 8px;color:#adb7a7;font-size:9px;line-height:1.5;letter-spacing:.1em;text-transform:uppercase}
 .catalogue-search-input{display:flex;align-items:center;min-height:46px;min-width:0;background:var(--gallery-field);border:1px solid var(--gallery-rule);transition:border-color .18s}
 .catalogue-search-input:focus-within{border-color:#cbd3c1;box-shadow:0 0 0 1px #cbd3c1}
-#collectionRoom .catalogue-search-input input{display:block;min-width:0;flex:1;order:0;width:100%;height:44px;min-height:44px;padding:10px 14px;border:0;border-radius:0;background:transparent;color:var(--paper);font:400 14px/1.6 Jost,Arial,sans-serif;outline:none}
+#collectionRoom .catalogue-search-input input{display:block;min-width:0;flex:1;order:0;width:100%;height:44px;min-height:44px;padding:10px 14px;border:0;border-radius:0;background:transparent;color:var(--paper);font:400 14px/1.6 Archivo,'Helvetica Neue',Arial,sans-serif;outline:none}
 #collectionRoom .catalogue-search-input input::placeholder{color:#778772}
 #collectionRoom .catalogue-search-input input::-webkit-search-cancel-button{-webkit-appearance:none}
 #collectionRoom .catalogue-search-input button{flex:none;order:1;min-width:52px;min-height:44px;margin:0;padding:10px;border:0;font-size:11px;color:#bdc7b4}
@@ -42,7 +42,7 @@
 .catalogue-filters[open] summary::after{content:'−'}
 .catalogue-filter-fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
 .catalogue-filter-fields>div{min-width:0}
-#collectionRoom .catalogue-filter-fields select{display:block;width:100%;min-width:0;height:46px;padding:10px 12px;border:1px solid var(--gallery-rule);border-radius:0;background:var(--gallery-field);color:#d4dbcc;font:400 13px/1.6 Jost,Arial,sans-serif;cursor:pointer}
+#collectionRoom .catalogue-filter-fields select{display:block;width:100%;min-width:0;height:46px;padding:10px 12px;border:1px solid var(--gallery-rule);border-radius:0;background:var(--gallery-field);color:#d4dbcc;font:400 13px/1.6 Archivo,'Helvetica Neue',Arial,sans-serif;cursor:pointer}
 #collectionRoom .catalogue-filter-fields select:focus-visible{outline:2px solid #d6ddcb;outline-offset:3px}
 @media(min-width:701px){.catalogue-filters summary{display:none}}
 .catalogue-result-bar{min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:8px 0}
@@ -63,7 +63,7 @@
 .catalogue-view-label{position:absolute;right:16px;bottom:14px;z-index:1;font-size:10px;line-height:1.6;color:var(--gallery-ink);border-bottom:1px solid rgba(37,42,39,.35);opacity:0;transition:opacity .18s}
 #collectionRoom .catalogue-card-copy{display:grid;gap:7px;padding-top:16px}
 #collectionRoom .catalogue-card-house{font-size:10px;line-height:1.5;letter-spacing:.1em;text-transform:uppercase;color:#9eac94}
-#collectionRoom .catalogue-card-name{font:500 28px/1.13 Cormorant,Georgia,serif;letter-spacing:-.015em;color:#ecefe3}
+#collectionRoom .catalogue-card-name{font:500 28px/1.13 Bodoni,'Didot','Bodoni MT',Georgia,serif;letter-spacing:-.015em;color:#ecefe3}
 .catalogue-card-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;min-height:44px}
 #collectionRoom .catalogue-card-colour{margin:0;min-width:0;font-size:11px;line-height:1.7;color:#94a38a}
 .catalogue-card-swatches{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;flex:none;gap:0;min-height:44px}
@@ -72,10 +72,10 @@
 .catalogue-card-swatches button[aria-pressed=true] span{outline-color:#d4deca}
 .catalogue-card-swatches button:focus-visible{outline:2px solid #dce4d1;outline-offset:-3px}
 .catalogue-card-swatches button:hover span{outline-color:#a8b69c}
-.catalogue-service-note{margin:32px 0 0;padding-top:24px;border-top:1px solid var(--gallery-rule);font:400 12px/1.8 Jost,Arial,sans-serif;color:#8c9b82}
+.catalogue-service-note{margin:32px 0 0;padding-top:24px;border-top:1px solid var(--gallery-rule);font:400 12px/1.8 Archivo,'Helvetica Neue',Arial,sans-serif;color:#8c9b82}
 #collectionRoom .catalogue-empty{padding:60px 0 64px;text-align:center;color:#9fab96}
 #collectionRoom .catalogue-empty .salon-overline{margin-bottom:14px;font-size:9px}
-.catalogue-empty h3{margin:0 0 16px;font:500 42px/1.1 Cormorant,Georgia,serif;color:var(--paper);letter-spacing:-.02em}
+.catalogue-empty h3{margin:0 0 16px;font:500 42px/1.1 Bodoni,'Didot','Bodoni MT',Georgia,serif;color:var(--paper);letter-spacing:-.02em}
 .catalogue-empty>p:not(.salon-overline){margin:0;font-size:13px;line-height:1.8}
 .catalogue-empty button{margin-top:20px;min-height:44px;padding:10px 0;border-bottom:1px solid #9ba990;font-size:12px;color:#d2dcc8}
 #collectionRoom .catalogue-piece{padding-top:28px}
@@ -90,7 +90,7 @@
 #collectionRoom .catalogue-thumbnails button[aria-pressed=true]{outline:1px solid #dce5d1;outline-offset:3px}
 #collectionRoom .catalogue-thumbnails img{display:block;width:100%;height:100%;object-fit:contain}
 #collectionRoom .catalogue-house{margin:0;font-size:10px;letter-spacing:.1em;color:#a9b79e}
-#collectionRoom .catalogue-piece-copy h3{font:500 52px/1.04 Cormorant,Georgia,serif;letter-spacing:-.025em;margin:16px 0 0}
+#collectionRoom .catalogue-piece-copy h3{font:500 52px/1.04 Bodoni,'Didot','Bodoni MT',Georgia,serif;letter-spacing:-.025em;margin:16px 0 0}
 #collectionRoom .catalogue-colour{margin:18px 0 0;color:#acb99f;font-size:12px}
 #collectionRoom .catalogue-variants{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
 #collectionRoom .catalogue-variants button{min-height:44px;padding:10px 14px;border:1px solid var(--gallery-rule);background:transparent;font-size:12px;gap:10px;color:#b9c6ae}
@@ -202,9 +202,9 @@
 #collectionRoom .catalogue-main-photo.is-photo-unavailable>img{visibility:hidden}
 .catalogue-photo-error{position:absolute;inset:0;display:grid;place-items:center;padding:28px;color:#535b4b;font-size:13px;line-height:1.7;text-align:center}
 .catalogue-photo-tools{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;min-height:52px;margin-top:1px;border-bottom:1px solid rgba(238,234,225,.14)}
-.catalogue-photo-counter{font:400 12px/1.6 Jost,Arial,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:.05em;color:#bfc4ae;white-space:nowrap}
+.catalogue-photo-counter{font:400 12px/1.6 Archivo,'Helvetica Neue',Arial,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:.05em;color:#bfc4ae;white-space:nowrap}
 .catalogue-photo-actions{display:flex;align-items:center;gap:10px;min-width:0}
-.catalogue-photo-actions button{min-height:44px;padding:8px 5px;color:#d4d7c6;font:400 12px/1.6 Jost,Arial,sans-serif;transition:color .15s}
+.catalogue-photo-actions button{min-height:44px;padding:8px 5px;color:#d4d7c6;font:400 12px/1.6 Archivo,'Helvetica Neue',Arial,sans-serif;transition:color .15s}
 .catalogue-photo-actions .catalogue-photo-step{min-width:44px}
 .catalogue-photo-actions .catalogue-photo-enlarge{min-width:83px;padding-right:0;text-decoration:underline;text-underline-offset:5px;text-decoration-color:rgba(196,206,187,.35)}
 .catalogue-photo-actions button:hover{color:#f0f0e8}
@@ -220,8 +220,8 @@
 #catalogueImageViewer [hidden]{display:none!important}
 #catalogueImageViewer::backdrop{background:rgba(3,6,7,.96);backdrop-filter:none}
 .catalogue-viewer-header{display:flex;align-items:center;gap:24px;flex:none;min-height:78px;padding:12px 32px;padding-top:max(12px,env(safe-area-inset-top));border-bottom:1px solid rgba(238,234,225,.14)}
-.catalogue-viewer-title{flex:1;min-width:0;margin:0;font:500 30px/1.1 Cormorant,Georgia,serif;letter-spacing:-.02em;text-wrap:balance}
-.catalogue-viewer-header button,.catalogue-viewer-step{min-width:64px;min-height:44px;padding:9px 0;color:#c8d0c0;border:0;border-bottom:1px solid rgba(238,234,225,.3);background:none;font:400 12px/1.6 Jost,Arial,sans-serif}
+.catalogue-viewer-title{flex:1;min-width:0;margin:0;font:500 30px/1.1 Bodoni,'Didot','Bodoni MT',Georgia,serif;letter-spacing:-.02em;text-wrap:balance}
+.catalogue-viewer-header button,.catalogue-viewer-step{min-width:64px;min-height:44px;padding:9px 0;color:#c8d0c0;border:0;border-bottom:1px solid rgba(238,234,225,.3);background:none;font:400 12px/1.6 Archivo,'Helvetica Neue',Arial,sans-serif}
 .catalogue-viewer-header button:hover,.catalogue-viewer-step:hover{color:#fff;border-color:#eeeae1}
 .catalogue-viewer-viewport{position:relative;flex:1;min-height:0;min-width:0;overflow:auto;overscroll-behavior:contain;background:rgb(var(--photo-source-paper,237 235 231));touch-action:pan-x pan-y pinch-zoom;scrollbar-width:thin;scrollbar-color:#6e756d #eeeee9}
 .catalogue-viewer-canvas{position:relative;width:100%;height:100%;min-width:100%;min-height:100%}

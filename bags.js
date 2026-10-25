@@ -108,8 +108,8 @@ const BRANDS = {
 };
 
 const BAGS = [
-  { name: "Armani Exchange", note: "Sussy Saddle", tag: "Signature",
-    story: "Drawn from the equestrian tradition and softened for the city, the Sussy is Armani Exchange's most disciplined silhouette. The saddle curve sits close to the body, the flap falls with a quiet weight, and the whole line reads as intention rather than effort. It is the bag we recommend when someone asks where a considered wardrobe should begin.",
+  { name: "Armani Exchange", note: "Susy Saddle", tag: "Signature",
+    story: "Drawn from the equestrian tradition and softened for the city, the Susy is Armani Exchange's most disciplined silhouette. The saddle curve sits close to the body, the flap falls with a quiet weight, and the whole line reads as intention rather than effort. It is the bag we recommend when someone asks where a considered wardrobe should begin.",
     details: {
       "Material": "Embossed eco-leather, tonal saddle flap",
       "Dimensions": "20 × 16 × 7 cm (W × H × D)",
@@ -206,7 +206,7 @@ const BAGS = [
       why: "A flap-and-lock in smooth calf is the closest thing fashion has to a safe investment.",
     },
     variants: [
-      { color: "Noir", hex: "#1c1c1c", shots: ["images/lock-nero.webp", "images/lock-nero-2.webp"] },
+      { color: "Nero", hex: "#1c1c1c", shots: ["images/lock-nero.webp", "images/lock-nero-2.webp"] },
   ]},
   { name: "U.S. Polo Assn.", note: "Monogram Satchel", tag: "Heritage",
     story: "A monogram woven, not printed — the difference is everything. The satchel stands on its own feet, holds its structure through years of use, and carries the unhurried air of luggage from another era.",
