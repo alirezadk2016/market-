@@ -43,3 +43,11 @@ Confirmed implementation direction,25October2026: the owner explicitly requested
 - Let visitors review, copy and save a structured enquiry inside the site, with a web-email alternative to an installed mail app. Show exactly which details need individual confirmation. Do not label a local draft as submitted, invent fulfilment policies or send messages automatically.
 
 Acceptance adds real variant-to-enquiry preservation, review/copy/download/web-compose paths and graceful fallback when clipboard or download support is unavailable. Inspect before/after photographs and architecture at phone and desktop sizes before publication.
+
+## Section variety correction
+
+Baseline9a01704 repeated the same category subjects between the spatial entrance and campaign covers, doubled a black-leather detail study, and repeated the advisory/enquiry slogan and oversized heading/photo composition. The owner requested a review of this lack of variety. Preserve the approved cinematic entrance while giving each subsequent section a different purpose and visual rhythm.
+
+Sequence: dark spatial entrance → warm ivory, ruled index of real merchandise → one emerald/silver editorial material vignette → compact horizontal service process (phone timeline) → the single enquiry form. The index uses five original registry photographs and four real collection counts, with complete subjects and a simpler phone composition. The material study is decorative, not a product-material claim. Advisory carries no duplicate salon photo or enquiry headline. Native #house is an alias for the historical service section at #advisory; respect the existing document scroll padding without doubling it.
+
+Use the existing native CSS and serif/sans system, distinct scoped section classes and no new application state. Check for collisions with legacy selectors: the new index base is az-collection-index, since collection-index is already an absolutely positioned legacy label. Preserve every catalogue, zoom, variant and enquiry path; validate all four index destinations and both new breakpoint layouts in the browser.
