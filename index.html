@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b0c0d"><meta name="description" content="Discover the A.z selection of bags, eyewear, timepieces and headwear, with personal guidance on every piece."><title>A.z · The Night Salon</title><link rel="stylesheet" href="salon.css?v=night-campaign-1"><link rel="stylesheet" href="salon-sections.css?v=night-campaign-1"><link rel="canonical" href="https://market-one-indol.vercel.app/"><meta property="og:type" content="website"><meta property="og:title" content="A.z · The Night Salon"><meta property="og:description" content="Distinctive pieces. A more personal way to discover them."><meta property="og:url" content="https://market-one-indol.vercel.app/"><meta property="og:image" content="https://market-one-indol.vercel.app/assets/hero-bags-wide-v1.webp"><link rel="stylesheet" href="catalogue.css?v=gallery2"><link rel="stylesheet" href="cinema.css?v=orbit2"></head><body>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b0c0d"><meta name="description" content="Discover the A.z selection of bags, eyewear, timepieces and headwear, with personal guidance on every piece."><title>A.z · The Night Salon</title><link rel="stylesheet" href="salon.css?v=night-campaign-1"><link rel="stylesheet" href="salon-sections.css?v=night-campaign-1"><link rel="canonical" href="https://market-one-indol.vercel.app/"><meta property="og:type" content="website"><meta property="og:title" content="A.z · The Night Salon"><meta property="og:description" content="Distinctive pieces. A more personal way to discover them."><meta property="og:url" content="https://market-one-indol.vercel.app/"><meta property="og:image" content="https://market-one-indol.vercel.app/assets/hero-bags-wide-v1.webp"><link rel="stylesheet" href="catalogue.css?v=spatial1"><link rel="stylesheet" href="cinema.css?v=spatial1"><link rel="stylesheet" href="spatial-gallery.css?v=spatial1"><link rel="stylesheet" href="salon-luxury.css?v=spatial1"></head><body>
 <a class="skip" href="#gallery">Skip to the gallery</a>
 <header class="header">
   <a class="signature" href="#entrance" aria-label="A.z home"><img src="assets/logo-silver.png" alt="A.z" width="76" height="76"></a>
@@ -8,40 +8,110 @@
   <button class="header-enquiry" id="openAdvice">Private enquiry</button>
 </header>
 <main id="entrance"><section class="salon salon--cinema" aria-labelledby="salonTitle" data-scene="bags" data-playing="false">
-<div class="cinema-stage" id="gallery" role="region" aria-label="Cinematic collection gallery. Move the mouse to look around, or drag to turn. Arrow keys choose collections. Shift and arrow keys turn the view. Escape centres the view." tabindex="0">
+<div class="cinema-stage" id="gallery" role="region" aria-label="Cinematic collection gallery. Move to look, drag to turn, or choose an exhibit. Arrow keys choose collections. Enter opens the collection. Shift and arrow keys turn the view. Escape centres the view." tabindex="0">
 <div class="cinema-scene is-active" data-scene="0" aria-hidden="true"><div class="cinema-camera"><picture><source media="(max-width: 900px)" srcset="assets/hero-bags-portrait-v1.webp"><img class="cinema-image" src="assets/hero-bags-wide-v1.webp" alt="" fetchpriority="high" decoding="async"></picture></div></div>
 <div class="cinema-scene" data-scene="1" aria-hidden="true"><div class="cinema-camera"><picture><source media="(max-width: 900px)" srcset="assets/hero-eyewear-portrait-v1.webp"><img class="cinema-image" src="assets/hero-eyewear-wide-v1.webp" alt="" loading="lazy" fetchpriority="low" decoding="async"></picture></div></div>
 <div class="cinema-scene" data-scene="2" aria-hidden="true"><div class="cinema-camera"><picture><source media="(max-width: 900px)" srcset="assets/hero-watches-portrait-v1.webp"><img class="cinema-image" src="assets/hero-watches-wide-v1.webp" alt="" loading="lazy" fetchpriority="low" decoding="async"></picture></div></div>
+<div class="cinema-scene" data-scene="3" aria-hidden="true"><div class="cinema-camera"><picture><source media="(max-width: 900px)" srcset="assets/hero-headwear-portrait-v2.webp"><img class="cinema-image" src="assets/hero-headwear-wide-v2.webp" alt="" loading="lazy" fetchpriority="low" decoding="async"></picture></div></div>
 </div><div class="cinema-shade" aria-hidden="true"></div>
 <div class="intro"><p class="eyebrow">The A.z salon</p><h1 id="salonTitle">A private<br>perspective.</h1><p class="lead">Distinctive pieces.<br>A more personal way to discover them.</p><div class="cinema-orbit-tools"><button type="button" class="cinema-interaction" id="cinemaInteraction" aria-label="Interactive mouse view" aria-pressed="true"><span>Mouse view</span><span class="cinema-interaction-state" id="cinemaInteractionState">On</span></button><p class="cinema-orbit-hint" id="cinemaOrbitHelp">Move to look. Drag to turn.</p><button type="button" class="cinema-reset" id="cinemaResetView" aria-label="Reset gallery view" disabled>Reset view</button></div></div>
 <div class="footer-console">
  <div class="piece-label"><p class="house" id="pieceHouse">The private edit</p><h2 id="pieceName">The Bags</h2><p class="colour" id="pieceColour">Shape, texture and proportion.</p></div>
  <div class="gallery-navigation" role="group" aria-label="Choose a featured collection"><button class="selection-tab" data-select="0" aria-pressed="true"><span class="selection-number" aria-hidden="true">01</span><span class="selection-title">Bags</span><span class="cinema-progress-track" aria-hidden="true"><span class="cinema-progress"></span></span></button>
 <button class="selection-tab" data-select="1" aria-pressed="false"><span class="selection-number" aria-hidden="true">02</span><span class="selection-title">Eyewear</span><span class="cinema-progress-track" aria-hidden="true"><span class="cinema-progress"></span></span></button>
-<button class="selection-tab" data-select="2" aria-pressed="false"><span class="selection-number" aria-hidden="true">03</span><span class="selection-title">Timepieces</span><span class="cinema-progress-track" aria-hidden="true"><span class="cinema-progress"></span></span></button><span class="sr-only" id="current">01</span></div>
+<button class="selection-tab" data-select="2" aria-pressed="false"><span class="selection-number" aria-hidden="true">03</span><span class="selection-title"><span class="selection-title-long">Timepieces</span><span class="selection-title-short">Watches</span></span><span class="cinema-progress-track" aria-hidden="true"><span class="cinema-progress"></span></span></button><button class="selection-tab" data-select="3" aria-pressed="false"><span class="selection-number" aria-hidden="true">04</span><span class="selection-title">Headwear</span><span class="cinema-progress-track" aria-hidden="true"><span class="cinema-progress"></span></span></button><span class="sr-only" id="current">01</span></div>
  <button class="inspect" id="inspect" data-collection="bags"><span>Explore the collection</span><span class="action-rule" aria-hidden="true"></span></button>
  <button class="cinema-motion" id="cinemaMotion" aria-label="Pause automatic gallery motion" aria-pressed="false"><span class="motion-word">Pause</span><span class="motion-suffix"> autoplay</span></button>
 </div><p class="sr-only" id="cinemaStatus" aria-live="polite" aria-atomic="true"></p>
 </section>
-<section class="collection-salon" id="collections" aria-labelledby="collectionsTitle">
-  <div class="collection-intro"><p class="salon-overline">The private edit</p><h2 id="collectionsTitle">Four collections.<br>Entirely your own.</h2><p>Explore the pieces, colours and details in the current A.z selection.</p></div>
-  <div class="collection-salon-grid">
-    <button type="button" class="collection-entrance collection-entrance--bags" data-collection="bags" aria-label="Explore the Bags collection"><span class="collection-entrance-image"><img src="assets/campaign-bags-v1.webp" srcset="assets/campaign-bags-v1-640.webp 640w, assets/campaign-bags-v1-960.webp 960w, assets/campaign-bags-v1.webp 1254w" sizes="(max-width: 700px) calc(100vw - 48px), (max-width: 900px) 92vw, (max-width: 1440px) 46vw, 640px" width="1254" height="1254" alt="" loading="lazy" decoding="async"></span><span class="collection-index" aria-hidden="true">01</span><span class="collection-entrance-caption"><strong>The Bags</strong><span class="collection-entrance-action">View the collection</span></span></button>
-    <button type="button" class="collection-entrance collection-entrance--eyewear" data-collection="eyewear" aria-label="Explore the Eyewear collection"><span class="collection-entrance-image"><img src="assets/campaign-eyewear-v1.webp" srcset="assets/campaign-eyewear-v1-640.webp 640w, assets/campaign-eyewear-v1-960.webp 960w, assets/campaign-eyewear-v1.webp 1672w" sizes="(max-width: 700px) calc(100vw - 48px), (max-width: 900px) 92vw, (max-width: 1440px) 46vw, 640px" width="1672" height="941" alt="" loading="lazy" decoding="async"></span><span class="collection-index" aria-hidden="true">02</span><span class="collection-entrance-caption"><strong>The Eyewear</strong><span class="collection-entrance-action">View the collection</span></span></button>
-    <button type="button" class="collection-entrance collection-entrance--watches" data-collection="watches" aria-label="Explore the Timepieces collection"><span class="collection-entrance-image"><img src="assets/campaign-watches-v1.webp" srcset="assets/campaign-watches-v1-640.webp 640w, assets/campaign-watches-v1-960.webp 960w, assets/campaign-watches-v1.webp 1254w" sizes="(max-width: 700px) calc(100vw - 48px), (max-width: 900px) 46vw, (max-width: 1440px) 23vw, 320px" width="1254" height="1254" alt="" loading="lazy" decoding="async"></span><span class="collection-index" aria-hidden="true">03</span><span class="collection-entrance-caption"><strong>The Timepieces</strong><span class="collection-entrance-action">View the collection</span></span></button>
-    <button type="button" class="collection-entrance collection-entrance--headwear" data-collection="headwear" aria-label="Explore the Headwear collection"><span class="collection-entrance-image"><img src="assets/campaign-headwear-v1.webp" srcset="assets/campaign-headwear-v1-640.webp 640w, assets/campaign-headwear-v1-960.webp 960w, assets/campaign-headwear-v1.webp 1254w" sizes="(max-width: 700px) calc(100vw - 48px), (max-width: 900px) 46vw, (max-width: 1440px) 23vw, 320px" width="1254" height="1254" alt="" loading="lazy" decoding="async"></span><span class="collection-index" aria-hidden="true">04</span><span class="collection-entrance-caption"><strong>The Headwear</strong><span class="collection-entrance-action">View the collection</span></span></button>
+<section class="collection-salon luxury-collections" id="collections" aria-labelledby="collectionsTitle">
+  <div class="luxury-section-intro">
+    <div><p class="luxury-kicker">The collections</p><h2 id="collectionsTitle">Objects of<br>personal expression.</h2></div>
+    <p>Four collections, each with its own point of view. Find the shape, colour and detail that feel like you.</p>
+  </div>
+  <nav class="luxury-collection-nav" aria-label="Explore the four collections">
+    <button type="button" data-target-collection="bags" aria-pressed="true"><span>Bags</span><span data-collection-nav-count="bags">13</span></button>
+    <button type="button" data-target-collection="eyewear" aria-pressed="false"><span>Eyewear</span><span data-collection-nav-count="eyewear">2</span></button>
+    <button type="button" data-target-collection="watches" aria-pressed="false"><span>Timepieces</span><span data-collection-nav-count="watches">1</span></button>
+    <button type="button" data-target-collection="headwear" aria-pressed="false"><span>Headwear</span><span data-collection-nav-count="headwear">1</span></button>
+  </nav>
+  <div class="luxury-exhibits" role="group" aria-label="The A.z collections">
+    <article class="luxury-exhibit luxury-exhibit--bags" data-exhibit="bags">
+      <button type="button" class="luxury-exhibit-action" data-collection="bags" aria-label="Explore the Bags collection">
+        <span class="luxury-exhibit-photo"><img src="assets/campaign-bags-v1.webp" srcset="assets/campaign-bags-v1-640.webp 640w, assets/campaign-bags-v1-960.webp 960w, assets/campaign-bags-v1.webp 1254w" sizes="(max-width: 700px) calc(100vw - 56px), (max-width: 1000px) 53vw, 670px" width="1254" height="1254" loading="lazy" decoding="async" alt=""></span>
+        <span class="luxury-exhibit-caption"><strong>The Bags</strong><span>Explore the collection</span></span>
+      </button>
+      <div class="luxury-exhibit-meta"><p>Shape, texture and proportion.</p><span data-collection-count="bags">13 pieces</span></div>
+    </article>
+    <article class="luxury-exhibit luxury-exhibit--eyewear" data-exhibit="eyewear">
+      <button type="button" class="luxury-exhibit-action" data-collection="eyewear" aria-label="Explore the Eyewear collection">
+        <span class="luxury-exhibit-photo"><img src="assets/campaign-eyewear-v1.webp" srcset="assets/campaign-eyewear-v1-640.webp 640w, assets/campaign-eyewear-v1-960.webp 960w, assets/campaign-eyewear-v1.webp 1672w" sizes="(max-width: 700px) calc(100vw - 56px), 36vw" width="1672" height="941" loading="lazy" decoding="async" alt=""></span>
+        <span class="luxury-exhibit-caption"><strong>The Eyewear</strong><span>Explore the collection</span></span>
+      </button>
+      <div class="luxury-exhibit-meta"><p>A different point of view.</p><span data-collection-count="eyewear">2 pieces</span></div>
+    </article>
+    <article class="luxury-exhibit luxury-exhibit--watches" data-exhibit="watches">
+      <button type="button" class="luxury-exhibit-action" data-collection="watches" aria-label="Explore the Timepieces collection">
+        <span class="luxury-exhibit-photo"><img src="assets/campaign-watches-v1.webp" srcset="assets/campaign-watches-v1-640.webp 640w, assets/campaign-watches-v1-960.webp 960w, assets/campaign-watches-v1.webp 1254w" sizes="(max-width: 700px) calc(100vw - 56px), 36vw" width="1254" height="1254" loading="lazy" decoding="async" alt=""></span>
+        <span class="luxury-exhibit-caption"><strong>The Timepieces</strong><span>Explore the collection</span></span>
+      </button>
+      <div class="luxury-exhibit-meta"><p>Every moment, considered.</p><span data-collection-count="watches">1 piece</span></div>
+    </article>
+    <article class="luxury-exhibit luxury-exhibit--headwear" data-exhibit="headwear">
+      <button type="button" class="luxury-exhibit-action" data-collection="headwear" aria-label="Explore the Headwear collection">
+        <span class="luxury-exhibit-photo"><img src="assets/campaign-headwear-v1.webp" srcset="assets/campaign-headwear-v1-640.webp 640w, assets/campaign-headwear-v1-960.webp 960w, assets/campaign-headwear-v1.webp 1254w" sizes="(max-width: 700px) calc(100vw - 56px), (max-width: 1000px) 53vw, 670px" width="1254" height="1254" loading="lazy" decoding="async" alt=""></span>
+        <span class="luxury-exhibit-caption"><strong>The Headwear</strong><span>Explore the collection</span></span>
+      </button>
+      <div class="luxury-exhibit-meta"><p>An everyday signature.</p><span data-collection-count="headwear">1 piece</span></div>
+    </article>
   </div>
 </section>
-<figure class="material-study"><img src="assets/material-study.webp" width="1536" height="1024" alt="" loading="lazy"><figcaption>Texture. Proportion. Detail.</figcaption></figure>
-<section class="advisory-salon" id="advisory" aria-labelledby="advisoryTitle">
-  <div class="advisory-intro"><p class="salon-overline">The A.z approach</p><h2 id="advisoryTitle">Good choices<br>begin with you.</h2><p>Personal guidance is part of the collection. Tell us how you live, what you love and what you are looking for.</p><a class="salon-text-link" href="#private-enquiry">Begin a private enquiry</a></div>
-  <dl class="salon-method"><div><dt>First, a conversation.</dt><dd>A piece you have seen, a colour you return to, or an occasion in mind. We start with what matters to you.</dd></div><div><dt>Then, a closer look.</dt><dd>Compare the shapes, materials and details. Ask about the pieces and colours you are considering.</dd></div><div><dt>A considered next step.</dt><dd>Speak with an advisor about current availability and how to proceed, at your pace.</dd></div></dl>
+
+<section class="luxury-material" aria-labelledby="materialTitle">
+  <div class="luxury-material-heading"><p class="luxury-kicker">The study</p><h2 id="materialTitle">A closer look.</h2><p>Light reveals the surface.<br>Proportion gives it presence.</p></div>
+  <div class="luxury-material-diptych">
+    <figure class="luxury-material-main"><img src="assets/material-macro-v2.webp" srcset="assets/material-macro-v2-640.webp 640w, assets/material-macro-v2-960.webp 960w, assets/material-macro-v2.webp 1536w" sizes="(max-width: 700px) calc(100vw - 48px), 62vw" width="1536" height="1024" loading="lazy" decoding="async" alt="An editorial study of dark texture and sculptural light"><figcaption>Texture. Proportion. Detail.</figcaption></figure>
+    <figure class="luxury-material-detail"><img src="assets/material-study.webp" width="1536" height="1024" loading="lazy" decoding="async" alt="A close study of surface and material"><figcaption>Another angle. A new perspective.</figcaption></figure>
+  </div>
 </section>
-<section class="salon-enquiry" id="private-enquiry" aria-labelledby="enquiryTitle">
-  <div class="salon-enquiry-intro"><p class="salon-overline">By appointment</p><h2 id="enquiryTitle">A little more<br>personal.</h2><p>Tell us what caught your eye.<br>We will take it from there.</p><a href="mailto:alirezadk2020@gmail.com" class="salon-contact-address">alirezadk2020@gmail.com</a></div>
-  <form id="salonEnquiry" class="salon-enquiry-form" aria-labelledby="enquiryFormTitle"><h3 id="enquiryFormTitle">Your private enquiry</h3><label for="salonCollection">Collection</label><select id="salonCollection" name="collection"><option value="">Help me choose</option><option value="bags">The Bags</option><option value="eyewear">The Eyewear</option><option value="watches">The Timepieces</option><option value="headwear">The Headwear</option></select><label for="salonPreferences">What are you considering? <span>(optional)</span></label><textarea id="salonPreferences" name="preferences" rows="4" maxlength="1200" placeholder="A piece, a colour, an occasion…"></textarea><a class="salon-compose" id="salonCompose" href="mailto:alirezadk2020@gmail.com?subject=A.z%20private%20enquiry">Compose my enquiry</a><p class="salon-form-note">Opens your email app with an editable draft. Nothing is sent automatically.</p></form>
+
+<section class="advisory-salon luxury-advisory" id="advisory" aria-labelledby="advisoryTitle">
+  <div class="luxury-section-intro">
+    <div><p class="luxury-kicker">The advisory</p><h2 id="advisoryTitle">The art of<br>choosing well.</h2></div>
+    <p>Some pieces catch your eye. Others become part of your life. A personal conversation helps you find the connection.</p>
+  </div>
+  <figure class="luxury-advisory-photo"><img src="assets/atelier-salon-v2.webp" srcset="assets/atelier-salon-v2-640.webp 640w, assets/atelier-salon-v2-960.webp 960w, assets/atelier-salon-v2.webp 1536w" sizes="(max-width: 700px) 100vw, 90vw" width="1536" height="1024" loading="lazy" decoding="async" alt="An atmospheric architectural study of a quiet salon"></figure>
+  <div class="luxury-advisory-bottom">
+    <p class="luxury-advisory-statement">A shape you noticed.<br>A colour you return to.<br>A piece that feels your own.</p>
+    <div class="luxury-advisory-detail"><p>Explore the photographs and colours in the collection. When something feels right, tell us what you have in mind. We can help with the details and your next step.</p><a class="luxury-text-action" href="#private-enquiry">Begin a private enquiry</a></div>
+  </div>
 </section>
-<section class="salon-questions" id="questions" aria-labelledby="questionsTitle"><div><p class="salon-overline">A few details</p><h2 id="questionsTitle">Before we begin.</h2></div><div class="salon-question-list"><details><summary>Can I order directly on the website?</summary><p>A.z is a curated catalogue with personal advice. Use the enquiry link on a piece to ask about availability, price and how to proceed.</p></details><details><summary>Can I ask about a specific colour?</summary><p>Yes. Choose the colour in the collection browser, then select “Ask about this piece”. Its name and colour will be included in your enquiry.</p></details><details><summary>What happens when I compose an enquiry?</summary><p>Your email app opens with an editable draft. You can review it and send it there. The website does not send a message automatically.</p></details></div></section>
+
+<section class="salon-enquiry luxury-enquiry" id="private-enquiry" aria-labelledby="enquiryTitle">
+  <div class="salon-enquiry-intro"><p class="luxury-kicker">A personal conversation</p><h2 id="enquiryTitle">Let's find<br>your piece.</h2><p>A particular colour. A piece you have been considering. Tell us what caught your eye.</p><a href="mailto:alirezadk2020@gmail.com" class="salon-contact-address">alirezadk2020@gmail.com</a></div>
+  <form id="salonEnquiry" class="salon-enquiry-form" aria-labelledby="enquiryFormTitle">
+    <h3 id="enquiryFormTitle">A note to A.z</h3>
+    <label for="salonCollection">Your collection</label>
+    <select id="salonCollection" name="collection"><option value="">Help me choose</option><option value="bags">The Bags</option><option value="eyewear">The Eyewear</option><option value="watches">The Timepieces</option><option value="headwear">The Headwear</option></select>
+    <label for="salonPreferences">What are you considering? <span>(optional)</span></label>
+    <textarea id="salonPreferences" name="preferences" rows="4" maxlength="1200" placeholder="A piece, a colour, an occasion…"></textarea>
+    <div class="luxury-draft-actions"><a class="salon-compose" id="salonCompose" href="mailto:alirezadk2020@gmail.com?subject=A.z%20private%20enquiry">Prepare email draft</a><button type="button" id="copySalonEnquiry" class="luxury-copy-enquiry">Copy enquiry</button></div>
+    <p class="salon-form-note">Your email app opens an editable draft. You choose when to send it.</p>
+    <p id="salonCopyStatus" class="luxury-copy-status" role="status" aria-live="polite"></p>
+    <div id="salonCopyPanel" class="luxury-copy-panel" hidden><label for="salonCopyText">Your enquiry</label><textarea id="salonCopyText" readonly rows="6" aria-describedby="salonCopyStatus"></textarea></div>
+  </form>
+</section>
+
+<section class="salon-questions luxury-questions" id="questions" aria-labelledby="questionsTitle">
+  <div><p class="luxury-kicker">Before we begin</p><h2 id="questionsTitle">A few things<br>to know.</h2></div>
+  <div class="salon-question-list">
+    <details name="salon-faq"><summary>How do I enquire about a piece?</summary><p>Open a collection, choose your piece and colour, then select “Ask about this piece”. Its name and colour are added to your enquiry so you can review the details before sending.</p></details>
+    <details name="salon-faq"><summary>Can I compare different colours?</summary><p>Yes. Use the colour options in the collection and product photographs to explore the colours shown. You can mention more than one colour in your enquiry.</p></details>
+    <details name="salon-faq"><summary>Can I purchase on this website?</summary><p>A.z is a curated catalogue with personal guidance. Enquire about the piece for its current price, availability and how to proceed.</p></details>
+    <details name="salon-faq"><summary>What if my email app does not open?</summary><p>Select “Copy enquiry” and paste your note into your preferred email app. You can write to alirezadk2020@gmail.com directly.</p></details>
+  </div>
+</section>
+
 <dialog id="collectionRoom" class="collection-dialog" aria-labelledby="collectionRoomTitle">
   <div class="modal-toolbar collection-toolbar">
     <header class="collection-dialog-head"><p class="salon-overline">A.z · The private selection</p><h2 id="collectionRoomTitle">The Bags</h2></header>
@@ -66,7 +136,11 @@
 </dialog>
 
 </main>
-<footer class="salon-footer"><a class="footer-signature" href="#entrance" aria-label="Return to A.z entrance"><img src="assets/logo-silver.png" alt="A.z" width="66" height="66"></a><p>Considered pieces. Personal guidance.</p><nav aria-label="Footer navigation"><a href="#collections">The collections</a><a href="#private-enquiry">Private enquiry</a><a href="#entrance">Back to the salon</a></nav><small>A.z · By appointment</small></footer>
+<footer class="salon-footer luxury-footer">
+  <div class="luxury-footer-main"><a class="footer-signature" href="#entrance" aria-label="Return to A.z entrance"><img src="assets/logo-silver.png" alt="A.z" width="96" height="96"></a><p>Your next piece.<br>A more personal choice.</p><a class="luxury-text-action" href="#private-enquiry">Write your enquiry</a></div>
+  <div class="luxury-footer-bottom"><a href="mailto:alirezadk2020@gmail.com">alirezadk2020@gmail.com</a><nav aria-label="Footer navigation"><a href="#collections">Collections</a><a href="#advisory">The advisory</a><a href="#questions">Questions</a></nav><small>A.z <span aria-hidden="true">©</span> <span data-luxury-year>2026</span></small></div>
+</footer>
+
 <dialog id="details" aria-labelledby="detailName">
   <div class="modal-toolbar"><button class="close" id="closeDetails" aria-label="Close piece details">Close</button></div><div class="modal-scroll detail-layout">
   <div class="detail-image"><img id="detailImage" src="assets/bag-retouched.webp" alt=""><span class="detail-reference">The private selection</span></div>
@@ -76,4 +150,4 @@
   <div class="modal-toolbar"><button class="close" id="closeAdvice" aria-label="Close enquiry information">Close</button></div><div class="modal-scroll advice-scroll">
   <div class="advice-copy"><p class="eyebrow">By appointment</p><h2 id="adviceTitle">A personal<br>consultation.</h2><p>Tell us which piece you are considering. We can help with colour, availability and the next steps.</p><a class="detail-link" href="mailto:alirezadk2020@gmail.com?subject=A.z%20private%20enquiry">Write to your advisor</a><a class="advice-brief" id="adviceBrief" href="#private-enquiry">Prepare a detailed enquiry</a><p class="prototype-note">Your email app opens an editable draft. Nothing is sent automatically.</p></div></div>
 </dialog>
-<script src="salon.js?v=orbit2"></script><script src="bags.js?v=night-campaign-1"></script><script src="salon-sections.js?v=gallery1"></script></body></html>
+<script src="salon.js?v=spatial1"></script><script src="bags.js?v=night-campaign-1"></script><script src="salon-sections.js?v=gallery1"></script><script src="catalogue-enhancements.js?v=spatial1"></script><script src="salon-luxury.js?v=spatial1"></script><script type="module" src="spatial-gallery.js?v=spatial1"></script></body></html>

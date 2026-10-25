@@ -40,6 +40,12 @@
   document.getElementById('closeDetails')?.addEventListener('click', () => details.close());
   document.getElementById('backRoom')?.addEventListener('click', () => details.close());
   document.getElementById('openAdvice')?.addEventListener('click', () => {
+    const enquiry = document.getElementById('private-enquiry');
+    if (enquiry) {
+      enquiry.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      document.getElementById('salonCollection')?.focus({ preventScroll: true });
+      return;
+    }
     if (!advice.open) advice.showModal();
     document.getElementById('closeAdvice').focus();
   });
@@ -56,7 +62,8 @@
   const collectionScenes = [
     { key: 'bags', title: 'The Bags', label: 'Bags', copy: 'Shape, texture and proportion.' },
     { key: 'eyewear', title: 'The Eyewear', label: 'Eyewear', copy: 'A different point of view.' },
-    { key: 'watches', title: 'The Timepieces', label: 'Timepieces', copy: 'Every moment, considered.' }
+    { key: 'watches', title: 'The Timepieces', label: 'Timepieces', copy: 'Every moment, considered.' },
+    { key: 'headwear', title: 'The Headwear', label: 'Headwear', copy: 'An understated signature.' }
   ];
   const images = scenes.map(scene => scene.querySelector('.cinema-image'));
   const indicators = selectors.map(button => button.querySelector('.cinema-progress'));
@@ -219,6 +226,8 @@
 
   function syncPlayback() {
     syncMouseControl();
+    hero.dataset.reduced = String(reduce.matches);
+    hero.dataset.visible = String(inViewport && !documentHidden && !pageHidden && !modalOpen);
     const interactive = canOrbit();
     hero.dataset.orbitEnabled = String(interactive);
     if (!interactive) resetOrbit();
@@ -389,7 +398,7 @@
     requestScene(next);
   });
 
-  document.addEventListener('keydown', () => { keyboardInput = true; pointerMotionIntent = null; }, { capture: true });
+  document.addEventListener('keydown', () => { keyboardInput = true; pointerMotionIntent = null; suppressClickUntil = 0; }, { capture: true });
   document.addEventListener('pointerdown', () => {
     keyboardInput = false;
     pointerMotionIntent = null;
@@ -488,6 +497,10 @@
     if (orbitDrag.moved) suppressClickUntil = performance.now() + 350;
     const id = orbitDrag.id;
     const bounds = orbitDrag.bounds;
+    const dx = event.clientX - orbitDrag.x;
+    const dy = event.clientY - orbitDrag.y;
+    const turnChapter = hero.classList.contains('has-spatial') &&
+      Math.abs(dx) > Math.min(180, Math.max(90, bounds.width * .18)) && Math.abs(dx) > Math.abs(dy) * 1.5;
     const x = Math.max(-1, Math.min(1, ((event.clientX - bounds.left) / bounds.width - .5) * 2));
     const y = Math.max(-1, Math.min(1, ((event.clientY - bounds.top) / bounds.height - .5) * 2));
     // Preserve the last drag angle when hover takes over at the same pointer position.
@@ -496,6 +509,7 @@
     pointerPosition = null;
     stage.classList.remove('is-dragging');
     if (stage.hasPointerCapture(id)) stage.releasePointerCapture(id);
+    if (turnChapter) requestScene(current + (dx < 0 ? 1 : -1));
   });
   stage.addEventListener('lostpointercapture', event => {
     if (!orbitDrag || event.pointerId !== orbitDrag.id) return;

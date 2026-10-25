@@ -1,53 +1,33 @@
-# A.z Atelier
+# A.z Spatial Salon
 
-Mode: taste_first_redesign. Design decisions delegated by the owner.
+## Product and scope
+Luxury accessories catalogue with personal guidance, real merchandise photos and editable email enquiries. Audience: design-conscious visitors browsing bags, eyewear, timepieces and headwear on desktop and phone. Existing static HTML/CSS/JS and canonical bags.js remain. Preserve URLs, anchors, A.z signature, four collections, catalogue filtering/variants, recently corrected product-photo containment and enquiry prefilling. Birthday remains removed.
 
-A private luxury advisory with four existing collections, editorial imagery, product detail pages and appointment enquiries. Preserve the real product registry, contact data, local fonts and admin editing workflow.
+## Existing read and confirmed direction
+The owner explicitly selected dark cinematic spatial interaction and delegated design decisions and image creation. Production UI implementation mode; proceed autonomously within that confirmed direction. Existing source41f5248 has a strong integrated photographic entrance but only a flat camera transform. The bento collection grid and consecutive text/form splits flatten the rest of the experience. Phone navigation omits Advisory/Questions and the vertical collection stack is unnecessarily long.
 
-Direction: warm editorial boutique. Ivory paper, oxblood accents, clear sans-serif metadata and expressive Cormorant titles. The photographs and products carry the atmosphere. Avoid particle decoration, gatekeeping intro animations and unreadable microtype.
+Design read: an immersive private accessories gallery, with cinematic charcoal architecture, tactile photographic exhibits and fixed, legible editorial controls. DESIGN_VARIANCE8 / MOTION_INTENSITY8 in the entrance,4 elsewhere / VISUAL_DENSITY3. Native project styles remain; no framework migration or competing design system.
 
-Reference principles: Apple for product-first restraint; Spatial Sites for spatial product exploration and purposeful motion. Original implementation only; no commercial kit source or media imported.
+## References and originality
+Spatial Sites supplies the requested interaction vocabulary: a navigable spatial product environment. Build original geometry and interaction rather than copying a paid template. The locally available Runway reference contributes disciplined media-first composition and unobtrusive chrome; retain A.z's own serif/sans pairing, identity and palette. No borrowed brand font/logo/copy.
 
-Home: editorial split opening with larger interactive photograph; quiet house strip; staggered collection gallery; two-column mobile product discovery; contrasting curator quotation and a clear enquiry close. Extend shared typography, navigation, surfaces and accessibility across collection, eyewear, advisory and detail pages. Admin remains the existing operational tool.
+## Visual roles
+Gallery black#090c0e, charcoal#14191a, ivory#eeeae1, silver#b8bdb4, muted botanical-grey#a5af9e. Warm metal only as subtle environmental reflections/edges. A continuous dark page; light wells are reserved for original merchandise photography. Cormorant500 for display, Jost400/500 for utility/body. Hero72–88px desktop,48–54px phone; section48–68desktop/38–44phone; readable body14–16px, controls12px preferred. Thin structural rules, restrained1–2px corners, no decorative badges or fake social proof.
 
-Motion: restrained image transitions; preserve explicit hotspot and photograph flip interactions. Normal wheel scrolling must remain available. Reduced motion removes transitions. All products remain discoverable without hover.
+## Layout and scene
+Real WebGL2 progressive enhancement: four photographic exhibits in an architectural gallery with actual perspective, neighbouring exhibits, matte floor and visible depth. Active exhibit sits right of fixed desktop copy; phone centres it below the title and above controls. Existing photographic entrance remains usable until first render and on WebGL/import/context failure. Local pinned Three.js with license. Cap device-pixel ratio and work only during visible motion/settling.
 
-Verification: compare desktop/mobile screenshots, verify collection routes, product variants, mobile navigation, keyboard focus, missing assets and JavaScript errors. Do not claim the live deployment changed until GitHub publication and deployment are verified.
+Below hero: curated staggered desktop exhibits, native phone snap rail; a photographic material chapter; atmospheric advisory photograph with concise service explanation; an elegant enquiry letter; compact FAQs and deliberate signature ending. Complete phone Menu with section and collection links. Keep browsing legible rather than rotating every form/card.
 
-## Collection workroom
+## Interaction contract
+Keep one tested hero controller. Engine observes existing data-scene/data-playing/data-mouse-view plus pointer pose. Four chapter buttons and actual collection CTA; meaningful horizontal mouse drag changes exhibit on release, touch swipe changes chapter while vertical scrolling remains native. Mouse view On/Off, autoplay Pause/Play, keyboard selection and reset remain. Reduced motion starts static; explicit camera opt-in does not start autoplay. Hidden/offscreen/dialog states pause and release input. No scroll hijacking or cursor replacement.
 
-Admin intent: the curator finds, edits and prepares real pieces. Product editing leads; collection metadata sits in a native disclosure. Domain: vitrine, provenance, house, colour, catalogue, appointment. Materials: ivory paper, warm stone, oxblood leather, faded rose, ink. Signature: the house's product photographs become the working catalogue. Avoid a generic metrics dashboard, dark terminal chrome and marketing-scale titles on form fields.
+Catalogue enhancements: true photo counts, Previous/Next, arrow keys and intentional horizontal swipe, plus a native full-photograph inspection dialog. Preserve original photos, colour selection, focus and Back position; reserve image frames before decoding. Do not invent rear product geometry or call this360merchandise scanning.
 
-Admin hierarchy: 46px Cormorant collection title, 30px section titles, 14px Jost body, 10–12px metadata. A 238px sidebar supports a flexible product workspace. Three product columns on desktop, two on smaller desktop and one on phone. Controls are at least 40px high (44px fields), inset paper inputs, thin warm borders, one oxblood primary action. The edit sheet has keyboard focus containment, background inertness and focus restoration; labels are available to assistive technology. No publishing credentials, collection contents or repository settings are changed by the design.
+Enquiry: preserve field order/IDs and mail draft generation; add user-triggered Copy enquiry fallback. No message is sent automatically. Menu and photo viewer must trap focus through native dialogs, close on Escape and restore focus.
 
+## New artwork
+Built-in imagegen originals for a decorative advisory salon, material macro, and wide/portrait headwear chapter. No brand names/logos, false location or product claims. Original masters/prompts saved in outputs/luxury-upgrade-assets; versioned WebP and responsive sizes copied into repository assets. Existing four campaign photographs become gallery artworks; actual catalogue photos stay in images/.
 
-## Final scope and phone-specific design
-
-The birthday experience and its exclusive media were removed at the owner's request. Public commerce/advisory surfaces are the scope.
-
-Phone: a safe-area-aware bottom action shelf, compact two-line opening, portrait imagery, horizontally scrollable house filters, a two-column product edit, square contained product images and direct product-specific enquiry links. Desktop keeps the wide editorial composition, staggered collection gallery and split photograph/method section.
-
-New image: images/atelier-materials.webp is an AI-generated editorial material study, used as atmosphere alongside service and advisory copy. It is not a product photograph, an actual studio photograph or evidence of craftsmanship. Original product and campaign images remain. Generated with the built-in imagegen tool; compressed to WebP for delivery.
-
-## Product browsing continuity
-
-Catalogue filters live in the URL as house and q parameters, preserving the collection parameter and anchor. Returning from a product restores the previous edit instead of clearing the visitor's selection. Product photography has labelled 44px previous/next controls, a tabular photo counter, thumbnail selection and arrow-key navigation within the gallery. Single-photo variants hide redundant controls. Changing colour resets the photograph index.
-
-Brand information is opened by a native button with an expanded state. Details/dimensions and provenance/service use native disclosures: initially closed on phones and open on desktop, with user choices preserved until navigation/reload. This keeps the phone page concise without removing product information.
-
-## Enquiry and trust
-
-A two-column desktop enquiry becomes a single-column phone brief. Collection and optional preferences generate an editable mailto draft; no form submission or automatic message is implied. Native FAQ disclosures are driven by SITE.faq and editable in the existing admin content editor. Footer utility links aid return navigation. The branded 404 document uses root-relative links for nested missing addresses.
-
-Product colour is preserved in the URL and in dynamic share links. Local impressions are now explicitly private notes, collapsed by default, with optional ratings (never invented five-star scores), bounded compressed attachments, removable notes and truthful storage-failure feedback. Existing local notes retain compatible storage keys.
-
-
-## Studio redesign, 24 October 2026
-
-The owner rejected the previous visual direction. Superseding direction: product-led contemporary fashion retail. DESIGN_VARIANCE 7 / MOTION_INTENSITY 3 / VISUAL_DENSITY 4. Native CSS and existing JavaScript; no framework migration or external kit. A deliberately light brand surface uses cool porcelain #f7f8f6, soft grey-green image stages and forest #244c3b. Original Cormorant display type remains because its high-contrast letterforms suit the fashion collection; Jost carries functional information. No gold gradients, particle decoration or dark/light section inversions.
-
-Audit: prior opening centred a selfie and a generic advisory statement, products were too far down, overlarge section gaps and microscopic metadata slowed browsing, and mobile was a shrinking desktop composition. Home is now a product-led opening with three explicit featured choices from actual catalogue data; the spatial photograph remains a secondary styling story. Collection entrances align into a clear four-part shopfront. Six initial handbag cards expand on demand; search still covers all 13. New editorial green satin/chrome material photograph supports service atmosphere without posing as merchandise or an actual location.
-
-Phone uses title, direct action and featured product in that order, compact categories in two columns, thumb-reachable persistent actions and a legible two-column edit. Desktop gives the featured product and heading equal visual importance; product detail and advisory are refitted to the same tokens.
-
-Functional audit fixes: selected colours survive Discover and quickview; colour searches show that variant photograph; catalogue query/house returns through product breadcrumb and CTA; swatches/thumbs announce selection. Invalid product links render unavailable instead of another product. Personal photo upload remains keyboard reachable. Headers remain accessible above the open phone menu. Native dialog focus and reduced-motion handling preserved.
+## Verification and acceptance
+Compare before/after screenshots at1440desktop and390phone, plus320/360/768/900/1000responsive checks. Verify actual WebGL canvas/exhibit changes, drag/swipe/keyboard/chapter CTA, static/failure fallback, no idle render loop when paused, hidden/modal suspension, complete phone menu, snap collections, photo inspector navigation/close, colour/search/Back, email-prefill and Copy enquiry. Inspect assets/imports, parse all scripts, diff whitespace; meaningful motion/controller contracts. No horizontal overflow, missing completed images, clipped headings or hidden controls. Static content must remain visible if enhancement fails. Capture live production proof only after local visual QA and publication.

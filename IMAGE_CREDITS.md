@@ -28,6 +28,29 @@ Art direction: photorealistic medium-format editorial still life; charcoal honed
 
 ## Cinematic entrance scenes · 24 October 2026
 
-Original assets: hero-bags-wide-v1.webp, hero-eyewear-wide-v1.webp, hero-watches-wide-v1.webp (1916 ×821) and matching hero-*-portrait-v1.webp (1024 ×1536). Generated with the built-in imagegen tool using the existing original unbranded campaign images as subject/material references. Encoded WebP quality92 without enlargement; all six total1,180,034bytes.
+Original assets: hero-bags-wide-v1.webp, hero-eyewear-wide-v1.webp, hero-watches-wide-v1.webp (1916 ×821) and matching hero-*-portrait-v1.webp (1024 ×1536). Generated with the built-in imagegen tool using the existing original unbranded campaign images as subject/material references. Encoded WebP quality92 without enlargement; all six total1, 180, 034bytes.
 
 These are decorative category scenes, not specific merchandise or official house campaigns. UI captions and CTAs identify collections; real goods remain in the original catalogue. The fictional architectural setting is not an actual A.z location. Prompts require plausible geometry, true physical weight/contact, honed charcoal stone, textured dark architecture, restrained brushed metal, controlled ivory light and natural photographic detail, with no logos/text, people, hovering, separate round pedestals or glossy CGI. Wide scenes reserve left copy space and a quiet lower control zone; portrait scenes are composed independently for phone crops. Full prompts and original PNG masters are archived in the owner's cinema-hero deliverables.
+
+## Spatial-salon editorial artwork · 25 October 2026
+
+Four new original decorative artworks were created with the built-in imagegen tool and converted to versioned WebP without enlargement:
+
+| Asset | Original PNG dimensions | Purpose |
+| --- | --- | --- |
+| `assets/atelier-salon-v2.webp` |1536×1024| Atmospheric architectural photograph for the advisory chapter |
+| `assets/material-macro-v2.webp` |1536×1024| Close editorial study of dark folded material and brushed-silver form |
+| `assets/hero-headwear-wide-v2.webp` |1916×821| Independently composed wide Headwear fallback chapter |
+| `assets/hero-headwear-portrait-v2.webp` |1024×1536| Independently composed portrait Headwear fallback chapter |
+
+The salon and material studies also have 640px and 960px responsive WebP variants. Original PNG masters, the complete prompts and input-reference roles, exported WebP files and actual dimensions/byte sizes are archived in `outputs/luxury-upgrade-assets/` in the owner's project deliverables (`masters/`, `web/`, `prompts.json`, `asset-manifest.json`).
+
+The advisory photograph depicts a fictional charcoal-stone and dark-walnut interior, a sculptural upholstered chair, consultation table, plain envelope and folded pouch in architectural window light. It is brand atmosphere, not documentation of an actual A.z location. The macro is a decorative study of leather-like surface and sculptural metal, not a manufacturing record or certification of any merchandise's material.
+
+The two Headwear scenes use the existing unbranded `campaign-headwear-v1.webp` as a subject/material reference. Their full cap silhouettes, natural stone contact and separate wide/portrait negative space support the HTML fallback. They do not represent a particular listed Polo Ralph Lauren model. Prompts prohibit branding, lettering, people, hovering forms, white matte edges and glossy CGI styling. Original product photographs, names and colour options remain separate and unchanged.
+
+## Spatial gallery code and third-party software
+
+The WebGL2 scene uses the existing four original category campaign photographs as gallery artworks. Its architecture, photograph frames, procedural stone and contact textures are authored in project code. It does not fabricate unseen merchandise geometry or claim 360° product scanning. No Spatial Sites kit source, paid template or third-party branded asset is included.
+
+Three.js revision 180 (version 0.180.0) is vendored locally in `assets/vendor/three-r180/three.module.min.js` and `three.core.min.js`. It is licensed under the MIT License, copyright © 2010–2025 three.js authors. The complete copyright notice, permission terms and warranty disclaimer are retained in `assets/vendor/three-r180/LICENSE` and must accompany redistributed copies. This attribution concerns the rendering library, not the original A.z artwork.

@@ -1,0 +1,12 @@
+/* Progressive WebGL stage: the real catalogue and semantic chapter controls stay in HTML. */
+.salon--cinema .spatial-world{position:absolute;inset:0;z-index:2;opacity:0;pointer-events:none;transition:opacity 750ms ease;background:#080d0e}
+.salon--cinema .spatial-world canvas{display:block;width:100%;height:100%;pointer-events:none}
+.salon--cinema.has-spatial .spatial-world{opacity:1}
+.salon--cinema.has-spatial .cinema-scene{opacity:0!important;visibility:hidden}
+.salon--cinema.has-spatial .cinema-image{animation:none!important}
+.salon--cinema.has-spatial .cinema-stage{inset:0;max-height:none;mask-image:none}
+.salon--cinema.has-spatial .cinema-shade{background:linear-gradient(90deg,rgba(4,8,9,.9),rgba(4,8,9,.82) 23%,rgba(4,8,9,.66) 34%,transparent 48%),linear-gradient(0deg,rgba(4,8,9,.96),rgba(4,8,9,.34) 18%,transparent 36%),linear-gradient(180deg,rgba(4,8,9,.36),transparent 23%)}
+@media(max-width:700px){
+ .salon--cinema.has-spatial .cinema-shade{background:linear-gradient(180deg,rgba(4,8,9,.65),rgba(4,8,9,.24) 26%,transparent 40%),linear-gradient(0deg,rgba(4,8,9,.98),rgba(4,8,9,.43) 20%,transparent 36%)}
+}
+@media(prefers-reduced-motion:reduce){.salon--cinema .spatial-world{transition:none}}
