@@ -20,13 +20,18 @@
   const asset = path => new URL(path, base).href;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const keys = ['bags', 'eyewear', 'watches', 'headwear'];
-  const paths = keys.map(key => asset('assets/campaign-' + key + '-v1-960.webp'));
+  const photography = {
+    bags: { wide: 'hero-bags-wide-v1.webp', portrait: 'hero-bags-portrait-v1.webp' },
+    eyewear: { wide: 'hero-eyewear-wide-v1.webp', portrait: 'hero-eyewear-portrait-v1.webp' },
+    watches: { wide: 'hero-watches-wide-v1.webp', portrait: 'hero-watches-portrait-v1.webp' },
+    headwear: { wide: 'hero-headwear-wide-v2.webp', portrait: 'hero-headwear-portrait-v2.webp' }
+  };
   const host = document.createElement('div');
   host.className = 'spatial-world';
   host.setAttribute('aria-hidden', 'true');
   stage.prepend(host);
 
-  let renderer, scene, camera, ring, THREE;
+  let renderer, scene, camera, ring, THREE, masonryMaterial, coveMaterial;
   let destroyed = false, ready = false, inView = true, pageHidden = false, shaderFailed = false, frame = 0, lastTime = 0;
   let targetStep = Math.max(0, keys.indexOf(hero.dataset.scene));
   let angle = -targetStep * Math.PI / 4;
@@ -35,6 +40,9 @@
   let dragOffset = 0;
   let idleTime = 0, idleX = 0, idleY = 0;
   let width = 0, height = 0, narrow = false;
+  let textureMode = null, pendingTextureMode = null, textureLoading = false, textureRevision = 0;
+  let currentTextures = [];
+  const foreground = [];
   const posters = [];
   const artworks = [];
   const occluders = [];
@@ -46,7 +54,7 @@
   const disposeMaterial = material => { ownedMaterials.add(material); return material; };
 
   function allowed() {
-    return ready && !destroyed && inView && !pageHidden && hero.dataset.visible !== 'false' && document.visibilityState !== 'hidden' &&
+    return ready && !destroyed && !textureLoading && inView && !pageHidden && hero.dataset.visible !== 'false' && document.visibilityState !== 'hidden' &&
       !document.querySelector('dialog[open]');
   }
 
@@ -60,6 +68,7 @@
   function fallback(reason) {
     if (destroyed) return;
     destroyed = true;
+    textureRevision++;
     suspend();
     hero.classList.remove('has-spatial');
     hero.dataset.spatial = 'fallback';
@@ -96,16 +105,60 @@
     if (!renderer || destroyed) return;
     const nextWidth = Math.max(1, stage.clientWidth);
     const nextHeight = Math.max(1, stage.clientHeight);
-    if (nextWidth === width && nextHeight === height) { wake(); return; }
+    const changed = nextWidth !== width || nextHeight !== height;
     width = nextWidth;
     height = nextHeight;
     narrow = width <= 700 || width / height < .95;
-    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, narrow ? 1.25 : 1.5));
-    renderer.setSize(width, height, false);
-    camera.aspect = width / height;
-    camera.fov = 42;
-    camera.updateProjectionMatrix();
+    if (changed) {
+      renderer.setPixelRatio(Math.min(devicePixelRatio || 1, narrow ? 1.25 : 1.5));
+      renderer.setSize(width, height, false);
+      camera.aspect = width / height;
+      camera.fov = 42;
+      camera.updateProjectionMatrix();
+    }
+    const mode = narrow ? 'portrait' : 'wide';
+    if (ready && mode !== (textureLoading ? pendingTextureMode : textureMode)) {
+      loadTextureSet(mode).then(loaded => { if (loaded) { resize(); bridge(); } });
+    }
     wake();
+  }
+
+  async function loadTextureSet(mode) {
+    const ownRevision = ++textureRevision;
+    const loadedTextures = [];
+    pendingTextureMode = mode;
+    textureLoading = true;
+    suspend();
+    if (ready) { hero.classList.remove('has-spatial'); hero.dataset.spatial = 'loading'; }
+    try {
+      const loader = new THREE.TextureLoader();
+      const textures = await Promise.all(keys.map(async key => {
+        const texture = await loader.loadAsync(asset('assets/' + photography[key][mode]));
+        if (destroyed || ownRevision !== textureRevision) { texture.dispose(); throw new Error('Superseded texture set'); }
+        loadedTextures.push(texture);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+        ownedTextures.add(texture);
+        return texture;
+      }));
+      if (destroyed || ownRevision !== textureRevision) {
+        textures.forEach(texture => { texture.dispose(); ownedTextures.delete(texture); });
+        return false;
+      }
+      const previous = currentTextures;
+      currentTextures = textures;
+      textureMode = mode;
+      pendingTextureMode = null;
+      textureLoading = false;
+      if (!ring) buildExhibits(textures);
+      else posters.forEach(poster => { poster.material.map = textures[poster.category]; poster.material.needsUpdate = true; });
+      previous.forEach(texture => { texture.dispose(); ownedTextures.delete(texture); });
+      return true;
+    } catch (_) {
+      loadedTextures.forEach(texture => { texture.dispose(); ownedTextures.delete(texture); });
+      if (!destroyed && ownRevision === textureRevision) fallback('texture');
+      return false;
+    }
   }
 
   function addBox(parent, geometry, material, x, y, z) {
@@ -150,122 +203,81 @@
     return texture;
   }
 
-  function contactTexture() {
-    const canvas = document.createElement('canvas');
-    canvas.width = canvas.height = 128;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return null;
-    const gradient = ctx.createRadialGradient(64, 64, 2, 64, 64, 64);
-    gradient.addColorStop(0, 'rgba(0,0,0,.72)');
-    gradient.addColorStop(.3, 'rgba(0,0,0,.42)');
-    gradient.addColorStop(.65, 'rgba(0,0,0,.14)');
-    gradient.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 128, 128);
-    const texture = new THREE.CanvasTexture(canvas);
-    ownedTextures.add(texture);
-    return texture;
-  }
-
   function buildArchitecture() {
-    scene.background = new THREE.Color('#0e1415');
-    scene.fog = new THREE.Fog('#0e1415', 14, 31);
-    const ambient = new THREE.HemisphereLight('#c6d4d1', '#45473e', 2.1);
-    scene.add(ambient);
-    const key = new THREE.DirectionalLight('#efe1ca', 2.6);
-    key.position.set(-3.5, 7.5, 5);
-    key.target.position.set(1.8, 0, -1);
+    scene.background = new THREE.Color('#0d1414');
+    scene.fog = new THREE.Fog('#0d1414', 20, 70);
+    scene.add(new THREE.HemisphereLight('#c9d1c9', '#45463b', 1.9));
+    const key = new THREE.DirectionalLight('#eadbc0', 2.2);
+    key.position.set(-3, 8, 5);
+    key.target.position.set(2, 1, 0);
     scene.add(key, key.target);
-    const rim = new THREE.DirectionalLight('#acbfc3', .75);
-    rim.position.set(7, 4, -5);
-    scene.add(rim);
-
+    const fill = new THREE.DirectionalLight('#b6c6c7', .65);
+    fill.position.set(7, 4, -5);
+    scene.add(fill);
     const stone = stoneTexture();
+    const relief = stone?.clone();
+    if (relief) { relief.colorSpace = THREE.NoColorSpace; ownedTextures.add(relief); }
     const floorMaterial = disposeMaterial(new THREE.MeshStandardMaterial({
-      color: '#aeb2a6', map: stone, metalness: .08, roughness: .84,
-      emissive: '#111713', emissiveIntensity: .18
+      color: '#aab1a2', map: stone, bumpMap: relief, bumpScale: .025,
+      metalness: .04, roughness: .84, emissive: '#101712', emissiveIntensity: .15
     }));
-    const floor = new THREE.Mesh(disposeGeometry(new THREE.PlaneGeometry(48, 48)), floorMaterial);
+    const floor = new THREE.Mesh(disposeGeometry(new THREE.PlaneGeometry(72, 72)), floorMaterial);
     floor.rotation.x = -Math.PI / 2;
-    floor.position.z = -4;
+    floor.position.z = -12;
     scene.add(floor);
     occluders.push(floor);
-
-    const wallMaterial = disposeMaterial(new THREE.MeshStandardMaterial({ color: '#1a2223', roughness: .92 }));
-    addBox(scene, disposeGeometry(new THREE.BoxGeometry(42, 10, .3)), wallMaterial, 0, 5, -11.4);
-    const pillarGeometry = disposeGeometry(new THREE.BoxGeometry(.8, 8, .72));
-    const pillarMaterial = disposeMaterial(new THREE.MeshStandardMaterial({ color: '#242d2c', roughness: .82, metalness: .12 }));
-    for (let x = -15; x <= 17; x += 4) addBox(scene, pillarGeometry, pillarMaterial, x, 4, -10.65);
-    const lightMaterial = disposeMaterial(new THREE.MeshStandardMaterial({ color: '#383d36', metalness: .4, roughness: .5 }));
-    const lightGeometry = disposeGeometry(new THREE.BoxGeometry(.022, 5.8, .025));
-    [-7.4, .6, 8.6].forEach(x => addBox(scene, lightGeometry, lightMaterial, x, 3.4, -10.2));
-
-    const seamMaterial = disposeMaterial(new THREE.MeshBasicMaterial({ color: '#151a18' }));
-    const seamGeometry = disposeGeometry(new THREE.PlaneGeometry(.009, 44));
-    for (let x = -18; x <= 18; x += 3) {
-      const seam = new THREE.Mesh(seamGeometry, seamMaterial);
-      seam.rotation.x = -Math.PI / 2;
-      seam.position.set(x, .002, -4);
-      scene.add(seam);
-    }
+    masonryMaterial = disposeMaterial(new THREE.MeshStandardMaterial({
+      color: '#9ca699', map: stone, bumpMap: relief, bumpScale: .018, roughness: .88, metalness: .03
+    }));
+    coveMaterial = disposeMaterial(new THREE.MeshStandardMaterial({
+      color: '#766d57', roughness: .58, metalness: .32, emissive: '#302719', emissiveIntensity: .15
+    }));
+    const finGeometry = disposeGeometry(new THREE.BoxGeometry(1, 1, 1));
+    foreground.push(addBox(scene, finGeometry, masonryMaterial, -3.8, 3.4, 2.3));
+    foreground.push(addBox(scene, finGeometry, masonryMaterial, 4.8, 3.4, 2));
   }
 
   function buildExhibits(textures) {
     ring = new THREE.Group();
-    ring.position.z = -6.5;
     scene.add(ring);
-    const edgeMaterial = disposeMaterial(new THREE.MeshStandardMaterial({
-      color: '#757365', metalness: .62, roughness: .36
-    }));
-    const casingMaterial = disposeMaterial(new THREE.MeshStandardMaterial({
-      color: '#151b1b', metalness: .25, roughness: .62
-    }));
-    const baseMaterial = disposeMaterial(new THREE.MeshStandardMaterial({ color: '#1c2524', roughness: .6, metalness: .3 }));
-    const contact = contactTexture();
-    const contactMaterial = contact ? disposeMaterial(new THREE.MeshBasicMaterial({
-      color: '#000000', map: contact, transparent: true, opacity: .65, depthWrite: false, toneMapped: false
-    })) : null;
+    const opening = Math.PI * 2 / 9;
+    const photographicCurve = disposeGeometry(new THREE.CylinderGeometry(1, 1, 1, 48, 1, true, -opening / 2, opening));
+    const wallCurve = disposeGeometry(new THREE.CylinderGeometry(1, 1, 1, 48, 1, true, -Math.PI / 8, Math.PI / 4));
+    const revealGeometry = disposeGeometry(new THREE.BoxGeometry(1, 1, 1));
     for (let i = 0; i < 8; i++) {
       const category = i % 4;
-      const texture = textures[category];
-      const aspect = texture.image.width / texture.image.height;
-      const photoWidth = category === 1 ? 4.35 : 3.65;
-      const photoHeight = photoWidth / aspect;
-      const panelWidth = photoWidth + .06;
-      const panelHeight = photoHeight + .06;
       const panel = new THREE.Group();
       const panelAngle = i * Math.PI / 4;
-      panel.position.set(Math.sin(panelAngle) * 6.5, 0, Math.cos(panelAngle) * 6.5);
       panel.rotation.y = panelAngle;
-      const centre = category === 1 ? 2.18 : panelHeight / 2 + .19;
-      addBox(panel, disposeGeometry(new THREE.BoxGeometry(panelWidth, panelHeight, .095)), casingMaterial, 0, centre, 0);
-      const artworkMaterial = disposeMaterial(new THREE.MeshBasicMaterial({ map: texture, toneMapped: false }));
-      const artwork = new THREE.Mesh(disposeGeometry(new THREE.PlaneGeometry(photoWidth, photoHeight)), artworkMaterial);
-      artwork.position.set(0, centre, .049);
+      const backing = new THREE.Mesh(wallCurve, masonryMaterial);
+      panel.add(backing);
+      occluders.push(backing);
+      const artworkMaterial = disposeMaterial(new THREE.MeshBasicMaterial({
+        map: textures[category], toneMapped: false, transparent: true, alphaTest: .001, depthWrite: true
+      }));
+      // The authored room fades into stone at its extremities; no printed border or frame.
+      artworkMaterial.onBeforeCompile = shader => {
+        shader.fragmentShader = shader.fragmentShader.replace('#include <map_fragment>', [
+          '#include <map_fragment>',
+          '#ifdef USE_MAP',
+          'float azSide = smoothstep(0.0, 0.028, vMapUv.x) * smoothstep(0.0, 0.028, 1.0 - vMapUv.x);',
+          'float azFloor = smoothstep(0.0, 0.075, vMapUv.y);',
+          'float azCeiling = smoothstep(0.0, 0.045, 1.0 - vMapUv.y);',
+          'diffuseColor.a *= azSide * azFloor * azCeiling;',
+          '#endif'
+        ].join('\n'));
+      };
+      artworkMaterial.customProgramCacheKey = () => 'az-architectural-portal-v1';
+      const artwork = new THREE.Mesh(photographicCurve, artworkMaterial);
       artwork.userData.collection = keys[category];
       artwork.userData.chapter = category;
       panel.add(artwork);
       artworks.push(artwork);
-      const horizontal = disposeGeometry(new THREE.BoxGeometry(panelWidth, .016, .018));
-      const vertical = disposeGeometry(new THREE.BoxGeometry(.016, panelHeight, .018));
-      addBox(panel, horizontal, edgeMaterial, 0, centre + panelHeight / 2, .05);
-      addBox(panel, horizontal, edgeMaterial, 0, centre - panelHeight / 2, .05);
-      addBox(panel, vertical, edgeMaterial, -panelWidth / 2, centre, .05);
-      addBox(panel, vertical, edgeMaterial, panelWidth / 2, centre, .05);
-      const footHeight = Math.max(.12, centre - panelHeight / 2);
-      const footGeometry = disposeGeometry(new THREE.BoxGeometry(.055, footHeight, .16));
-      [-panelWidth * .34, panelWidth * .34].forEach(x => {
-        addBox(panel, footGeometry, baseMaterial, x, footHeight / 2, -.025);
-      });
-      addBox(panel, disposeGeometry(new THREE.BoxGeometry(panelWidth * .82, .035, .28)), baseMaterial, 0, .018, -.025);
-      if (contactMaterial) {
-        const grounding = new THREE.Mesh(disposeGeometry(new THREE.PlaneGeometry(panelWidth * 1.16, 1.12)), contactMaterial);
-        grounding.rotation.x = -Math.PI / 2;
-        grounding.position.set(0, .006, -.035);
-        panel.add(grounding);
-      }
+      const returns = [-1, 1].map(() => addBox(panel, revealGeometry, masonryMaterial, 0, 3.4, 0));
+      const lintel = addBox(panel, revealGeometry, masonryMaterial, 0, 6.35, 0);
+      const cove = addBox(panel, revealGeometry, coveMaterial, 0, 6.12, 0);
       ring.add(panel);
-      posters.push({ panel, material: artworkMaterial, angle: panelAngle });
+      posters.push({ panel, material: artworkMaterial, angle: panelAngle, category, artwork, backing, returns, lintel, cove });
     }
   }
 
@@ -320,22 +332,44 @@
 
     const worldAngle = angle + dragOffset;
     ring.rotation.y = worldAngle;
-    ring.position.x = narrow ? 0 : 2.05;
-    const radius = narrow ? 4.8 : 6.5;
+    ring.position.x = 0;
+    const radius = narrow ? 5.5 : 18.4;
     ring.position.z = -radius;
     const aspect = width / height;
-    const distance = narrow ? 13.4 + Math.max(0, .45 - aspect) * 9 : 8.5;
-    const cameraBaseX = narrow ? 0 : .3;
-    const targetY = narrow ? 2.12 : 1.75;
+    const distance = narrow ? 8.2 + Math.max(0, .44 - aspect) * 5 : 9.6;
+    const cameraBaseX = 0;
+    const targetY = narrow ? 2.6 : 2.35;
     const mouseGain = narrow ? .065 : .105;
-    camera.position.set(cameraBaseX + yaw * mouseGain + idleX, (narrow ? 2.85 : 2.65) - pitch * .09 + idleY, distance);
+    camera.position.set(cameraBaseX + yaw * mouseGain + idleX, 3 - pitch * .09 + idleY, distance);
     camera.lookAt(cameraBaseX - yaw * .022, targetY + pitch * .035, -.2);
     posters.forEach(poster => {
-      poster.panel.position.x = Math.sin(poster.angle) * radius;
-      poster.panel.position.z = Math.cos(poster.angle) * radius;
+      const image = poster.material.map.image;
+      const photoHeight = radius * (Math.PI * 2 / 9) / (image.width / image.height);
+      poster.artwork.scale.set(radius, photoHeight, radius);
+      poster.artwork.position.y = photoHeight / 2;
+      poster.backing.scale.set(radius - .08, 6.8, radius - .08);
+      poster.backing.position.y = 3.4;
+      const revealAngle = (narrow ? 15 : 17) * Math.PI / 180;
+      const revealRadius = radius + (narrow ? .12 : .9);
+      poster.returns.forEach((wall, i) => {
+        const a = revealAngle * (i ? 1 : -1);
+        wall.position.set(Math.sin(a) * revealRadius, 3.4, Math.cos(a) * revealRadius);
+        wall.rotation.y = a;
+        wall.scale.set(narrow ? .18 : .65, 6.8, narrow ? .72 : 1.8);
+      });
+      const openingWidth = Math.sin(revealAngle) * revealRadius * 2;
+      poster.lintel.position.set(0, 6.35, radius + .12);
+      poster.lintel.scale.set(openingWidth + (narrow ? .22 : .8), .42, narrow ? .72 : 1.8);
+      poster.cove.position.set(0, 6.12, radius + .18);
+      poster.cove.scale.set(openingWidth, .018, narrow ? .16 : .24);
       const facing = Math.max(0, Math.cos(poster.angle + worldAngle));
       const exposure = .14 + .86 * Math.pow(facing, 7.5);
       poster.material.color.setRGB(exposure, exposure, exposure);
+    });
+    foreground.forEach((fin, i) => {
+      fin.visible = !narrow;
+      fin.position.set(i ? 4.8 : -3.8, 3.4, i ? 2 : 2.3);
+      fin.scale.set(i ? .6 : .75, 6.8, 1.8);
     });
 
     try {
@@ -375,17 +409,8 @@
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(42, 1, .1, 65);
     buildArchitecture();
-    const loader = new THREE.TextureLoader();
-    const textures = await Promise.all(paths.map(async path => {
-      const texture = await loader.loadAsync(path);
-      if (destroyed) { texture.dispose(); throw new Error('Disposed'); }
-      texture.colorSpace = THREE.SRGBColorSpace;
-      texture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
-      ownedTextures.add(texture);
-      return texture;
-    }));
-    if (destroyed) return;
-    buildExhibits(textures);
+    resize();
+    if (!await loadTextureSet(narrow ? 'portrait' : 'wide') || destroyed) return;
     stage.addEventListener('click', pickArtwork);
     selectedKey = hero.dataset.scene;
     targetStep = Math.max(0, keys.indexOf(selectedKey));

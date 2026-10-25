@@ -159,30 +159,56 @@
 @media(max-width:700px){#collectionRoom .catalogue-grid:has(>.catalogue-card:only-child){grid-template-columns:minmax(0,1fr)}}
 
 /* The collection reads like an edited selection, with the merchandise kept photographically true. */
-#collectionRoom{--gallery-paper:#eeeee9;--gallery-rule:rgba(238,234,225,.15);background:#101617}
-#collectionRoom .collection-toolbar{padding-block:22px}
+#collectionRoom{--gallery:#151918;--gallery-field:#1b1e1c;--gallery-paper:#e8e5df;--gallery-ink:#252822;--gallery-muted:#bab6ab;--gallery-rule:rgba(232,227,215,.17);--card-paper:#e8e5df;background:linear-gradient(155deg,#20231f,#121715 64%);color:#ece8df}
+#collectionRoom .collection-toolbar{padding-block:22px;background:linear-gradient(180deg,#20231f,#181d1a)}
 #collectionRoom .collection-dialog-head h2{font-size:42px;letter-spacing:-.03em}
 #collectionRoom .catalogue-discovery{padding-block:22px 18px}
-#collectionRoom .catalogue-card{padding-bottom:10px;border-bottom:1px solid rgba(238,234,225,.1)}
-#collectionRoom .catalogue-photo-well{background:var(--gallery-paper)}
-#collectionRoom .catalogue-photo-well::after{border-color:rgba(0,0,0,.1)}
-#collectionRoom .catalogue-card-name{font-size:29px;line-height:1.12;letter-spacing:-.02em}
-#collectionRoom .catalogue-card-house{color:#aebba4;letter-spacing:.065em}
-#collectionRoom .catalogue-card-colour{color:#a6b49b}
+#collectionRoom .catalogue-card{padding:0;border:1px solid rgba(238,234,225,.15);background:var(--card-paper);box-shadow:0 12px 28px rgba(0,0,0,.09)}
+#collectionRoom .catalogue-photo-well{background:linear-gradient(145deg,rgb(var(--photo-source-paper,237 235 231)),#e2ded3)}
+#collectionRoom .catalogue-photo-well::after{border-color:rgba(0,0,0,.08)}
+#collectionRoom .catalogue-photo-well.is-portrait img{object-fit:contain;object-position:center;padding:16px}
+#collectionRoom .catalogue-photo-well.is-source-framed img{position:absolute;inset:0;width:100%;height:100%;padding:0;object-fit:contain;object-position:center;transform-origin:center;transform:translate(var(--photo-fit-x,0%),var(--photo-fit-y,0%)) scale(calc(var(--photo-fit-scale,1)*var(--photo-hover,1)))}
+#collectionRoom .catalogue-card-copy{padding:18px 20px 0;gap:8px}
+#collectionRoom .catalogue-card-name{font-size:29px;line-height:1.12;letter-spacing:-.02em;color:var(--gallery-ink)}
+#collectionRoom .catalogue-card-house{font-size:12px;line-height:1.5;letter-spacing:.035em;color:#5d6256}
+#collectionRoom .catalogue-card-footer{flex-direction:column;align-items:flex-start;gap:0;margin:0;padding:12px 20px 15px;min-height:88px}
+#collectionRoom .catalogue-card-colour{font-size:13px;line-height:1.7;min-height:22px;color:#61665a}
+#collectionRoom .catalogue-card-swatches{min-height:44px;justify-content:flex-start}
+#collectionRoom .catalogue-card-swatches button span,#collectionRoom .catalogue-card-swatch-static>span{border-color:rgba(31,35,27,.45);box-shadow:0 0 0 4px var(--card-paper)}
+#collectionRoom .catalogue-card-swatches button[aria-pressed=true] span{outline-color:#363d30}
+#collectionRoom .catalogue-card-swatches button:hover span{outline-color:#626b5a}
+#collectionRoom .catalogue-card-swatches button:focus-visible{outline:2px solid #252b20;outline-offset:-5px}
+#collectionRoom .catalogue-card-action:focus-visible{outline:2px solid #252b20;outline-offset:-4px}
+#collectionRoom .catalogue-image-error{color:#535b4b;font-size:13px;line-height:1.7}
+#collectionRoom .catalogue-photo-number{font-size:11px;color:#575f50}
+#collectionRoom .catalogue-view-label{font-size:12px;color:#353e2e;border-color:rgba(37,45,30,.45)}
+#collectionRoom .collection-close,#collectionRoom .catalogue-back{font-size:13px;min-height:44px;color:#d8d6ca}
+#collectionRoom .collection-dialog-head .salon-overline{font-size:11px;color:#b9b7ab;letter-spacing:.08em}
+#collectionRoom .catalogue-collection-button{font-size:13px;color:#b8b8ac}
+#collectionRoom .catalogue-collection-button[aria-pressed=true]{color:#f0ece1;border-color:#d9d4c3}
+#collectionRoom .catalogue-collection-count{font-size:12px;color:#9d9f91}
+#collectionRoom .catalogue-search label,#collectionRoom .catalogue-filter-fields label{font-size:12px;color:#c0c0b1;letter-spacing:.035em}
+#collectionRoom .catalogue-search-input button{font-size:12px;min-height:44px;color:#d1d0c1}
+#collectionRoom .catalogue-filter-fields select{font-size:14px;color:#e0ddcf}
+#collectionRoom .catalogue-filters summary{font-size:13px;min-height:48px;color:#d0d0c0}
+#collectionRoom #collectionRoomCount{font-size:12px;color:#b7b8a8}
+#collectionRoom .catalogue-result-bar button{font-size:12px;min-height:44px;color:#d0d0be}
+#collectionRoom .catalogue-house{font-size:12px;color:#b9bcaa;letter-spacing:.055em}
 #collectionRoom .catalogue-piece-copy h3{font-size:clamp(40px,4vw,52px);line-height:1.03;letter-spacing:-.03em}
-#collectionRoom .catalogue-description{max-width:44ch;color:#c0c8b9;line-height:1.95}
-#collectionRoom .catalogue-main-photo{background:var(--gallery-paper);touch-action:pan-y pinch-zoom}
+#collectionRoom .catalogue-colour{font-size:14px;color:#bdc1ac}
+#collectionRoom .catalogue-description{max-width:44ch;font-size:15px;color:#c8c9ba;line-height:1.9}
+#collectionRoom .catalogue-main-photo{background:rgb(var(--photo-source-paper,237 235 231));touch-action:pan-y pinch-zoom}
 #collectionRoom .catalogue-main-photo::after{content:'';position:absolute;inset:0;border:1px solid rgba(0,0,0,.1);pointer-events:none}
 #collectionRoom .catalogue-main-photo.is-photo-unavailable>img{visibility:hidden}
-.catalogue-photo-error{position:absolute;inset:0;display:grid;place-items:center;padding:28px;color:#65705f;font-size:13px;line-height:1.7;text-align:center}
+.catalogue-photo-error{position:absolute;inset:0;display:grid;place-items:center;padding:28px;color:#535b4b;font-size:13px;line-height:1.7;text-align:center}
 .catalogue-photo-tools{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;min-height:52px;margin-top:1px;border-bottom:1px solid rgba(238,234,225,.14)}
-.catalogue-photo-counter{font:400 11px/1.6 Jost,Arial,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:.07em;color:#9eae92;white-space:nowrap}
+.catalogue-photo-counter{font:400 12px/1.6 Jost,Arial,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:.05em;color:#bfc4ae;white-space:nowrap}
 .catalogue-photo-actions{display:flex;align-items:center;gap:10px;min-width:0}
-.catalogue-photo-actions button{min-height:44px;padding:8px 5px;color:#c4cebb;font:400 11px/1.6 Jost,Arial,sans-serif;transition:color .15s}
+.catalogue-photo-actions button{min-height:44px;padding:8px 5px;color:#d4d7c6;font:400 12px/1.6 Jost,Arial,sans-serif;transition:color .15s}
 .catalogue-photo-actions .catalogue-photo-step{min-width:44px}
 .catalogue-photo-actions .catalogue-photo-enlarge{min-width:83px;padding-right:0;text-decoration:underline;text-underline-offset:5px;text-decoration-color:rgba(196,206,187,.35)}
 .catalogue-photo-actions button:hover{color:#f0f0e8}
-.catalogue-photo-actions button:disabled{opacity:.35;cursor:default}
+.catalogue-photo-actions button:disabled{color:#8f9483;opacity:1;cursor:default;text-decoration-color:transparent}
 #collectionRoom .catalogue-thumbnails{gap:12px;margin-top:17px}
 #collectionRoom .catalogue-thumbnails button{border-color:rgba(238,234,225,.2);opacity:.68;transition:opacity .15s}
 #collectionRoom .catalogue-thumbnails button[aria-pressed=true],#collectionRoom .catalogue-thumbnails button:hover{opacity:1}
@@ -197,10 +223,11 @@
 .catalogue-viewer-title{flex:1;min-width:0;margin:0;font:500 30px/1.1 Cormorant,Georgia,serif;letter-spacing:-.02em;text-wrap:balance}
 .catalogue-viewer-header button,.catalogue-viewer-step{min-width:64px;min-height:44px;padding:9px 0;color:#c8d0c0;border:0;border-bottom:1px solid rgba(238,234,225,.3);background:none;font:400 12px/1.6 Jost,Arial,sans-serif}
 .catalogue-viewer-header button:hover,.catalogue-viewer-step:hover{color:#fff;border-color:#eeeae1}
-.catalogue-viewer-viewport{position:relative;flex:1;min-height:0;min-width:0;overflow:auto;overscroll-behavior:contain;background:#eeeee9;touch-action:pan-x pan-y pinch-zoom;scrollbar-width:thin;scrollbar-color:#6e756d #eeeee9}
+.catalogue-viewer-viewport{position:relative;flex:1;min-height:0;min-width:0;overflow:auto;overscroll-behavior:contain;background:rgb(var(--photo-source-paper,237 235 231));touch-action:pan-x pan-y pinch-zoom;scrollbar-width:thin;scrollbar-color:#6e756d #eeeee9}
 .catalogue-viewer-canvas{position:relative;width:100%;height:100%;min-width:100%;min-height:100%}
 .catalogue-viewer-image{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none}
 #catalogueImageViewer.is-photo-unavailable .catalogue-viewer-image{visibility:hidden}
+#catalogueImageViewer.is-photo-unavailable .catalogue-viewer-viewport{background:#e8e5df}
 #catalogueImageViewer.is-zoomed .catalogue-viewer-canvas{width:200%;height:200%}
 #catalogueImageViewer.is-zoomed .catalogue-viewer-viewport{cursor:grab}
 #catalogueImageViewer .catalogue-viewer-viewport.is-panning{cursor:grabbing}
@@ -211,21 +238,37 @@
 
 @media(max-width:700px){
  #collectionRoom .collection-toolbar{padding-block:16px;padding-top:max(16px,env(safe-area-inset-top))}
- #collectionRoom .collection-dialog-head h2{font-size:35px}
+ #collectionRoom .collection-dialog-head h2{font-size:32px}
  #collectionRoom.is-piece .collection-toolbar{padding-block:10px;padding-top:max(10px,env(safe-area-inset-top))}
  #collectionRoom .catalogue-discovery{padding:16px 0 0}
- #collectionRoom .catalogue-card-name{font-size:clamp(22px,6vw,26px);line-height:1.08}
- #collectionRoom .catalogue-piece-copy h3{font-size:clamp(34px,10vw,43px);line-height:1.04}
+ #collectionRoom .catalogue-card-copy{padding:14px 12px 0;gap:7px}
+ #collectionRoom .catalogue-card-house{font-size:12px;line-height:1.4;letter-spacing:.015em;min-height:2.8em}
+ #collectionRoom .catalogue-card-name{font-size:clamp(21px,5.7vw,25px);line-height:1.1;min-height:2.2em}
+ #collectionRoom .catalogue-card-footer{padding:10px 12px 12px;min-height:86px}
+ #collectionRoom .catalogue-card-colour{font-size:12px;line-height:1.8}
+ #collectionRoom .catalogue-photo-number{font-size:11px;top:10px;left:11px}
+ #collectionRoom .catalogue-view-label{font-size:12px;bottom:10px;right:11px}
+ #collectionRoom .catalogue-photo-well.is-portrait:not(.is-source-framed) img{padding:10px}
+ #collectionRoom .catalogue-piece-copy h3{font-size:clamp(30px,8.8vw,38px);line-height:1.06}
+ #collectionRoom .catalogue-collection-button{font-size:12px}
+ #collectionRoom .catalogue-collection-count{font-size:12px}
+ #collectionRoom .catalogue-search label,#collectionRoom .catalogue-filter-fields label{font-size:12px}
+ #collectionRoom .catalogue-filter-fields select{font-size:16px}
+ #collectionRoom .catalogue-description{font-size:14px;line-height:1.9}
+ #collectionRoom .catalogue-specs dt,#collectionRoom .catalogue-specs dd{font-size:12px;letter-spacing:.025em}
+ #collectionRoom .catalogue-grid:has(>.catalogue-card:only-child) .catalogue-card-name{min-height:0;font-size:30px}
+ #collectionRoom .catalogue-grid:has(>.catalogue-card:only-child) .catalogue-card-house{min-height:0}
  .catalogue-photo-tools{gap:8px;min-height:50px}
  .catalogue-photo-actions{gap:5px}
- .catalogue-photo-actions button{font-size:10px}
+ .catalogue-photo-actions button{font-size:12px}
  .catalogue-photo-actions .catalogue-photo-enlarge{min-width:77px}
- .catalogue-photo-counter{font-size:10px;letter-spacing:.04em}
+ .catalogue-photo-counter{font-size:12px;letter-spacing:.025em}
  .catalogue-viewer-header{gap:16px;padding:10px 20px;padding-top:max(10px,env(safe-area-inset-top));min-height:72px}
  .catalogue-viewer-title{font-size:26px;line-height:1.05}
- .catalogue-viewer-header button{min-width:52px;font-size:11px}
+ .catalogue-viewer-header button{min-width:52px;font-size:12px}
  .catalogue-viewer-footer{gap:16px;padding:8px 20px;padding-bottom:max(8px,env(safe-area-inset-bottom));min-height:64px}
- .catalogue-viewer-step{font-size:11px;min-width:58px}
+ .catalogue-viewer-step{font-size:12px;min-width:58px}
 }
+@media(hover:hover){#collectionRoom .catalogue-card-action:hover .catalogue-photo-well{--photo-hover:1.015}}
 @media(max-width:375px){.catalogue-viewer-header{padding-inline:16px;gap:12px}.catalogue-viewer-title{font-size:23px}.catalogue-viewer-header button{min-width:48px}.catalogue-viewer-footer{padding-inline:16px}}
 @media(prefers-reduced-motion:reduce){.catalogue-photo-actions button,#catalogueImageViewer *,#collectionRoom .catalogue-thumbnails button{transition:none!important;scroll-behavior:auto!important}}

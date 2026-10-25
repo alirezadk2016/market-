@@ -151,37 +151,104 @@
     }
   }
 
-  // Copying is deliberate and local. The email link remains the primary path.
+  // The canonical mailto link is the draft source, including catalogue-prefilled colours.
+  // Reviewing or downloading a note does not send it or create a saved enquiry.
+  const form = document.getElementById('salonEnquiry');
   const copy = document.getElementById('copySalonEnquiry');
   const compose = document.getElementById('salonCompose');
   const status = document.getElementById('salonCopyStatus');
   const fallbackPanel = document.getElementById('salonCopyPanel');
   const fallbackText = document.getElementById('salonCopyText');
-  if (copy && compose && status && fallbackPanel && fallbackText) {
-    copy.addEventListener('click', async () => {
-      let body = '';
-      let subject = 'A.z private enquiry';
-      try {
-        const draft = new URL(compose.href);
+  const review = document.getElementById('salonEnquiryReview');
+  const reviewButton = document.getElementById('reviewSalonEnquiry');
+  const reviewSubject = document.getElementById('salonReviewSubject');
+  const reviewBody = document.getElementById('salonReviewBody');
+  const reviewCollection = document.getElementById('salonReviewCollection');
+  const edit = document.getElementById('editSalonEnquiry');
+  const gmail = document.getElementById('salonGmailCompose');
+  const download = document.getElementById('downloadSalonEnquiry');
+  let reviewOpen = false;
+
+  function enquiryDraft() {
+    const selection = document.getElementById('salonCollection');
+    const preferences = document.getElementById('salonPreferences');
+    const key = selection?.value || '';
+    const collection = registry?.[key]?.title || selection?.selectedOptions?.[0]?.textContent.trim() || 'Help me choose';
+    let body = '';
+    let subject = 'A.z private enquiry';
+    try {
+      const draft = new URL(compose.href);
+      if (draft.protocol === 'mailto:') {
         body = draft.searchParams.get('body') || '';
         subject = draft.searchParams.get('subject') || subject;
-      } catch (_) { /* The current field values are a sufficient local fallback. */ }
-      if (!body) {
-        const selection = document.getElementById('salonCollection');
-        const preferences = document.getElementById('salonPreferences');
-        const collection = selection?.value ? selection.selectedOptions[0].textContent.trim() : 'help choosing a piece';
-        body = 'Hello A.z,\n\nI would like advice on ' + collection + '.';
-        if (preferences?.value.trim()) body += '\n\n' + preferences.value.trim();
       }
-      const text = 'Subject: ' + subject + '\n\n' + body;
+    } catch (_) { /* A local field-based draft remains usable if the link is unavailable. */ }
+    if (!body) {
+      body = 'Hello A.z,\n\nI would like advice on ' + (key ? collection : 'help choosing a piece') + '.';
+      if (preferences?.value.trim()) body += '\n\n' + preferences.value.trim();
+    }
+    return { collection, subject, body, text: 'To: alirezadk2020@gmail.com\nSubject: ' + subject + '\n\n' + body };
+  }
+
+  function refreshReview() {
+    if (!compose || !review || !reviewSubject || !reviewBody || !reviewCollection || !gmail || !download) return;
+    const draft = enquiryDraft();
+    reviewSubject.textContent = draft.subject;
+    reviewBody.textContent = draft.body;
+    reviewCollection.textContent = draft.collection;
+    const web = new URL('https://mail.google.com/mail/');
+    web.searchParams.set('view', 'cm');
+    web.searchParams.set('fs', '1');
+    web.searchParams.set('to', 'alirezadk2020@gmail.com');
+    web.searchParams.set('su', draft.subject);
+    web.searchParams.set('body', draft.body);
+    gmail.href = web.href;
+    download.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(draft.text);
+  }
+
+  function showReview(behavior = reduced.matches ? 'auto' : 'smooth') {
+    if (!review || !reviewButton) return;
+    refreshReview();
+    reviewOpen = true;
+    review.hidden = false;
+    reviewButton.setAttribute('aria-expanded', 'true');
+    if (status) status.textContent = '';
+    review.focus({ preventScroll: true });
+    review.scrollIntoView({ block: 'start', behavior });
+  }
+
+  if (form && compose && review && reviewButton && reviewSubject && reviewBody && reviewCollection && gmail && download) {
+    reviewButton.hidden = false;
+    form.classList.add('has-enquiry-review');
+    reviewButton.addEventListener('click', () => showReview());
+    // Preserve the existing submit draft update, then make the review the final focus target.
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      queueMicrotask(() => showReview('auto'));
+    });
+    edit?.addEventListener('click', () => {
+      const preferences = document.getElementById('salonPreferences');
+      preferences?.focus({ preventScroll: true });
+      preferences?.scrollIntoView({ block: 'center', behavior: reduced.matches ? 'auto' : 'smooth' });
+    });
+    // Product prefilling changes href without dispatching input; observe the real draft API.
+    new MutationObserver(() => { if (reviewOpen) refreshReview(); }).observe(compose, { attributes: true, attributeFilter: ['href'] });
+    gmail.addEventListener('click', refreshReview);
+    download.addEventListener('click', refreshReview);
+  }
+
+  if (copy && compose && status && fallbackPanel && fallbackText) {
+    copy.addEventListener('click', async () => {
+      const draft = enquiryDraft();
+      if (reviewOpen) refreshReview();
       copy.disabled = true;
       try {
         if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
-        await navigator.clipboard.writeText(text);
+        await navigator.clipboard.writeText(draft.text);
         fallbackPanel.hidden = true;
-        status.textContent = 'Enquiry copied. Paste it into your preferred email app.';
+        status.textContent = 'Enquiry copied. Paste it into your preferred email service.';
       } catch (_) {
-        fallbackText.value = text;
+        fallbackText.value = draft.text;
         fallbackPanel.hidden = false;
         status.textContent = 'Your enquiry is below. Select the text to copy it.';
         fallbackText.focus({ preventScroll: true });

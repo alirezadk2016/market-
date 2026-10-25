@@ -9,6 +9,98 @@
   if (!collection || !piece || !photo || !thumbnails || !frame || frame.dataset.galleryEnhanced) return;
   frame.dataset.galleryEnhanced = 'true';
 
+  // Measured from the original photographs: scale/position trim empty canvas in cards only.
+  // Product pixels, colour and source files stay unchanged; details/viewer show the full canvas.
+  const sourceFraming = {
+    'sella-sand.webp': [1.0899, 0, 2.554, '236 234 232'],
+    'sella-sand-2.webp': [.8634, -1.686, .169, '236 234 232'],
+    'sella-nero.webp': [1.6679, .977, -12.705, '234 233 231'],
+    'monogramme-nero.webp': [1.9657, 1.92, -11.902, '237 235 233'],
+    'monogramme-nero-2.webp': [.86, 0, 0, '238 237 236'],
+    'monogramme-nero-3.webp': [1.1773, 2.07, -1.61, '237 235 233'],
+    'monogramme-nero-4.webp': [.925, 1.987, -.361, '228 229 226'],
+    'tote-mini-nero.webp': [1.643, -.321, -3.851, '239 237 236'],
+    'tote-mini-nero-2.webp': [1.0484, -.205, 1.638, '236 234 230'],
+    'tote-mini-nero-3.webp': [.9173, -.717, 0, '235 235 235'],
+    'bauletto-rosa.webp': [1.6806, 3.939, -2.298, '237 235 233'],
+    'bauletto-rosa-2.webp': [1.5504, -2.725, -4.239, '237 235 233'],
+    'bauletto-nero.webp': [1.5504, 3.331, -1.211, '237 235 233'],
+    'bauletto-nero-2.webp': [.86, 0, 0, '235 232 229'],
+    'lock-nero.webp': [1.4776, 0, 3.174, '237 235 233'],
+    'lock-nero-2.webp': [.8842, 0, 1.209, '53 55 55'],
+    'heritage-grigio.webp': [1.0953, -.642, -4.493, '232 232 232'],
+    'heritage-grigio-2.webp': [.8737, -1.365, -.683, '224 224 224'],
+    'heritage-grigio-3.webp': [.9449, -.554, -3.137, '232 232 232'],
+    'postino-nero.webp': [.9449, -.369, -4.245, '232 232 232'],
+    'postino-nero-2.webp': [.86, 5.207, 0, '224 224 224'],
+    'postino-nero-3.webp': [1.074, 1.468, -9.02, '232 232 232'],
+    'baguette-avorio.webp': [.9614, 1.69, -3.192, '233 233 233'],
+    'baguette-avorio-2.webp': [.86, -.168, 0, '232 232 232'],
+    'baguette-avorio-3.webp': [.9212, 1.439, -3.059, '232 232 232'],
+    'baguette-nero.webp': [.9742, 2.283, -4.947, '232 232 232'],
+    'baguette-nero-2.webp': [.86, .168, 0, '232 232 232'],
+    'arco-avorio.webp': [.9531, -1.303, -4.654, '246 246 246'],
+    'arco-nero.webp': [.9962, .584, -6.81, '233 233 233'],
+    'arco-smeraldo.webp': [.9656, 3.583, -5.281, '225 224 222'],
+    'coccodrillo-nero.webp': [1.0845, -.212, -12.921, '226 225 223'],
+    'coccodrillo-pistacchio.webp': [.9369, -4.94, 0, '224 224 224'],
+    'baule-nero.png': [.9962, -.973, -3.697, '246 246 246'],
+    'baule-nero-2.png': [.8877, -.347, -4.335, '246 246 246'],
+    'baule-nero-3.webp': [.86, -1.344, 0, '246 246 246'],
+    'baule-avorio.png': [.9173, -.717, -2.867, '246 246 246'],
+    'baule-avorio-2.webp': [.8702, .51, 0, '163 163 163'],
+    'tommy-nero.webp': [.9742, -.381, -5.518, '246 246 246'],
+    'tommy-nero-2.webp': [.9656, .377, -5.846, '246 246 246'],
+    'tommy-nero-3.webp': [.8877, 0, -1.387, '98 95 95'],
+    'twinset-nero.webp': [1.2369, -.242, -7.247, '239 239 239'],
+    'twinset-nero-2.jpeg': [.906, -3.893, 0, '237 237 237'],
+    'watch-era.webp': [.86, 0, 0, '255 255 255'],
+    'cap-navy.webp': [1.5954, 1.87, -1.558, '234 234 234'],
+    'cap-navy-2.webp': [1.643, 0, -1.604, '234 233 232'],
+    'cap-navy-3.webp': [.86, .84, 0, '233 233 233'],
+    'gg-oval.webp': [1.4677, 1.433, -19.207, '241 241 241'],
+    'gg-oval-2.webp': [1.4204, -6.103, -10.819, '241 241 241'],
+    'gg-oval-3.webp': [.86, -.336, 0, '185 186 188'],
+    'gg-oval-4.webp': [1.4977, 5.265, -14.626, '241 241 241'],
+    'gg-rect.webp': [1.5289, .896, -19.41, '241 241 241'],
+    'gg-rect-2.webp': [1.2438, 0, -8.26, '241 241 241'],
+    'gg-rect-3.webp': [1.4776, 0, -17.027, '241 241 241']
+  };
+  function framingFor(image) {
+    const source = (image.getAttribute('src') || '').split(/[?#]/, 1)[0];
+    return sourceFraming[source.split('/').pop()] || null;
+  }
+  function matchSourcePaper(container, image) {
+    container?.style?.setProperty('--photo-source-paper', framingFor(image)?.[3] || '237 235 231');
+  }
+  function frameCard(image) {
+    const well = image.closest('.catalogue-photo-well');
+    if (!well) return;
+    matchSourcePaper(well, image);
+    if (!image.complete || !image.naturalWidth) return;
+    const measured = framingFor(image);
+    well.classList.toggle('is-source-framed', Boolean(measured));
+    if (!measured) return;
+    image.style.setProperty('--photo-fit-scale', measured[0]);
+    image.style.setProperty('--photo-fit-x', measured[1] + '%');
+    image.style.setProperty('--photo-fit-y', measured[2] + '%');
+  }
+  const grid = document.getElementById('catalogueGrid');
+  if (grid) {
+    let cardsQueued = false;
+    const refreshCards = () => {
+      cardsQueued = false;
+      grid.querySelectorAll('.catalogue-photo-well img').forEach(frameCard);
+    };
+    grid.addEventListener('load', event => { if (event.target?.tagName === 'IMG') frameCard(event.target); }, true);
+    new MutationObserver(() => {
+      if (cardsQueued) return;
+      cardsQueued = true;
+      queueMicrotask(refreshCards);
+    }).observe(grid, { childList: true, subtree: true, attributes: true, attributeFilter: ['src'] });
+    refreshCards();
+  }
+
   function make(tag, className, text) {
     const node = document.createElement(tag);
     if (className) node.className = className;
@@ -92,6 +184,7 @@
   }
   function updateViewerPhoto() {
     const source = photo.getAttribute('src') || '';
+    matchSourcePaper(viewport, photo);
     if (viewerPhoto.getAttribute('src') !== source) {
       setZoom(false);
       viewer.classList.remove('is-photo-unavailable');
@@ -104,6 +197,7 @@
   function refresh() {
     refreshQueued = false;
     const state = photographState();
+    matchSourcePaper(frame, photo);
     const value = String(state.selected + 1).padStart(2, '0') + ' / ' + String(state.total).padStart(2, '0');
     counter.textContent = value;
     counter.setAttribute('aria-label', 'Photograph ' + (state.selected + 1) + ' of ' + state.total);

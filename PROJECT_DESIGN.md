@@ -31,3 +31,15 @@ Built-in imagegen originals for a decorative advisory salon, material macro, and
 
 ## Verification and acceptance
 Compare before/after screenshots at1440desktop and390phone, plus320/360/768/900/1000responsive checks. Verify actual WebGL canvas/exhibit changes, drag/swipe/keyboard/chapter CTA, static/failure fallback, no idle render loop when paused, hidden/modal suspension, complete phone menu, snap collections, photo inspector navigation/close, colour/search/Back, email-prefill and Copy enquiry. Inspect assets/imports, parse all scripts, diff whitespace; meaningful motion/controller contracts. No horizontal overflow, missing completed images, clipped headings or hidden controls. Static content must remain visible if enhancement fails. Capture live production proof only after local visual QA and publication.
+
+## Follow-up: five observed weaknesses to fix
+
+Confirmed implementation direction,25October2026: the owner explicitly requested correction of the current visual and enquiry weaknesses. Current baseline is df5e58c. Keep the cinematic direction and improve its substance rather than adding effects.
+
+- Replace freestanding picture frames and feet with a continuous architectural salon: photographic bays belong to real floor/wall depth, restrained warm light and quiet stone. Preserve the actual camera and gesture controls; do not invent scans of merchandise.
+- Keep original stock photographs and colours intact. Unify their photographic chambers, subject scale, typography and surrounding palette so the catalogue belongs to the same brand as the entrance. A lighter inspection surface should be a deliberate material transition, not an arbitrary set of white rectangles.
+- Utility text should normally be12px or larger and body text14–16px. Phone chapter controls use the full width; minimum touch targets remain44px. Readability and complete product photographs take precedence over decoration.
+- Name A.z in the entrance and communicate what is selected. Use concrete collection and service language, the existing signature, charcoal/ivory tones and disciplined serif typography. No invented heritage, exclusive access, authenticity guarantees or premises.
+- Let visitors review, copy and save a structured enquiry inside the site, with a web-email alternative to an installed mail app. Show exactly which details need individual confirmation. Do not label a local draft as submitted, invent fulfilment policies or send messages automatically.
+
+Acceptance adds real variant-to-enquiry preservation, review/copy/download/web-compose paths and graceful fallback when clipboard or download support is unavailable. Inspect before/after photographs and architecture at phone and desktop sizes before publication.
