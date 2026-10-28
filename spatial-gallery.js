@@ -354,7 +354,9 @@
     // Let the active curved photograph bleed beyond the phone edges. Only its
     // outer background trims; the merchandise remains inside the composed frame.
     const widthFit = radius * Math.sin(bayAngle / 2) / (tangent * aspect * 1.04) - edgeDepth;
-    const distance = narrow ? Math.max(8.2, widthFit) : 10.5;
+    // Keep this width fit at short phone ratios too: a fixed distance floor
+    // exposes neighbouring bays as dark vertical strips on a wider viewport.
+    const distance = narrow ? widthFit : 10.5;
     const cameraBaseX = 0;
     const targetY = narrow ? 2.6 : 2.35;
     const mouseGain = narrow ? .065 : .105;
