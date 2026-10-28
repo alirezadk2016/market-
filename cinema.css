@@ -1,6 +1,6 @@
 /* One integrated photographic scene; motion belongs to the camera, not the merchandise. */
 .salon.salon--cinema{position:relative;isolation:isolate;overflow:hidden;height:min(980px,100svh);min-height:760px;max-height:980px;background:#090c0e}
-.salon--cinema .cinema-stage{position:absolute;inset:0 0 9%;z-index:0;overflow:hidden;touch-action:pan-y;outline-offset:-8px}
+.salon--cinema .cinema-stage{position:absolute;inset:0 0 9%;z-index:0;overflow:hidden;touch-action:pan-y pinch-zoom;outline-offset:-8px}
 .salon--cinema .cinema-stage:focus-visible{outline:1px solid rgba(238,234,225,.7)}
 .salon--cinema .cinema-scene{position:absolute;inset:0;z-index:0;opacity:0;pointer-events:none;transition:opacity 900ms cubic-bezier(.22,.8,.25,1)}
 .salon--cinema .cinema-scene.is-active{z-index:1;opacity:1}

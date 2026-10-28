@@ -250,7 +250,8 @@
 
   enlarge.addEventListener('click', () => {
     if (enlarge.disabled || !collection.open || piece.hidden) return;
-    restoreFocus = document.activeElement;
+    // Touch activation does not always focus a button before its click fires.
+    restoreFocus = enlarge;
     refresh();
     updateViewerPhoto();
     setZoom(false);
@@ -279,7 +280,9 @@
 
   // Vertical movement remains native page scrolling; only deliberate horizontal swipes browse.
   frame.addEventListener('pointerdown', event => {
-    if (event.pointerType !== 'touch' || !event.isPrimary) return;
+    if (event.pointerType !== 'touch') return;
+    // Multi-touch must not become a photograph-changing swipe.
+    if (!event.isPrimary) { clearGesture(); return; }
     gesture = { id: event.pointerId, x: event.clientX, y: event.clientY };
     frame.setPointerCapture?.(event.pointerId);
   });

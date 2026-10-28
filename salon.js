@@ -106,6 +106,7 @@
   let orbitAnchor = { yaw: 0, pitch: 0 };
   let orbitPose = { yaw: 0, pitch: 0 };
   let touchStart = null;
+  const touchPointers = new Set();
   let suppressClickUntil = 0;
   let keyboardInput = false;
   let pointerMotionIntent = null;
@@ -155,7 +156,13 @@
 
   function canOrbit() {
     return ready && !loading && mouseViewEnabled() &&
-      viewportVisible() && !documentHidden && !pageHidden && !modalOpen;
+      !touchPointers.size && viewportVisible() && !documentHidden && !pageHidden && !modalOpen;
+  }
+
+  function cancelTouch() {
+    if (touchPointers.size) suppressClickUntil = performance.now() + 350;
+    touchPointers.clear();
+    touchStart = null;
   }
 
   function setOrbitPose(yaw, pitch) {
@@ -233,6 +240,7 @@
     // Native viewport changes can precede (or invalidate) queued IO entries.
     // Visibility is current layout; an observer is only a request to recheck it.
     inViewport = viewportVisible();
+    if (!inViewport || documentHidden || pageHidden || modalOpen) cancelTouch();
     syncMouseControl();
     hero.dataset.reduced = String(reduce.matches);
     hero.dataset.visible = String(inViewport && !documentHidden && !pageHidden && !modalOpen);
@@ -240,7 +248,7 @@
     hero.dataset.orbitEnabled = String(interactive);
     if (!interactive) resetOrbit();
     const allowed = ready && !loading && !userPaused && !reduce.matches &&
-      inViewport && !documentHidden && !pageHidden && !modalOpen && !pointerEngaged;
+      inViewport && !documentHidden && !pageHidden && !modalOpen && !pointerEngaged && !touchPointers.size;
     if (!allowed) {
       clearAdvanceClock();
       progressAnimation?.pause();
@@ -468,23 +476,39 @@
     else syncPlayback();
   });
 
+  // Hold autoplay for touch without capturing or preventing native pan/pinch.
+  // Even a drag shorter than a chapter swipe must not activate its trailing click.
   stage.addEventListener('pointerdown', event => {
-    if (event.pointerType !== 'touch' || !event.isPrimary) return;
-    touchStart = { x: event.clientX, y: event.clientY, id: event.pointerId };
+    if (event.pointerType !== 'touch') return;
+    touchPointers.add(event.pointerId);
+    touchStart = event.isPrimary && touchPointers.size === 1 ?
+      { x: event.clientX, y: event.clientY, id: event.pointerId, moved: false, scene: current } : null;
+    syncPlayback();
   });
-  stage.addEventListener('pointercancel', () => {
-    touchStart = null;
+  stage.addEventListener('pointermove', event => {
+    if (!touchStart || event.pointerType !== 'touch' || event.pointerId !== touchStart.id) return;
+    touchStart.moved ||= Math.hypot(event.clientX - touchStart.x, event.clientY - touchStart.y) > 8;
+  });
+  stage.addEventListener('pointercancel', event => {
+    if (event.pointerType === 'touch') {
+      if (touchPointers.delete(event.pointerId)) suppressClickUntil = performance.now() + 350;
+      if (touchStart?.id === event.pointerId) touchStart = null;
+    } else cancelTouch();
     resetOrbit();
     syncPlayback();
   });
   stage.addEventListener('pointerup', event => {
-    if (!touchStart || event.pointerType !== 'touch' || event.pointerId !== touchStart.id) return;
-    const x = event.clientX - touchStart.x;
-    const y = event.clientY - touchStart.y;
-    touchStart = null;
-    if (Math.abs(x) <= 60 || Math.abs(x) <= Math.abs(y) * 1.5) return;
-    suppressClickUntil = performance.now() + 350;
-    requestScene(current + (x < 0 ? 1 : -1));
+    if (event.pointerType !== 'touch' || !touchPointers.delete(event.pointerId)) return;
+    const gesture = touchStart?.id === event.pointerId ? touchStart : null;
+    if (gesture) touchStart = null;
+    const x = gesture ? event.clientX - gesture.x : 0;
+    const y = gesture ? event.clientY - gesture.y : 0;
+    const moved = !gesture || gesture.moved || Math.hypot(x, y) > 8;
+    if (moved) suppressClickUntil = performance.now() + 350;
+    if (gesture && gesture.scene === current && !loading && !touchPointers.size &&
+      Math.abs(x) > 60 && Math.abs(x) > Math.abs(y) * 1.5) {
+      requestScene(current + (x < 0 ? 1 : -1));
+    } else syncPlayback();
   });
   hero.addEventListener('click', event => {
     if (performance.now() >= suppressClickUntil) return;
@@ -546,6 +570,12 @@
     if (turnChapter) requestScene(current + (dx < 0 ? 1 : -1));
   });
   stage.addEventListener('lostpointercapture', event => {
+    if (event.pointerType === 'touch' && touchPointers.delete(event.pointerId)) {
+      if (touchStart?.id === event.pointerId) touchStart = null;
+      suppressClickUntil = performance.now() + 350;
+      syncPlayback();
+      return;
+    }
     if (!orbitDrag || event.pointerId !== orbitDrag.id) return;
     resetOrbit();
     syncPlayback();
@@ -565,9 +595,9 @@
     resetOrbit();
     syncPlayback();
   });
-  window.addEventListener('resize', () => { resetOrbit(); syncPlayback(); }, { passive: true });
+  window.addEventListener('resize', () => { cancelTouch(); resetOrbit(); syncPlayback(); }, { passive: true });
   window.addEventListener('scroll', () => { if (viewportVisible() !== inViewport) syncPlayback(); }, { passive: true });
-  window.addEventListener('blur', () => { resetOrbit(); syncPlayback(); });
+  window.addEventListener('blur', () => { cancelTouch(); resetOrbit(); syncPlayback(); });
 
   document.addEventListener('visibilitychange', () => {
     documentHidden = document.visibilityState === 'hidden';

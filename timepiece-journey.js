@@ -426,7 +426,7 @@
           resize();
           const wanted = pendingPhase; pendingPhase = null;
           if (wanted !== null) {
-            if (!media.matches) {
+            if (scrollDriven()) {
               const rect = section.getBoundingClientRect();
               const stickyHeight = section.querySelector('.timepiece-viewport')?.getBoundingClientRect().height || innerHeight;
               window.scrollTo({ top: scrollY + rect.top + Math.max(0, rect.height - stickyHeight) * wanted / 2, behavior: 'auto' });

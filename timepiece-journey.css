@@ -7,8 +7,8 @@
 .timepiece-fallback{grid-area:visual;position:relative;z-index:0;display:block;min-width:0;width:100%;height:clamp(320px,44vw,680px);overflow:hidden;background:#0b1011;transition:opacity .35s ease-out}
 .timepiece-fallback img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;object-position:65% center}
 .timepiece-fallback-exploded{opacity:0;visibility:hidden}
-#timepieceStage{grid-area:visual;position:relative;z-index:1;min-width:0;width:100%;height:100%;min-height:320px;opacity:0;visibility:hidden;pointer-events:none;touch-action:pan-y;transition:opacity .35s ease-out}
-#timepieceStage canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+#timepieceStage{grid-area:visual;position:relative;z-index:1;min-width:0;width:100%;height:100%;min-height:320px;opacity:0;visibility:hidden;pointer-events:none;touch-action:pan-y pinch-zoom;transition:opacity .35s ease-out}
+#timepieceStage canvas{display:block;width:100%;height:100%;touch-action:pan-y pinch-zoom}
 #timepieceStage:focus-visible{outline:1px solid #c6b990;outline-offset:-3px}
 .timepiece-narrative{grid-area:narrative;position:relative;z-index:3;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:36px;min-width:0}
 .timepiece-chapter{min-width:0;max-width:40ch}
@@ -138,6 +138,27 @@
  .timepiece-journey.is-timepiece-ready .timepiece-chapter p{grid-column:1/-1;margin-top:9px;line-height:1.65}
  .timepiece-journey.is-timepiece-ready .timepiece-phases button{min-height:44px;padding-block:10px}
  .timepiece-journey.is-timepiece-ready .timepiece-note{font-size:12px;line-height:1.5}
+}
+/* Short phones use normal page flow; the model and controls must never compete for a fixed viewport. */
+@media(max-height:480px) and (max-width:1000px) and (prefers-reduced-motion:no-preference){
+ .timepiece-journey{--timepiece-gutter:clamp(20px,4vw,40px)}
+ .timepiece-journey.is-timepiece-ready{height:auto;min-height:0;scroll-margin-top:0}
+ .timepiece-journey.is-timepiece-ready .timepiece-viewport{position:relative;top:auto;display:grid;grid-template-areas:'heading visual' 'narrative visual' 'console console' 'note note';grid-template-columns:minmax(0,.85fr) minmax(0,1fr);grid-template-rows:auto auto auto auto;gap:22px 32px;height:auto;min-height:0;padding:36px var(--timepiece-gutter) 32px}
+ .timepiece-journey.is-timepiece-ready .timepiece-viewport::before{display:none}
+ .timepiece-journey.is-timepiece-ready .timepiece-heading{position:relative;inset:auto;display:block;width:auto;max-width:none}
+ .timepiece-journey.is-timepiece-ready .timepiece-heading h2{max-width:none;font-size:clamp(30px,4.5vw,42px);line-height:1.04}
+ .timepiece-journey.is-timepiece-ready .timepiece-heading>p{max-width:none;margin:0 0 12px;padding:0}
+ .timepiece-journey.is-timepiece-ready #timepieceStage,.timepiece-journey.is-timepiece-ready .timepiece-fallback{position:relative;inset:auto;min-width:0;width:100%;height:100%;min-height:260px;margin:0}
+ .timepiece-journey.is-timepiece-ready .timepiece-narrative{position:relative;inset:auto;width:auto;max-width:none;min-height:0}
+ .timepiece-journey.is-timepiece-ready .timepiece-console{position:relative;inset:auto;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 24px}
+ .timepiece-journey.is-timepiece-ready .timepiece-view-controls{position:relative;inset:auto;gap:18px}
+ .timepiece-journey.is-timepiece-ready .timepiece-hint{display:none}
+ .timepiece-journey.is-timepiece-ready .timepiece-note{position:relative;inset:auto;max-width:none;text-align:left}
+}
+@media(max-height:480px) and (max-width:700px) and (prefers-reduced-motion:no-preference){
+ .timepiece-journey.is-timepiece-ready .timepiece-viewport{grid-template-areas:'heading' 'visual' 'narrative' 'console' 'note';grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto auto auto;gap:22px;padding-block:30px}
+ .timepiece-journey.is-timepiece-ready #timepieceStage,.timepiece-journey.is-timepiece-ready .timepiece-fallback{height:clamp(240px,70vw,320px);min-height:240px}
+ .timepiece-journey.is-timepiece-ready .timepiece-console{gap:9px 14px}
 }
 @media(prefers-reduced-motion:reduce){
  .timepiece-journey.is-timepiece-ready{height:auto;min-height:0;scroll-margin-top:0}
