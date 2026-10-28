@@ -175,3 +175,5 @@
  .timepiece-journey .timepiece-chapter,.timepiece-journey .timepiece-fallback,.timepiece-journey #timepieceStage,.timepiece-journey button,.timepiece-journey .timepiece-browse{transition:none;translate:none}
 }
 @media(prefers-reduced-motion:reduce) and (max-width:700px){.timepiece-journey.is-timepiece-ready .timepiece-viewport{gap:24px;padding:54px 24px 34px}.timepiece-journey.is-timepiece-ready #timepieceStage,.timepiece-journey.is-timepiece-ready .timepiece-fallback{width:calc(100% + 48px);height:clamp(260px,90vw,430px);margin-inline:-24px}}
+/* A touch-only phone has no mouse view to toggle or reset, including landscape. */
+@media(any-hover:none){.timepiece-journey #timepieceLook,.timepiece-journey #timepieceReset{display:none}}
