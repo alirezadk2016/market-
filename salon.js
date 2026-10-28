@@ -87,8 +87,13 @@
   let documentHidden = document.visibilityState === 'hidden';
   let pageHidden = false;
   let modalOpen = !!document.querySelector('dialog[open]');
-  const initialBounds = hero.getBoundingClientRect();
-  let inViewport = initialBounds.bottom > 0 && initialBounds.top < innerHeight;
+  function viewportVisible() {
+    const bounds = hero.getBoundingClientRect();
+    const visibleWidth = Math.max(0, Math.min(bounds.left + bounds.width, innerWidth) - Math.max(bounds.left, 0));
+    const visibleHeight = Math.max(0, Math.min(bounds.top + bounds.height, innerHeight) - Math.max(bounds.top, 0));
+    return bounds.width > 0 && bounds.height > 0 && visibleWidth * visibleHeight / (bounds.width * bounds.height) > .2;
+  }
+  let inViewport = viewportVisible();
   let playing = false;
   let advanceTimer = null;
   let startedAt = 0;
@@ -150,7 +155,7 @@
 
   function canOrbit() {
     return ready && !loading && mouseViewEnabled() &&
-      inViewport && !documentHidden && !pageHidden && !modalOpen;
+      viewportVisible() && !documentHidden && !pageHidden && !modalOpen;
   }
 
   function setOrbitPose(yaw, pitch) {
@@ -225,6 +230,9 @@
   }
 
   function syncPlayback() {
+    // Native viewport changes can precede (or invalidate) queued IO entries.
+    // Visibility is current layout; an observer is only a request to recheck it.
+    inViewport = viewportVisible();
     syncMouseControl();
     hero.dataset.reduced = String(reduce.matches);
     hero.dataset.visible = String(inViewport && !documentHidden && !pageHidden && !modalOpen);
@@ -389,6 +397,7 @@
   selectors.forEach((button, index) => {
     button.addEventListener('click', () => requestScene(index));
     button.addEventListener('keydown', event => {
+      if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey) return;
       if (!['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(event.key)) return;
       event.preventDefault();
       const next = event.key === 'Home' ? 0 : event.key === 'End' ? collectionScenes.length - 1 :
@@ -398,6 +407,7 @@
     });
   });
   stage.addEventListener('keydown', event => {
+    if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey) return;
     if (event.key === 'Escape') {
       event.preventDefault();
       resetOrbit();
@@ -556,6 +566,7 @@
     syncPlayback();
   });
   window.addEventListener('resize', () => { resetOrbit(); syncPlayback(); }, { passive: true });
+  window.addEventListener('scroll', () => { if (viewportVisible() !== inViewport) syncPlayback(); }, { passive: true });
   window.addEventListener('blur', () => { resetOrbit(); syncPlayback(); });
 
   document.addEventListener('visibilitychange', () => {
@@ -580,8 +591,7 @@
     syncPlayback();
   }).observe(document.body, { attributes: true, attributeFilter: ['open'], subtree: true });
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver(([entry]) => {
-      inViewport = entry.isIntersecting && entry.intersectionRatio > .2;
+    new IntersectionObserver(() => {
       syncPlayback();
     }, { threshold: [0, .2] }).observe(hero);
     const header = document.querySelector('.header');

@@ -52,7 +52,8 @@
 .timepiece-journey.is-timepiece-controlled[data-timepiece-active='1'] .timepiece-fallback-exploded,.timepiece-journey.is-timepiece-controlled[data-timepiece-active='2'] .timepiece-fallback-exploded{opacity:1;visibility:visible}
 
 /* Only a successful renderer receives the long, sticky camera journey. */
-.timepiece-journey.is-timepiece-ready{height:330vh;height:330svh}
+/* The sticky scene already reserves its own header space; cancel the page's anchor padding. */
+.timepiece-journey.is-timepiece-ready{height:330vh;height:330svh;scroll-margin-top:-108px}
 .timepiece-journey.is-timepiece-ready .timepiece-viewport{position:sticky;top:0;display:block;height:100vh;height:100svh;min-height:0;padding:0}
 .timepiece-journey.is-timepiece-ready .timepiece-viewport::before{content:'';position:absolute;z-index:2;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(11,16,17,.99),rgba(11,16,17,.96) 32%,rgba(11,16,17,.66) 42%,rgba(11,16,17,0) 54%)}
 .timepiece-journey.is-timepiece-ready .timepiece-fallback{position:absolute;inset:0;height:100%;opacity:0;visibility:hidden}
@@ -105,7 +106,7 @@
  .timepiece-tools,.timepiece-view-controls{justify-self:start;gap:24px}
  .timepiece-note{gap:20px;max-width:none;font-size:12px;line-height:1.7;text-align:left}
  .timepiece-note>span{max-width:22ch}
- .timepiece-journey.is-timepiece-ready{height:235vh;height:235svh}
+ .timepiece-journey.is-timepiece-ready{height:235vh;height:235svh;scroll-margin-top:-84px}
  .timepiece-journey.is-timepiece-ready .timepiece-viewport{display:grid;grid-template-areas:'heading' 'visual' 'narrative' 'console' 'note';grid-template-rows:auto minmax(0,1fr) auto auto auto;gap:12px;height:100vh;height:100svh;padding:calc(var(--timepiece-header) + 13px) 24px 15px}
  .timepiece-journey.is-timepiece-ready .timepiece-viewport::before{display:none}
  .timepiece-journey.is-timepiece-ready .timepiece-heading{position:relative;inset:auto;width:auto;max-width:none}
@@ -139,7 +140,7 @@
  .timepiece-journey.is-timepiece-ready .timepiece-note{font-size:12px;line-height:1.5}
 }
 @media(prefers-reduced-motion:reduce){
- .timepiece-journey.is-timepiece-ready{height:auto;min-height:0}
+ .timepiece-journey.is-timepiece-ready{height:auto;min-height:0;scroll-margin-top:0}
  .timepiece-journey.is-timepiece-ready .timepiece-viewport{position:relative;top:auto;display:grid;grid-template-areas:'heading' 'visual' 'narrative' 'console' 'hint' 'note';grid-template-rows:auto;gap:28px;height:auto;min-height:0;padding:76px var(--timepiece-gutter) 46px}
  .timepiece-journey.is-timepiece-ready .timepiece-viewport::before{display:none}
  .timepiece-journey.is-timepiece-ready .timepiece-heading{position:relative;inset:auto;width:auto;max-width:700px}

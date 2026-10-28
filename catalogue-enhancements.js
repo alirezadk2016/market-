@@ -175,6 +175,7 @@
     return { buttons, total, selected };
   }
   function setZoom(enabled) {
+    if (enabled && zoom.disabled) return;
     if (!enabled) stopPan();
     viewer.classList.toggle('is-zoomed', enabled);
     zoom.setAttribute('aria-pressed', String(enabled));

@@ -16,6 +16,7 @@
   let progress = 0, targetProgress = 0, yaw = 0, pitch = 0, targetYaw = 0, targetPitch = 0;
   let pointer = null, mouseView = !media.matches && look?.getAttribute('aria-pressed') !== 'false', activePhase = -1;
   let pendingPhase = null, shaderFailed = false;
+  let cancelAnchorAlignment = null;
   let glass, dial, hands, strap, core, glassMaterial;
   const wheels = [];
   const clamp = (value, min = 0, max = 1) => Math.max(min, Math.min(max, value));
@@ -59,6 +60,7 @@
   }
   function fallback(reason) {
     if (dead) return;
+    cancelAnchorAlignment?.();
     dead = true; ready = false; stop(); cancelPointer();
     section.classList.remove('is-timepiece-ready');
     section.classList.add('is-timepiece-fallback');
@@ -95,7 +97,42 @@
     targetProgress = clamp(-rect.top / Math.max(1, rect.height - stickyHeight));
     phaseState(targetProgress); wake();
   }
+  function settleInitialAnchor() {
+    cancelAnchorAlignment?.();
+    if (media.matches || location.hash !== '#timepieceJourney' || !scrollDriven() || section.getBoundingClientRect().top <= .5) return;
+    // A lazy renderer can become ready while the initial smooth hash scroll is
+    // still travelling. Align once it rests, unless the visitor takes control.
+    let timer;
+    const intents = ['wheel', 'touchstart', 'pointerdown', 'keydown'];
+    const stop = () => {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', defer);
+      window.removeEventListener('hashchange', stop);
+      document.removeEventListener('scrollend', align);
+      intents.forEach(type => document.removeEventListener(type, stop, true));
+      if (cancelAnchorAlignment === stop) cancelAnchorAlignment = null;
+    };
+    const align = () => {
+      stop();
+      if (dead || media.matches || pageHidden || document.visibilityState === 'hidden' ||
+        location.hash !== '#timepieceJourney' || !scrollDriven() || document.querySelector('dialog[open]')) return;
+      const rect = section.getBoundingClientRect();
+      const anchorPadding = parseFloat(window.getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+      if (rect.top > .5 && rect.top <= anchorPadding + 16) {
+        window.scrollTo({ top: scrollY + rect.top, behavior: 'auto' });
+        targetProgress = progress = 0; phaseState(0); wake();
+      }
+    };
+    const defer = () => { clearTimeout(timer); timer = setTimeout(align, 120); };
+    cancelAnchorAlignment = stop;
+    window.addEventListener('scroll', defer, { passive: true });
+    window.addEventListener('hashchange', stop);
+    document.addEventListener('scrollend', align, { once: true });
+    intents.forEach(type => document.addEventListener(type, stop, { capture: true, passive: true }));
+    defer();
+  }
   function choosePhase(index) {
+    cancelAnchorAlignment?.();
     index = clamp(index, 0, 2);
     const value = index / 2;
     if (media.matches || !ready || dead || !scrollDriven()) {
@@ -395,7 +432,7 @@
               window.scrollTo({ top: scrollY + rect.top + Math.max(0, rect.height - stickyHeight) * wanted / 2, behavior: 'auto' });
             }
             targetProgress = progress = wanted / 2; phaseState(targetProgress); wake();
-          }
+          } else settleInitialAnchor();
         });
       }
       section.dataset.timepieceRendering = 'active';
@@ -431,7 +468,7 @@
   listen(window, 'scroll', measureScroll, { passive: true });
   listen(window, 'resize', resize, { passive: true });
   listen(window, 'focus', wake);
-  listen(window, 'pagehide', () => { pageHidden = true; cancelPointer(); stop(); });
+  listen(window, 'pagehide', () => { pageHidden = true; cancelAnchorAlignment?.(); cancelPointer(); stop(); });
   listen(window, 'pageshow', () => { pageHidden = false; resize(); wake(); });
   listen(document, 'visibilitychange', () => { if (allowed()) wake(); else { cancelPointer(); stop(); } });
   listen(media, 'change', () => { cancelPointer(); targetYaw = targetPitch = 0; if (media.matches) { mouseView = false; syncLook(); targetProgress = progress = activePhase < 0 ? 0 : activePhase / 2; } resize(); wake(); });

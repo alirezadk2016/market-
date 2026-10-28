@@ -93,6 +93,7 @@
       button.append(make('span', '', collectionNames[key]), make('span', 'catalogue-collection-count', String(pieceCount(key))));
       button.addEventListener('click', () => openCollection(key, { fromNav: true }));
       button.addEventListener('keydown', event => {
+        if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
         if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
         event.preventDefault();
         const next = event.key === 'Home' ? 0 : event.key === 'End' ? collectionKeys.length - 1 :

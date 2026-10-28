@@ -36,6 +36,7 @@
   const asset = path => new URL(path, base).href;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const keys = ['bags', 'eyewear', 'watches', 'headwear'];
+  const bayAngle = Math.PI / 4;
   const photography = {
     bags: { wide: 'hero-bags-wide-v1.webp', portrait: 'hero-bags-portrait-v1.webp' },
     eyewear: { wide: 'hero-eyewear-wide-v1.webp', portrait: 'hero-eyewear-portrait-v1.webp' },
@@ -47,7 +48,7 @@
   host.setAttribute('aria-hidden', 'true');
   stage.prepend(host);
 
-  let renderer, scene, camera, ring, THREE, masonryMaterial, coveMaterial;
+  let renderer, scene, camera, ring, THREE, masonryMaterial;
   let destroyed = false, ready = false, inView = true, pageHidden = false, shaderFailed = false, frame = 0, lastTime = 0;
   let targetStep = Math.max(0, keys.indexOf(hero.dataset.scene));
   let angle = -targetStep * Math.PI / 4;
@@ -58,7 +59,6 @@
   let width = 0, height = 0, narrow = false;
   let textureMode = null, pendingTextureMode = null, textureLoading = false, textureRevision = 0;
   let currentTextures = [];
-  const foreground = [];
   const posters = [];
   const artworks = [];
   const occluders = [];
@@ -72,6 +72,14 @@
   function allowed() {
     return ready && !destroyed && !textureLoading && inView && !pageHidden && hero.dataset.visible !== 'false' && document.visibilityState !== 'hidden' &&
       !document.querySelector('dialog[open]');
+  }
+  function viewportVisible() {
+    const bounds = hero.getBoundingClientRect();
+    const viewportWidth = window.innerWidth || stage.clientWidth;
+    const viewportHeight = window.innerHeight || stage.clientHeight;
+    const visibleWidth = Math.max(0, Math.min(bounds.left + bounds.width, viewportWidth) - Math.max(bounds.left, 0));
+    const visibleHeight = Math.max(0, Math.min(bounds.top + bounds.height, viewportHeight) - Math.max(bounds.top, 0));
+    return bounds.width > 0 && bounds.height > 0 && visibleWidth * visibleHeight / (bounds.width * bounds.height) > .05;
   }
 
   function suspend() {
@@ -97,7 +105,8 @@
     host.remove();
   }
 
-  function wake() {
+  function wake(refreshVisibility = true) {
+    if (refreshVisibility) inView = viewportVisible();
     if (!allowed()) { suspend(); return; }
     if (!frame) frame = requestAnimationFrame(render);
   }
@@ -177,14 +186,6 @@
     }
   }
 
-  function addBox(parent, geometry, material, x, y, z) {
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(x, y, z);
-    parent.add(mesh);
-    occluders.push(mesh);
-    return mesh;
-  }
-
   function stoneTexture() {
     const canvas = document.createElement('canvas');
     canvas.width = canvas.height = 256;
@@ -238,6 +239,7 @@
       metalness: .04, roughness: .84, emissive: '#101712', emissiveIntensity: .15
     }));
     const floor = new THREE.Mesh(disposeGeometry(new THREE.PlaneGeometry(72, 72)), floorMaterial);
+    floor.name = 'salon-floor'; floor.userData.spatialRole = 'floor';
     floor.rotation.x = -Math.PI / 2;
     floor.position.z = -12;
     scene.add(floor);
@@ -245,27 +247,24 @@
     masonryMaterial = disposeMaterial(new THREE.MeshStandardMaterial({
       color: '#9ca699', map: stone, bumpMap: relief, bumpScale: .018, roughness: .88, metalness: .03
     }));
-    coveMaterial = disposeMaterial(new THREE.MeshStandardMaterial({
-      color: '#766d57', roughness: .58, metalness: .32, emissive: '#302719', emissiveIntensity: .15
-    }));
-    const finGeometry = disposeGeometry(new THREE.BoxGeometry(1, 1, 1));
-    foreground.push(addBox(scene, finGeometry, masonryMaterial, -3.8, 3.4, 2.3));
-    foreground.push(addBox(scene, finGeometry, masonryMaterial, 4.8, 3.4, 2));
   }
 
   function buildExhibits(textures) {
     ring = new THREE.Group();
     scene.add(ring);
-    const opening = Math.PI * 2 / 9;
+    // Adjacent photographs cover the complete ring; there is no five-degree
+    // structural gap, column, frame or foreground casing between chapters.
+    const opening = bayAngle;
     const photographicCurve = disposeGeometry(new THREE.CylinderGeometry(1, 1, 1, 48, 1, true, -opening / 2, opening));
     const wallCurve = disposeGeometry(new THREE.CylinderGeometry(1, 1, 1, 48, 1, true, -Math.PI / 8, Math.PI / 4));
-    const revealGeometry = disposeGeometry(new THREE.BoxGeometry(1, 1, 1));
     for (let i = 0; i < 8; i++) {
       const category = i % 4;
       const panel = new THREE.Group();
+      panel.name = 'photo-bay-' + i;
       const panelAngle = i * Math.PI / 4;
       panel.rotation.y = panelAngle;
       const backing = new THREE.Mesh(wallCurve, masonryMaterial);
+      backing.name = 'continuous-wall-bay-' + i; backing.userData.spatialRole = 'backing-wall';
       panel.add(backing);
       occluders.push(backing);
       const artworkMaterial = disposeMaterial(new THREE.MeshBasicMaterial({
@@ -276,24 +275,22 @@
         shader.fragmentShader = shader.fragmentShader.replace('#include <map_fragment>', [
           '#include <map_fragment>',
           '#ifdef USE_MAP',
-          'float azSide = smoothstep(0.0, 0.028, vMapUv.x) * smoothstep(0.0, 0.028, 1.0 - vMapUv.x);',
+          'float azSide = smoothstep(0.0, 0.003, vMapUv.x) * smoothstep(0.0, 0.003, 1.0 - vMapUv.x);',
           'float azFloor = smoothstep(0.0, 0.075, vMapUv.y);',
           'float azCeiling = smoothstep(0.0, 0.045, 1.0 - vMapUv.y);',
           'diffuseColor.a *= azSide * azFloor * azCeiling;',
           '#endif'
         ].join('\n'));
       };
-      artworkMaterial.customProgramCacheKey = () => 'az-architectural-portal-v1';
+      artworkMaterial.customProgramCacheKey = () => 'az-open-photographic-gallery-v2';
       const artwork = new THREE.Mesh(photographicCurve, artworkMaterial);
       artwork.userData.collection = keys[category];
       artwork.userData.chapter = category;
+      artwork.userData.spatialRole = 'photograph';
       panel.add(artwork);
       artworks.push(artwork);
-      const returns = [-1, 1].map(() => addBox(panel, revealGeometry, masonryMaterial, 0, 3.4, 0));
-      const lintel = addBox(panel, revealGeometry, masonryMaterial, 0, 6.35, 0);
-      const cove = addBox(panel, revealGeometry, coveMaterial, 0, 6.12, 0);
       ring.add(panel);
-      posters.push({ panel, material: artworkMaterial, angle: panelAngle, category, artwork, backing, returns, lintel, cove });
+      posters.push({ panel, material: artworkMaterial, angle: panelAngle, category, artwork, backing });
     }
   }
 
@@ -314,7 +311,7 @@
     ray.setFromCamera(point, camera);
     const hit = ray.intersectObjects(artworks, false)[0];
     if (!hit) return;
-    // Do not select a photograph through a solid casing, architectural wall or floor.
+    // Do not select a photograph through the continuous backing wall or floor.
     const obstruction = ray.intersectObjects(occluders, false)[0];
     if (obstruction && obstruction.distance < hit.distance - .005) return;
     const key = hit.object.userData.collection;
@@ -352,7 +349,12 @@
     const radius = narrow ? 5.5 : 18.4;
     ring.position.z = -radius;
     const aspect = width / height;
-    const distance = narrow ? 8.2 + Math.max(0, .44 - aspect) * 5 : 9.6;
+    const tangent = Math.tan(camera.fov * Math.PI / 360);
+    const edgeDepth = radius * (1 - Math.cos(bayAngle / 2));
+    // Let the active curved photograph bleed beyond the phone edges. Only its
+    // outer background trims; the merchandise remains inside the composed frame.
+    const widthFit = radius * Math.sin(bayAngle / 2) / (tangent * aspect * 1.04) - edgeDepth;
+    const distance = narrow ? Math.max(8.2, widthFit) : 10.5;
     const cameraBaseX = 0;
     const targetY = narrow ? 2.6 : 2.35;
     const mouseGain = narrow ? .065 : .105;
@@ -360,32 +362,14 @@
     camera.lookAt(cameraBaseX - yaw * .022, targetY + pitch * .035, -.2);
     posters.forEach(poster => {
       const image = poster.material.map.image;
-      const photoHeight = radius * (Math.PI * 2 / 9) / (image.width / image.height);
+      const photoHeight = radius * bayAngle / (image.width / image.height);
       poster.artwork.scale.set(radius, photoHeight, radius);
       poster.artwork.position.y = photoHeight / 2;
       poster.backing.scale.set(radius - .08, 6.8, radius - .08);
       poster.backing.position.y = 3.4;
-      const revealAngle = (narrow ? 15 : 17) * Math.PI / 180;
-      const revealRadius = radius + (narrow ? .12 : .9);
-      poster.returns.forEach((wall, i) => {
-        const a = revealAngle * (i ? 1 : -1);
-        wall.position.set(Math.sin(a) * revealRadius, 3.4, Math.cos(a) * revealRadius);
-        wall.rotation.y = a;
-        wall.scale.set(narrow ? .18 : .65, 6.8, narrow ? .72 : 1.8);
-      });
-      const openingWidth = Math.sin(revealAngle) * revealRadius * 2;
-      poster.lintel.position.set(0, 6.35, radius + .12);
-      poster.lintel.scale.set(openingWidth + (narrow ? .22 : .8), .42, narrow ? .72 : 1.8);
-      poster.cove.position.set(0, 6.12, radius + .18);
-      poster.cove.scale.set(openingWidth, .018, narrow ? .16 : .24);
       const facing = Math.max(0, Math.cos(poster.angle + worldAngle));
       const exposure = .14 + .86 * Math.pow(facing, 7.5);
       poster.material.color.setRGB(exposure, exposure, exposure);
-    });
-    foreground.forEach((fin, i) => {
-      fin.visible = !narrow;
-      fin.position.set(i ? 4.8 : -3.8, 3.4, i ? 2 : 2.3);
-      fin.scale.set(i ? .6 : .75, 6.8, 1.8);
     });
 
     try {
@@ -403,7 +387,7 @@
     }
     const moving = Math.abs(desiredAngle - angle) > .00012 || Math.abs(desiredDragOffset - dragOffset) > .00012 ||
       Math.abs(targetYaw - yaw) > .002 || Math.abs(targetPitch - pitch) > .002;
-    if (moving || playing) wake();
+    if (moving || playing) wake(false);
     else { host.dataset.rendering = 'idle'; lastTime = 0; }
   }
 
@@ -438,7 +422,7 @@
     changes.observe(hero, { attributes: true, attributeFilter: ['data-scene', 'data-playing', 'data-mouse-view', 'data-visible', 'data-reduced'] });
     changes.observe(stage, { attributes: true, attributeFilter: ['style', 'class'] });
     observers.push(changes);
-    const dialogs = new MutationObserver(() => allowed() ? wake() : suspend());
+    const dialogs = new MutationObserver(() => wake());
     dialogs.observe(document.body, { subtree: true, attributes: true, attributeFilter: ['open'] });
     observers.push(dialogs);
     if ('ResizeObserver' in window) {
@@ -447,18 +431,22 @@
       observers.push(sizing);
     }
     if ('IntersectionObserver' in window) {
-      const visibility = new IntersectionObserver(([entry]) => {
-        inView = entry.isIntersecting && entry.intersectionRatio > .05;
-        if (inView) wake(); else suspend();
+      const visibility = new IntersectionObserver(() => {
+        inView = viewportVisible();
+        if (inView) wake(false); else suspend();
       }, { threshold: [0, .05] });
       visibility.observe(hero);
       observers.push(visibility);
     }
-    document.addEventListener('visibilitychange', () => allowed() ? wake() : suspend());
+    document.addEventListener('visibilitychange', () => wake());
     window.addEventListener('pagehide', () => { pageHidden = true; suspend(); });
     window.addEventListener('pageshow', () => { pageHidden = false; wake(); });
     window.addEventListener('focus', wake);
     window.addEventListener('resize', resize, { passive: true });
+    window.addEventListener('scroll', () => {
+      const next = viewportVisible();
+      if (next !== inView) { inView = next; wake(false); }
+    }, { passive: true });
     reduced.addEventListener('change', wake);
     wake();
   }
