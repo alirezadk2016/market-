@@ -1,6 +1,8 @@
 /* Photograph browsing stays attached to the catalogue's real thumbnail controls. */
 (() => {
   'use strict';
+  const t = (key, fallback) => (window.AZ ? window.AZ.t(key) : fallback);
+
   const collection = document.getElementById('collectionRoom');
   const piece = document.getElementById('cataloguePiece');
   const photo = document.getElementById('cataloguePhoto');
@@ -121,16 +123,16 @@
   counter.setAttribute('aria-live', 'polite');
   counter.setAttribute('aria-atomic', 'true');
   const actions = make('div', 'catalogue-photo-actions');
-  const previous = button('catalogue-photo-step', 'Prev', 'Previous product photograph');
-  const next = button('catalogue-photo-step', 'Next', 'Next product photograph');
-  const enlarge = button('catalogue-photo-enlarge', 'View larger', 'Open full product photograph');
+  const previous = button('catalogue-photo-step', t('cat.prev', 'Prev'), t('photo.prevLabel', 'Previous product photograph'));
+  const next = button('catalogue-photo-step', t('cat.next', 'Next'), t('photo.nextLabel', 'Next product photograph'));
+  const enlarge = button('catalogue-photo-enlarge', t('cat.viewLarger', 'View larger'), t('photo.enlargeLabel', 'Open full product photograph'));
   actions.append(previous, next, enlarge);
   tools.append(counter, actions);
   frame.after(tools);
   frame.tabIndex = 0;
   frame.setAttribute('role', 'group');
   frame.setAttribute('aria-keyshortcuts', 'ArrowLeft ArrowRight Home End');
-  const missing = make('span', 'catalogue-photo-error', 'Photograph unavailable. Choose another view.');
+  const missing = make('span', 'catalogue-photo-error', t('photo.missing', 'Photograph unavailable.'));
   missing.hidden = true;
   frame.append(missing);
 
@@ -140,9 +142,9 @@
   const viewerHeader = make('div', 'catalogue-viewer-header');
   const viewerTitle = make('h2', 'catalogue-viewer-title');
   viewerTitle.id = 'catalogueViewerTitle';
-  const zoom = button('catalogue-viewer-zoom', 'Zoom in', 'Zoom product photograph');
+  const zoom = button('catalogue-viewer-zoom', t('photo.zoom', 'Zoom in'), t('photo.zoomLabel', 'Zoom product photograph'));
   zoom.setAttribute('aria-pressed', 'false');
-  const close = button('catalogue-viewer-close', 'Close', 'Close full product photograph');
+  const close = button('catalogue-viewer-close', t('cat.close', 'Close'), t('photo.closeLabel', 'Close full product photograph'));
   viewerHeader.append(viewerTitle, zoom, close);
   const viewport = make('div', 'catalogue-viewer-viewport');
   const canvas = make('div', 'catalogue-viewer-canvas');
@@ -150,15 +152,15 @@
   viewerPhoto.alt = '';
   viewerPhoto.draggable = false;
   canvas.append(viewerPhoto);
-  const viewerMissing = make('span', 'catalogue-photo-error', 'Photograph unavailable. Choose another view.');
+  const viewerMissing = make('span', 'catalogue-photo-error', t('photo.missing', 'Photograph unavailable.'));
   viewerMissing.hidden = true;
   viewport.append(canvas, viewerMissing);
   const viewerFooter = make('div', 'catalogue-viewer-footer');
-  const viewerPrevious = button('catalogue-viewer-step', 'Previous', 'Previous full product photograph');
+  const viewerPrevious = button('catalogue-viewer-step', t('photo.previous', 'Previous'), t('photo.prevFullLabel', 'Previous full product photograph'));
   const viewerCounter = make('span', 'catalogue-photo-counter');
   viewerCounter.setAttribute('aria-live', 'polite');
   viewerCounter.setAttribute('aria-atomic', 'true');
-  const viewerNext = button('catalogue-viewer-step', 'Next', 'Next full product photograph');
+  const viewerNext = button('catalogue-viewer-step', t('cat.next', 'Next'), t('photo.nextFullLabel', 'Next full product photograph'));
   viewerFooter.append(viewerPrevious, viewerCounter, viewerNext);
   viewer.append(viewerHeader, viewport, viewerFooter);
   document.body.append(viewer);

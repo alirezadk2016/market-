@@ -149,7 +149,10 @@
   function syncLook() {
     if (look) {
       look.setAttribute('aria-pressed', String(mouseView));
-      const label = look.querySelector('span'); if (label) label.textContent = mouseView ? 'On' : 'Off';
+      // The button now carries its own label span as well, so the state is
+      // addressed by class rather than by being the first span in the button.
+      const label = look.querySelector('.timepiece-look-state') || look.querySelector('span');
+      if (label) label.textContent = window.AZ ? window.AZ.t(mouseView ? 'hero.on' : 'hero.off') : (mouseView ? 'On' : 'Off');
     }
     section.dataset.timepieceLook = String(mouseView);
   }

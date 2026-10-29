@@ -27,7 +27,16 @@
   const compose = document.getElementById('salonCompose');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const phone = matchMedia('(max-width: 700px)');
-  const collectionNames = { bags: 'Bags', eyewear: 'Eyewear', watches: 'Timepieces', headwear: 'Headwear' };
+  const t = (key, fallback) => (window.AZ ? window.AZ.t(key) : fallback);
+  const field = (record, key) => (window.AZ ? window.AZ.field(record, key) : (record && record[key]) || '');
+  const colourOf = variant => (window.AZ ? window.AZ.colour(variant) : (variant && variant.color) || '');
+  const detailsOf = record => (window.AZ ? window.AZ.details(record) : (record && record.details) || {});
+  const rangeTitle = key => field(RANGES[key], 'title') || t('cat.theCollection', 'The collection');
+  const collectionKeyNames = { bags: 'col.bags', eyewear: 'col.eyewear', watches: 'col.watches', headwear: 'col.headwear' };
+  const collectionNames = new Proxy({}, { get: (_, key) => t(collectionKeyNames[key], String(key)),
+    has: (_, key) => Object.prototype.hasOwnProperty.call(collectionKeyNames, key),
+    ownKeys: () => Reflect.ownKeys(collectionKeyNames),
+    getOwnPropertyDescriptor: () => ({ enumerable: true, configurable: true }) });
   const collectionKeys = Object.keys(collectionNames).filter(key => Object.prototype.hasOwnProperty.call(RANGES, key));
   const choicesByCollection = new Map();
   let collectionKey = 'bags';
@@ -70,8 +79,8 @@
 
   function updateDraft() {
     const key = enquiryCollection.value;
-    const collection = Object.prototype.hasOwnProperty.call(RANGES, key) ? RANGES[key].title : 'help choosing a piece';
-    const body = 'Hello A.z,\n\nI would like advice on ' + collection + '.' +
+    const collection = Object.prototype.hasOwnProperty.call(RANGES, key) ? rangeTitle(key) : t('mail.helpChoosing', 'help choosing a piece');
+    const body = t('mail.greeting', 'Hello A.z,') + '\n\n' + t('mail.wants', 'I would like advice on') + ' ' + collection + '.' +
       (preferences.value.trim() ? '\n\n' + preferences.value.trim() : '');
     compose.href = 'mailto:alirezadk2020@gmail.com?subject=' + encodeURIComponent('A.z private enquiry · ' + collection) + '&body=' + encodeURIComponent(body);
   }
@@ -116,14 +125,14 @@
     });
   }
   function fillFilters() {
-    fillOptions(houseFilter, 'All houses', items.filter(item => usableVariants(item).length).map(item => item.name));
-    fillOptions(colourFilter, 'All colours', items.flatMap(item => usableVariants(item).map(variant => variant.color)));
+    fillOptions(houseFilter, t('cat.allHouses', 'All houses'), items.filter(item => usableVariants(item).length).map(item => item.name));
+    fillOptions(colourFilter, t('cat.allColours', 'All colours'), items.flatMap(item => usableVariants(item).map(variant => colourOf(variant))));
   }
   function eligibleVariants(item, variants, tokens) {
     if (houseFilter.value && item.name !== houseFilter.value) return [];
     return variants.reduce((eligible, variant, index) => {
-      if (colourFilter.value && variant.color !== colourFilter.value) return eligible;
-      const text = normalize([item.name, item.note, variant.color].filter(Boolean).join(' '));
+      if (colourFilter.value && colourOf(variant) !== colourFilter.value) return eligible;
+      const text = normalize([item.name, item.note, field(item, 'note'), variant.color, colourOf(variant)].filter(Boolean).join(' '));
       if (tokens.every(token => text.includes(token))) eligible.push(index);
       return eligible;
     }, []);
@@ -138,7 +147,7 @@
     const image = make('img');
     image.loading = 'lazy';
     image.decoding = 'async';
-    const imageError = make('span', 'catalogue-image-error', 'Photograph unavailable');
+    const imageError = make('span', 'catalogue-image-error', t('cat.photoUnavailable', 'Photograph unavailable'));
     imageError.hidden = true;
     function presentImage() {
       if (!image.naturalWidth) return;
@@ -155,9 +164,9 @@
     image.addEventListener('error', failedImage);
     const number = make('span', 'catalogue-photo-number', String(index + 1).padStart(2, '0'));
     number.setAttribute('aria-hidden', 'true');
-    well.append(image, imageError, number, make('span', 'catalogue-view-label', 'View piece'));
+    well.append(image, imageError, number, make('span', 'catalogue-view-label', t('cat.viewPiece', 'View piece')));
     const copy = make('span', 'catalogue-card-copy');
-    copy.append(make('span', 'catalogue-card-house', item.name || ''), make('span', 'catalogue-card-name', item.note || ''));
+    copy.append(make('span', 'catalogue-card-house', item.name || ''), make('span', 'catalogue-card-name', field(item, 'note')));
     action.append(well, copy);
     action.addEventListener('click', () => showPiece(index, selected));
     const footer = make('div', 'catalogue-card-footer');
@@ -165,7 +174,7 @@
     const swatches = make('div', 'catalogue-card-swatches');
     if (eligible.length > 1) {
       swatches.setAttribute('role', 'group');
-      swatches.setAttribute('aria-label', 'Colours for ' + [item.name, item.note].filter(Boolean).join(' '));
+      swatches.setAttribute('aria-label', t('cat.coloursFor', 'Colours for') + ' ' + [item.name, field(item, 'note')].filter(Boolean).join(' '));
     } else swatches.setAttribute('aria-hidden', 'true');
     function updateCard(variantIndex, remember) {
       selected = variantIndex;
@@ -173,14 +182,16 @@
       well.classList.remove('is-portrait', 'is-full-photo', 'is-image-error');
       imageError.hidden = true;
       image.src = imagesFor(variant)[0];
-      image.alt = [item.name, item.note, variant.color].filter(Boolean).join(' · ');
+      image.alt = [item.name, field(item, 'note'), colourOf(variant)].filter(Boolean).join(' · ');
       well.classList.toggle('is-full-photo', /(?:^|\/)sella-sand\.webp(?:[?#].*)?$/.test(image.getAttribute('src') || ''));
       if (image.complete) {
         if (image.naturalWidth) presentImage();
         else failedImage();
       }
-      action.setAttribute('aria-label', 'Discover ' + item.name + ' ' + item.note + ' in ' + (variant.color || 'the current colour'));
-      colour.textContent = (variant.color || 'Current colour') + (variants.length > 1 ? ' · ' + variants.length + ' colours' : '');
+      action.setAttribute('aria-label', t('cat.discover', 'Discover') + ' ' + item.name + ' ' + field(item, 'note') + ' ' +
+        t('cat.inColour', 'in') + ' ' + (colourOf(variant) || t('cat.theCurrentColour', 'the current colour')));
+      colour.textContent = (colourOf(variant) || t('cat.currentColour', 'Current colour')) +
+        (variants.length > 1 ? ' · ' + variants.length + ' ' + t('cat.colours', 'colours') : '');
       swatches.querySelectorAll('button').forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.variantIndex) === selected)));
       if (remember) currentChoices().set(index, selected);
     }
@@ -192,15 +203,16 @@
       if (eligible.length === 1) {
         const single = make('span', 'catalogue-card-swatch-static');
         single.setAttribute('aria-hidden', 'true');
-        single.title = variant.color || 'Current colour';
+        single.title = colourOf(variant) || t('cat.currentColour', 'Current colour');
         single.append(dot);
         swatches.append(single);
       } else {
         const button = make('button');
         button.type = 'button';
         button.dataset.variantIndex = String(variantIndex);
-        button.title = variant.color || 'Colour ' + (variantIndex + 1);
-        button.setAttribute('aria-label', (variant.color || 'Colour ' + (variantIndex + 1)) + ' for ' + [item.name, item.note].filter(Boolean).join(' '));
+        button.title = colourOf(variant) || t('cat.colour', 'Colour') + ' ' + (variantIndex + 1);
+        button.setAttribute('aria-label', (colourOf(variant) || t('cat.colour', 'Colour') + ' ' + (variantIndex + 1)) +
+          ' · ' + [item.name, field(item, 'note')].filter(Boolean).join(' '));
         button.setAttribute('aria-pressed', String(variantIndex === selected));
         button.append(dot);
         button.addEventListener('click', () => updateCard(variantIndex, true));
@@ -223,11 +235,12 @@
     });
     grid.replaceChildren(...nodes);
     const visible = nodes.length;
-    count.textContent = visible === total ? visible + ' ' + (visible === 1 ? 'piece' : 'pieces') : visible + ' of ' + total + ' pieces';
+    count.textContent = visible === total ? visible + ' ' + window.AZ.plural(visible)
+      : visible + ' ' + t('cat.of', 'of') + ' ' + total + ' ' + t('cat.pieces', 'pieces');
     empty.hidden = visible !== 0;
     clear.hidden = search.value.length === 0;
     const filterCount = Number(Boolean(houseFilter.value)) + Number(Boolean(colourFilter.value));
-    filterSummary.textContent = 'Refine selection' + (filterCount ? ' · ' + filterCount : '');
+    filterSummary.textContent = t('cat.refine', 'Refine selection') + (filterCount ? ' · ' + filterCount : '');
     reset.hidden = !tokens.length && !filterCount;
   }
   function refine() {
@@ -245,20 +258,21 @@
 
   function showPhoto(shots, index) {
     photo.src = shots[index];
-    photo.alt = [selectedPiece.name, selectedPiece.note, selectedVariant.color].filter(Boolean).join(' · ') + ' · view ' + (index + 1) + ' of ' + shots.length;
+    photo.alt = [selectedPiece.name, field(selectedPiece, 'note'), colourOf(selectedVariant)].filter(Boolean).join(' · ') +
+      ' · ' + t('cat.view', 'view') + ' ' + (index + 1) + ' ' + t('cat.of', 'of') + ' ' + shots.length;
     thumbnails.querySelectorAll('button').forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
   }
   function showVariant(variant, index) {
     selectedVariant = variant;
     currentChoices().set(lastCard, index);
-    document.getElementById('catalogueColour').textContent = variant.color || '';
+    document.getElementById('catalogueColour').textContent = colourOf(variant);
     variantsRoot.querySelectorAll('button').forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
     const shots = imagesFor(variant);
     thumbnails.replaceChildren();
     if (shots.length > 1) shots.forEach((src, i) => {
       const button = make('button');
       button.type = 'button';
-      button.setAttribute('aria-label', 'View photograph ' + (i + 1) + ' of ' + selectedPiece.note);
+      button.setAttribute('aria-label', t('cat.viewPhoto', 'View photograph') + ' ' + (i + 1) + ' ' + t('cat.of', 'of') + ' ' + field(selectedPiece, 'note'));
       button.setAttribute('aria-pressed', String(i === 0));
       const image = make('img');
       image.src = src;
@@ -284,8 +298,8 @@
     dialog.classList.add('is-piece');
     dialog.setAttribute('aria-labelledby', 'cataloguePieceTitle');
     document.getElementById('catalogueHouse').textContent = item.name || '';
-    document.getElementById('cataloguePieceTitle').textContent = item.note || 'The piece';
-    document.getElementById('catalogueDescription').textContent = item.story || '';
+    document.getElementById('cataloguePieceTitle').textContent = field(item, 'note') || t('cat.thePiece', 'The piece');
+    document.getElementById('catalogueDescription').textContent = field(item, 'story');
     variantsRoot.replaceChildren();
     variantsRoot.hidden = variants.length < 2;
     variants.forEach((variant, i) => {
@@ -294,13 +308,13 @@
       const swatch = make('span');
       swatch.setAttribute('aria-hidden', 'true');
       swatch.style.backgroundColor = variant.hex || '#777';
-      button.append(swatch, document.createTextNode(variant.color || 'Colour ' + (i + 1)));
+      button.append(swatch, document.createTextNode(colourOf(variant) || t('cat.colour', 'Colour') + ' ' + (i + 1)));
       button.addEventListener('click', () => showVariant(variant, i));
       variantsRoot.append(button);
     });
     const specifications = document.getElementById('catalogueSpecifications');
     specifications.replaceChildren();
-    Object.entries(item.details || {}).forEach(([key, value]) => {
+    Object.entries(detailsOf(item)).forEach(([key, value]) => {
       const row = make('div');
       row.append(make('dt', '', key), make('dd', '', String(value)));
       specifications.append(row);
@@ -319,9 +333,9 @@
       retailerRow.hidden = !usable;
       if (usable) {
         retailerLink.href = retailer.url;
-        retailerLink.textContent = retailer.name || 'View the piece';
+        retailerLink.textContent = retailer.name || t('cat.viewPiece', 'View piece');
         retailerLink.setAttribute('aria-label',
-          (retailer.name || 'The retailer') + ' — opens in a new tab');
+          (retailer.name || t('cat.theRetailer', 'The retailer')) + ' ' + t('cat.newTab', '— opens in a new tab'));
       }
     }
     showVariant(variants[variantIndex] || variants[0], variants[variantIndex] ? variantIndex : 0);
@@ -346,7 +360,7 @@
     collectionNav.hidden = false;
     dialog.classList.remove('is-piece');
     dialog.setAttribute('aria-labelledby', 'collectionRoomTitle');
-    document.getElementById('collectionRoomTitle').textContent = RANGES[key].title || 'The collection';
+    document.getElementById('collectionRoomTitle').textContent = rangeTitle(key);
     collectionNav.querySelectorAll('[data-browse-collection]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.browseCollection === key)));
     renderCards();
     if (!dialog.open) dialog.showModal();
@@ -381,7 +395,8 @@
   document.getElementById('emptyCatalogueReset').addEventListener('click', resetRefinements);
   document.getElementById('catalogueEnquire').addEventListener('click', () => {
     if (!selectedPiece || !selectedVariant) return;
-    const sentence = 'I am considering ' + selectedPiece.name + ' ' + selectedPiece.note + (selectedVariant.color ? ' in ' + selectedVariant.color : '') + '.';
+    const sentence = t('mail.considering', 'I am considering') + ' ' + selectedPiece.name + ' ' + field(selectedPiece, 'note') +
+      (colourOf(selectedVariant) ? ' ' + t('mail.inColour', 'in') + ' ' + colourOf(selectedVariant) : '') + '.';
     enquiryCollection.value = collectionKey;
     preferences.value = (preferences.value.includes(sentence) ? preferences.value : sentence + (preferences.value.trim() ? '\n\n' + preferences.value.trim() : '')).slice(0, 1200);
     updateDraft();
@@ -390,6 +405,20 @@
     preferences.focus({ preventScroll: true });
   });
   window.openSalonCollection = openCollection;
+
+  // Cards, filters and the open piece are all written in script, so they are
+  // rebuilt rather than swapped when the language turns.
+  document.addEventListener('az:languagechange', () => {
+    collectionNav.querySelectorAll('[data-browse-collection]').forEach(button => {
+      const label = button.firstElementChild;
+      if (label) label.textContent = collectionNames[button.dataset.browseCollection];
+    });
+    document.getElementById('collectionRoomTitle').textContent = rangeTitle(collectionKey);
+    fillFilters();
+    updateDraft();
+    if (selectedPiece && !pieceView.hidden) showPiece(lastCard, currentChoices().get(lastCard) || 0);
+    else renderCards();
+  });
 
   // Existing catalogue addresses keep their zero-based model index and exact colour.
   const route = new URLSearchParams(location.search);

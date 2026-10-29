@@ -1,0 +1,170 @@
+/* ------------------------------------------------------------------
+   A.z in two scripts.
+
+   Persian is not English set backwards. Three things have to change with
+   the language, and only these three:
+
+   1. The face. Archivo has no Persian glyphs, so Vazirmatn is declared
+      under the SAME family name, restricted by unicode-range to the
+      Arabic block. Every existing `font-family:Archivo` rule then picks
+      the right face per character on its own — a line that reads
+      "نگاهِ A.z" sets the Persian in Vazirmatn and the Latin in Archivo,
+      with no rule rewritten and no !important anywhere.
+
+   2. The tracking. The whole Latin type system runs on negative
+      letter-spacing, down to -0.046em on the largest headlines. Applied
+      to Persian that is not tight, it is broken: the script joins, and
+      pulling the letters together collapses the joins. Persian takes
+      normal tracking, always.
+
+   3. The leading. Persian carries dots above and below the baseline, so
+      a headline set at 0.95 line-height clips. Latin display leading is
+      replaced with values the script can breathe in.
+
+   Direction is handled by `dir` on the root; the rules below only fix
+   the places where the layout was written with physical sides.
+------------------------------------------------------------------- */
+
+@font-face {
+  font-family: Archivo;
+  src: url(assets/vazirmatn-var.woff2) format('woff2-variations');
+  font-weight: 300 700;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+200C-200E,
+                 U+2010-2011, U+FB50-FDFF, U+FE70-FEFF;
+}
+
+/* ---------- the language toggle ---------- */
+.language-toggle {
+  margin-inline-start: auto;
+  min-height: 44px;
+  /* "فارسی" is narrower than any English label in this header, so the
+     target needs a floor of its own rather than one scoped to Persian. */
+  min-width: 48px;
+  padding: 10px 2px;
+  font-size: 12px;
+  letter-spacing: .02em;
+  color: #cccfc6;
+  border-bottom: 1px solid rgba(238, 234, 225, .28);
+  transition: color .2s, border-color .2s;
+}
+.language-toggle:hover { color: #fff; border-bottom-color: #eeeae1; }
+.language-toggle:active { scale: .96; }
+/* The header gives the enquiry its own margin-left:auto; with the toggle
+   now sitting before it, only the toggle should take the free space. */
+.header .language-toggle + .header-enquiry { margin-inline-start: 26px; }
+
+/* ---------- Persian typography ---------- */
+:root[lang="fa"] body,
+:root[lang="fa"] body * { letter-spacing: normal; }
+
+:root[lang="fa"] body { line-height: 1.95; }
+
+:root[lang="fa"] h1,
+:root[lang="fa"] h2,
+:root[lang="fa"] h3,
+:root[lang="fa"] h4,
+:root[lang="fa"] .luxury-exhibit-caption strong,
+:root[lang="fa"] .collection-entrance strong,
+:root[lang="fa"] .luxury-advisory-statement,
+:root[lang="fa"] .luxury-footer-main > p,
+:root[lang="fa"] .salon-footer p,
+:root[lang="fa"] .material-study figcaption,
+:root[lang="fa"] .luxury-menu-section-links a { line-height: 1.38; }
+
+/* The hero headline is the one place the Latin runs at 0.975; Persian
+   needs the room between the two lines back. */
+:root[lang="fa"] .intro h1 { line-height: 1.26; }
+:root[lang="fa"] .luxury-section-intro h2,
+:root[lang="fa"] .luxury-material-heading h2,
+:root[lang="fa"] .luxury-enquiry h2,
+:root[lang="fa"] .luxury-questions h2 { line-height: 1.3; }
+
+:root[lang="fa"] p,
+:root[lang="fa"] li,
+:root[lang="fa"] dd,
+:root[lang="fa"] summary,
+:root[lang="fa"] .catalogue-description,
+:root[lang="fa"] #detailText { line-height: 2.05; }
+
+/* Small uppercase labels: Persian has no case, and the wide tracking the
+   Latin eyebrows carry would break the joins, so they simply read small. */
+:root[lang="fa"] .eyebrow,
+:root[lang="fa"] .luxury-kicker,
+:root[lang="fa"] .salon-overline,
+:root[lang="fa"] .house,
+:root[lang="fa"] .descriptor,
+:root[lang="fa"] .catalogue-house,
+:root[lang="fa"] .catalogue-card-house,
+:root[lang="fa"] .detail-house,
+:root[lang="fa"] .catalogue-retailer span,
+:root[lang="fa"] .detail-colour-row > span,
+:root[lang="fa"] .detail-reference,
+:root[lang="fa"] .catalogue-specs dt,
+:root[lang="fa"] .detail-specs dt { text-transform: none; font-size: 12px; line-height: 1.8; }
+
+/* Figures stay Western so that dimensions, cases and years read the same
+   as the photographs and the retailer's own page. */
+:root[lang="fa"] .selection-number,
+:root[lang="fa"] .catalogue-photo-number,
+:root[lang="fa"] .luxury-service-steps li > span,
+:root[lang="fa"] [data-collection-count],
+:root[lang="fa"] [data-collection-nav-count],
+:root[lang="fa"] .catalogue-collection-count,
+:root[lang="fa"] .catalogue-photo-counter { font-feature-settings: "tnum"; direction: ltr; unicode-bidi: isolate; }
+
+/* ---------- right to left ---------- */
+[dir="rtl"] .intro,
+[dir="rtl"] .salon--cinema .intro { left: auto; right: 5vw; }
+[dir="rtl"] .material-study figcaption { left: auto; right: 40px; }
+[dir="rtl"] .detail-reference { left: auto; right: 24px; }
+[dir="rtl"] .collection-dialog-head { padding-right: 0; padding-left: 70px; }
+[dir="rtl"] .catalogue-specs summary::after { float: left; }
+[dir="rtl"] .catalogue-card,
+[dir="rtl"] .catalogue-piece-copy,
+[dir="rtl"] .luxury-advisory-detail,
+[dir="rtl"] .service-layout .pillar { text-align: right; }
+[dir="rtl"] .luxury-service-steps li > span { text-align: left; }
+[dir="rtl"] .catalogue-photo-number { left: auto; right: 16px; }
+[dir="rtl"] .catalogue-view-label { right: auto; left: 16px; }
+
+/* An arrow that means "onward" has to point the way the reader is going. */
+[dir="rtl"] .catalogue-retailer a::after { content: '↖'; }
+[dir="rtl"] .card-details::after { content: '↖'; }
+
+/* The hero photography is composed with its subject to one side; mirroring
+   the frame would crop the piece out of it, so the picture keeps its
+   direction while the type around it turns. */
+[dir="rtl"] .cinema-image,
+[dir="rtl"] .architecture,
+[dir="rtl"] .luxury-exhibit-photo img,
+[dir="rtl"] .luxury-material-diptych img,
+[dir="rtl"] .luxury-advisory-photo img { direction: ltr; }
+
+/* Latin runs inside Persian prose — an address, a house name, Gmail —
+   keep their own direction so punctuation does not jump to the far end. */
+:root[lang="fa"] .salon-contact-address,
+:root[lang="fa"] .luxury-footer-bottom a[href^="mailto"],
+:root[lang="fa"] .luxury-review-meta dd,
+:root[lang="fa"] .catalogue-retailer a { direction: ltr; unicode-bidi: isolate; display: inline-block; }
+
+@media (max-width: 700px) {
+  [dir="rtl"] .intro,
+  [dir="rtl"] .salon--cinema .intro { left: 24px; right: 24px; }
+  .language-toggle { font-size: 11px; }
+  .header .language-toggle + .header-enquiry { margin-inline-start: 14px; }
+}
+
+/* Persian says in one short word what English takes two or three to say,
+   so targets sized by their text alone come out under the 44px minimum.
+   A floor on the width costs the Latin layout nothing: those labels are
+   already wider than this. */
+:root[lang="fa"] .main-nav a,
+:root[lang="fa"] .language-toggle,
+:root[lang="fa"] .salon-footer nav a,
+:root[lang="fa"] .luxury-footer-bottom nav a,
+:root[lang="fa"] .luxury-collection-nav button,
+:root[lang="fa"] .collection-gallery-item,
+:root[lang="fa"] .timepiece-skip,
+:root[lang="fa"] .timepiece-phase,
+:root[lang="fa"] [data-browse-collection] { min-width: 48px; padding-inline: 4px; }
