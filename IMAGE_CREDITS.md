@@ -67,3 +67,13 @@ Two original fallback artworks, timepiece-exterior-v1 and timepiece-exploded-v1,
 ## Dark photographic collection gallery ·25October2026
 
 The corrected collection section uses a new original forest-green hobo-bag study created with the built-in image_gen tool. Its unbranded curved bag sits on charcoal stone in controlled architectural light. It is decorative category artwork, not a photograph, colour-availability claim or representation of a specific listed SKU. The untouched1254×1254PNG master, complete prompt,1254/960/640px WebP exports and byte/dimension manifest are archived in outputs/collection-salon-artwork/ and its ZIP. The other three gallery images reuse campaign-eyewear-v1, campaign-watches-v1 and campaign-headwear-v1, whose original provenance is recorded above. Original merchandise photos and registry data remain unchanged.
+
+## Watch surface and lighting refinement ·29October2026
+
+The refined watch remains an original Three.js design study, not a branded product scan or an engineering representation of the catalogue watch. Its turned case, faceted hands, opaque open-heart dial, curved leather bands and imagined movement are authored geometry. No Khronos or Sellita model, logo or technical drawing is included.
+
+- `assets/watch-leather-color-v2.webp`, `watch-leather-roughness-v2.webp` and `watch-leather-normal-v2.webp` derive from [Leather026 by ambientCG](https://ambientcg.com/view?id=Leather026), licensed under [CC0 1.0](https://docs.ambientcg.com/license/). Each is a lossless WebP encoding of the decoded1024×1024JPEG map; dimensions and RGB pixels are unchanged. The normal map uses the OpenGL convention.
+- `assets/watch-studio-v2.hdr` is the unchanged1024×512Radiance HDR [Studio Small09 by Sergej Majboroda / Poly Haven](https://polyhaven.com/a/studio_small_09), licensed under [CC0 1.0](https://polyhaven.com/license). It supplies reflections and lighting while the page background remains unchanged.
+- `assets/vendor/three-r180/HDRLoader.js` is the official [Three.js r180 HDRLoader](https://github.com/mrdoob/three.js/blob/r180/examples/jsm/loaders/HDRLoader.js), copyright2010–2025three.js authors, [MIT](assets/vendor/three-r180/LICENSE). Its sole bare `three` import is adapted to the existing local r180 module. The full original licence is retained with the vendor files.
+
+Original downloads, exact primary URLs, licence sources, file hashes and the lossless decoded-pixel verification are archived in `outputs/watch-realism-20261029/sources/` in the owner's project deliverables. All runtime files are hosted with the site; no third-party texture API call is required by visitors. These optional surface upgrades load only with the watch enhancement and retain a usable procedural version if unavailable.
