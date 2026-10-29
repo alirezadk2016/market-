@@ -1,10 +1,13 @@
 /* Small editorial enhancements. The collection, form and photographs work without these. */
 (() => {
   'use strict';
+  const t = (key, fallback) => (window.AZ ? window.AZ.t(key) : fallback);
+
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const phone = matchMedia('(max-width: 700px)');
-  const collectionLabels = { bags: 'Bags', eyewear: 'Eyewear', watches: 'Timepieces', headwear: 'Headwear' };
+  const collectionLabelKeys = { bags: 'col.bags', eyewear: 'col.eyewear', watches: 'col.watches', headwear: 'col.headwear' };
+  const collectionLabels = new Proxy({}, { get: (_, key) => t(collectionLabelKeys[key], String(key)) });
   const registry = typeof RANGES === 'undefined' ? null : RANGES;
   const collectionCount = key => {
     const items = registry?.[key]?.items;
@@ -80,7 +83,7 @@
       close.type = 'button';
       close.className = 'luxury-menu-close';
       close.setAttribute('aria-label', 'Close menu');
-      close.textContent = 'Close';
+      close.textContent = t('menu.close', 'Close');
       menuHead.append(home, close);
 
       const menuBody = document.createElement('div');
@@ -88,7 +91,8 @@
       const links = document.createElement('nav');
       links.className = 'luxury-menu-section-links';
       links.setAttribute('aria-label', 'Site sections');
-      [['#entrance', 'The salon'], ['#collections', 'Collections'], ['#advisory', 'The advisory'], ['#questions', 'Questions']].forEach(([href, label]) => {
+      [['#entrance', 'menu.salon'], ['#collections', 'nav.collections'], ['#advisory', 'nav.advisoryLower'], ['#questions', 'nav.questions']].forEach(([href, key]) => {
+        const label = t(key, key);
         const link = document.createElement('a');
         link.href = href;
         link.textContent = label;
@@ -118,7 +122,7 @@
       const enquire = document.createElement('a');
       enquire.className = 'luxury-menu-enquire';
       enquire.href = '#private-enquiry';
-      enquire.textContent = 'Begin a private enquiry';
+      enquire.textContent = t('menu.begin', 'Begin a private enquiry');
       const email = document.createElement('a');
       email.className = 'luxury-menu-email';
       email.href = 'mailto:alirezadk2020@gmail.com';
@@ -173,7 +177,8 @@
     const selection = document.getElementById('salonCollection');
     const preferences = document.getElementById('salonPreferences');
     const key = selection?.value || '';
-    const collection = registry?.[key]?.title || selection?.selectedOptions?.[0]?.textContent.trim() || 'Help me choose';
+    const collection = (window.AZ ? window.AZ.field(registry?.[key], 'title') : registry?.[key]?.title) ||
+      selection?.selectedOptions?.[0]?.textContent.trim() || t('enq.help', 'Help me choose');
     let body = '';
     let subject = 'A.z private enquiry';
     try {
@@ -184,10 +189,12 @@
       }
     } catch (_) { /* A local field-based draft remains usable if the link is unavailable. */ }
     if (!body) {
-      body = 'Hello A.z,\n\nI would like advice on ' + (key ? collection : 'help choosing a piece') + '.';
+      body = t('mail.greeting', 'Hello A.z,') + '\n\n' + t('mail.wants', 'I would like advice on') + ' ' +
+        (key ? collection : t('mail.helpChoosing', 'help choosing a piece')) + '.';
       if (preferences?.value.trim()) body += '\n\n' + preferences.value.trim();
     }
-    return { collection, subject, body, text: 'To: alirezadk2020@gmail.com\nSubject: ' + subject + '\n\n' + body };
+    return { collection, subject, body,
+      text: t('enq.to', 'To') + ': alirezadk2020@gmail.com\n' + t('enq.subject', 'Subject') + ': ' + subject + '\n\n' + body };
   }
 
   function refreshReview() {
@@ -246,11 +253,11 @@
         if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
         await navigator.clipboard.writeText(draft.text);
         fallbackPanel.hidden = true;
-        status.textContent = 'Enquiry copied. Paste it into your preferred email service.';
+        status.textContent = t('copy.done', 'Enquiry copied.');
       } catch (_) {
         fallbackText.value = draft.text;
         fallbackPanel.hidden = false;
-        status.textContent = 'Your enquiry is below. Select the text to copy it.';
+        status.textContent = t('copy.manual', 'Your enquiry is below.');
         fallbackText.focus({ preventScroll: true });
         fallbackText.select();
       } finally {

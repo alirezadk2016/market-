@@ -10,7 +10,7 @@
     if (!details || !item || !item.name || !item.image) return;
     document.getElementById('detailHouse').textContent = item.house || '';
     document.getElementById('detailName').textContent = item.name;
-    document.getElementById('detailColour').textContent = item.colour || 'Ask your advisor';
+    document.getElementById('detailColour').textContent = item.colour || t('det.askAdvisor', 'Ask your advisor');
     document.getElementById('detailText').textContent = item.text || '';
     const image = document.getElementById('detailImage');
     image.src = item.image;
@@ -59,12 +59,20 @@
   const motion = document.getElementById('cinemaMotion');
   if (!hero || !stage || !scenes.length || !selectors.length || !motion) return;
 
+  const t = (key, fallback) => (window.AZ ? window.AZ.t(key) : fallback);
   const collectionScenes = [
-    { key: 'bags', title: 'The Bags', label: 'Bags', copy: 'Shape, texture and proportion.' },
-    { key: 'eyewear', title: 'The Eyewear', label: 'Eyewear', copy: 'A different point of view.' },
-    { key: 'watches', title: 'The Timepieces', label: 'Timepieces', copy: 'Every moment, considered.' },
-    { key: 'headwear', title: 'The Headwear', label: 'Headwear', copy: 'An understated signature.' }
+    { key: 'bags', titleKey: 'col.bagsTitle', labelKey: 'col.bags', copyKey: 'col.bagsCopy', exploreKey: 'collections.exploreBags' },
+    { key: 'eyewear', titleKey: 'col.eyewearTitle', labelKey: 'col.eyewear', copyKey: 'col.eyewearCopy', exploreKey: 'collections.exploreEyewear' },
+    { key: 'watches', titleKey: 'col.watchesTitle', labelKey: 'col.watches', copyKey: 'col.watchesCopy', exploreKey: 'collections.exploreWatches' },
+    { key: 'headwear', titleKey: 'col.headwearTitle', labelKey: 'col.headwear', copyKey: 'col.headwearCopyAlt', exploreKey: 'collections.exploreHeadwear' }
   ];
+  collectionScenes.forEach(scene => {
+    Object.defineProperties(scene, {
+      title: { get: () => t(scene.titleKey, 'The collection') },
+      label: { get: () => t(scene.labelKey, 'collection') },
+      copy: { get: () => t(scene.copyKey, '') }
+    });
+  });
   const images = scenes.map(scene => scene.querySelector('.cinema-image'));
   const indicators = selectors.map(button => button.querySelector('.cinema-progress'));
   const status = document.getElementById('cinemaStatus');
@@ -118,7 +126,7 @@
   motionNote.id = 'cinemaMotionNote';
   motionNote.className = 'sr-only';
   motionNote.hidden = true;
-  motionNote.textContent = 'Automatic gallery motion is off because your device requests reduced motion. You can still choose any collection.';
+  motionNote.textContent = t('hero.reducedNote', 'Automatic gallery motion is off.');
   hero.append(motionNote);
 
   function updateMotionButton() {
@@ -127,15 +135,15 @@
     motion.disabled = reduce.matches;
     motion.setAttribute('aria-pressed', String(userPaused || reduce.matches));
     if (reduce.matches) {
-      word.textContent = 'Motion';
-      suffix.textContent = ' off';
-      motion.setAttribute('aria-label', 'Gallery motion off. Reduced motion is enabled.');
+      word.textContent = t('hero.motionWord', 'Motion');
+      suffix.textContent = t('hero.motionOffSuffix', ' off');
+      motion.setAttribute('aria-label', t('hero.motionOffLabel', 'Gallery motion off.'));
       motion.setAttribute('aria-describedby', motionNote.id);
       motion.title = motionNote.textContent;
     } else {
-      word.textContent = userPaused ? 'Play' : 'Pause';
-      suffix.textContent = ' autoplay';
-      motion.setAttribute('aria-label', userPaused ? 'Play automatic gallery motion' : 'Pause automatic gallery motion');
+      word.textContent = t(userPaused ? 'hero.play' : 'hero.pause', userPaused ? 'Play' : 'Pause');
+      suffix.textContent = t('hero.pauseSuffix', ' autoplay');
+      motion.setAttribute('aria-label', t(userPaused ? 'hero.playLabel' : 'hero.pauseLabel', 'Gallery motion'));
       motion.removeAttribute('aria-describedby');
       motion.removeAttribute('title');
     }
@@ -151,7 +159,7 @@
     hero.dataset.mouseCapable = String(mousePresent);
     hero.dataset.mouseView = enabled ? 'on' : 'off';
     if (interaction) interaction.setAttribute('aria-pressed', String(enabled));
-    if (interactionState) interactionState.textContent = enabled ? 'On' : 'Off';
+    if (interactionState) interactionState.textContent = t(enabled ? 'hero.on' : 'hero.off', enabled ? 'On' : 'Off');
   }
 
   function canOrbit() {
@@ -279,13 +287,13 @@
   function setCollectionCopy(index) {
     const scene = collectionScenes[index];
     hero.dataset.scene = scene.key;
-    document.getElementById('pieceHouse').textContent = 'The private edit';
+    document.getElementById('pieceHouse').textContent = t('hero.edit', 'The private edit');
     document.getElementById('pieceName').textContent = scene.title;
     document.getElementById('pieceColour').textContent = scene.copy;
     document.getElementById('current').textContent = String(index + 1).padStart(2, '0');
     selectors.forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
     inspect.dataset.collection = scene.key;
-    inspect.setAttribute('aria-label', 'Explore the ' + scene.label + ' collection');
+    inspect.setAttribute('aria-label', t(scene.exploreKey, 'Explore the collection'));
   }
 
   // Scenes beyond the first ship their photograph in data-src so that four
@@ -361,7 +369,7 @@
       loading = false;
       stage.setAttribute('aria-busy', 'false');
       syncPlayback();
-      if (manual && status) status.textContent = collectionScenes[current].title + ' selected.';
+      if (manual && status) status.textContent = collectionScenes[current].title + ' ' + t('status.selected', 'selected.');
       return;
     }
     loading = true;
@@ -379,7 +387,7 @@
       setCollectionCopy(current);
       resetProgress();
       syncPlayback();
-      if (manual && status) status.textContent = collectionScenes[current].title + ' selected.';
+      if (manual && status) status.textContent = collectionScenes[current].title + ' ' + t('status.selected', 'selected.');
       // Warm only the scene that comes next, once the browser is idle. The
       // other two stay unrequested until they are the one being asked for, so
       // a visitor who never reaches them never pays for them.
@@ -397,7 +405,7 @@
       resetProgress();
       syncPlayback();
       if (manual && status) {
-        status.textContent = 'That scene could not be loaded. You can still explore the current collection.';
+        status.textContent = t('hero.sceneFailed', 'That scene could not be loaded.');
       }
     }
   }
@@ -420,7 +428,7 @@
       event.preventDefault();
       resetOrbit();
       syncPlayback();
-      if (status) status.textContent = 'Gallery view centred.';
+      if (status) status.textContent = t('hero.centred', 'Gallery view centred.');
       return;
     }
     if (event.shiftKey && ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(event.key) && canOrbit()) {
@@ -636,4 +644,11 @@
   resetProgress();
   syncPlayback();
   requestScene(0, { initial: true });
+
+  // The hero writes its own labels, so the dictionary swap in i18n.js cannot
+  // reach them; redraw the ones this module owns whenever the language turns.
+  document.addEventListener('az:languagechange', () => {
+    setCollectionCopy(current);
+    syncPlayback();
+  });
 })();
