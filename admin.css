@@ -70,7 +70,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .
 .side-list { list-style: none; margin: 0; padding: 0; }
 .side-item { display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%;
   padding: 9px 10px; background: transparent; border: 0; border-radius: 2px; cursor: pointer;
-  text-align: left; color: var(--dim); transition: background .2s var(--ease), color .2s var(--ease); }
+  text-align:start; color: var(--dim); transition: background .2s var(--ease), color .2s var(--ease); }
 .side-item:hover { background: var(--panel); color: var(--ink); }
 .side-item.on { background: var(--panel-2); color: var(--ink); box-shadow: inset 2px 0 0 var(--gold); }
 .side-item b { font-weight: 400; }

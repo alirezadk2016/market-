@@ -105,13 +105,18 @@
 
 /* Figures stay Western so that dimensions, cases and years read the same
    as the photographs and the retailer's own page. */
+/* Figures stay Western so that dimensions, cases and years read the same
+   as the photographs and the retailer's own page. Forcing them LTR is only
+   right where the whole label is a figure — "01", "01 / 02". A label that
+   also carries a word, "13 مدل", must stay in the paragraph's direction or
+   the word lands before the number it belongs to. */
 :root[lang="fa"] .selection-number,
 :root[lang="fa"] .catalogue-photo-number,
 :root[lang="fa"] .luxury-service-steps li > span,
-:root[lang="fa"] [data-collection-count],
 :root[lang="fa"] [data-collection-nav-count],
 :root[lang="fa"] .catalogue-collection-count,
 :root[lang="fa"] .catalogue-photo-counter { font-feature-settings: "tnum"; direction: ltr; unicode-bidi: isolate; }
+:root[lang="fa"] [data-collection-count] { font-feature-settings: "tnum"; }
 
 /* ---------- right to left ---------- */
 [dir="rtl"] .intro,
@@ -120,11 +125,11 @@
 [dir="rtl"] .detail-reference { left: auto; right: 24px; }
 [dir="rtl"] .collection-dialog-head { padding-right: 0; padding-left: 70px; }
 [dir="rtl"] .catalogue-specs summary::after { float: left; }
-[dir="rtl"] .catalogue-card,
-[dir="rtl"] .catalogue-piece-copy,
-[dir="rtl"] .luxury-advisory-detail,
-[dir="rtl"] .service-layout .pillar { text-align: right; }
-[dir="rtl"] .luxury-service-steps li > span { text-align: left; }
+/* The text-align declarations across the stylesheets now read `start` and
+   `end`, which follow the language on their own, so the hand-written
+   mirrors that used to live here are gone. Only the step number keeps an
+   opinion: it is a figure in a margin, not a line of prose. */
+[dir="rtl"] .luxury-service-steps li > span { text-align: end; }
 [dir="rtl"] .catalogue-photo-number { left: auto; right: 16px; }
 [dir="rtl"] .catalogue-view-label { right: auto; left: 16px; }
 
@@ -164,7 +169,9 @@
 :root[lang="fa"] .salon-footer nav a,
 :root[lang="fa"] .luxury-footer-bottom nav a,
 :root[lang="fa"] .luxury-collection-nav button,
-:root[lang="fa"] .collection-gallery-item,
 :root[lang="fa"] .timepiece-skip,
 :root[lang="fa"] .timepiece-phase,
 :root[lang="fa"] [data-browse-collection] { min-width: 48px; padding-inline: 4px; }
+/* The collection cards are already far past the minimum; padding them only
+   shrank their photographs by 8px against the English layout. */
+:root[lang="fa"] .collection-gallery-item { min-width: 48px; }

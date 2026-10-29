@@ -6,7 +6,7 @@
 .luxury-section-intro>p{max-width:34ch;margin:0 0 4px;justify-self:end;color:var(--luxury-muted);font-size:15px;line-height:1.85}
 .collection-salon.luxury-collections{max-width:1440px;margin:0 auto;padding:110px 5vw 120px}
 .luxury-collection-nav{position:sticky;top:100px;z-index:10;display:flex;align-items:center;gap:42px;padding:0 0 1px;margin:0 0 48px;background:#090c0e;border-bottom:1px solid var(--luxury-rule)}
-.luxury-collection-nav button{display:inline-flex;align-items:center;gap:12px;min-height:58px;padding:12px 0;border-bottom:1px solid transparent;color:#8f9b87;font-size:14px;line-height:1.4;text-align:left;white-space:nowrap;transition:color .2s,border-color .2s}
+.luxury-collection-nav button{display:inline-flex;align-items:center;gap:12px;min-height:58px;padding:12px 0;border-bottom:1px solid transparent;color:#8f9b87;font-size:14px;line-height:1.4;text-align:start;white-space:nowrap;transition:color .2s,border-color .2s}
 .luxury-collection-nav button>span:last-child{font-size:12px;color:#7d8b74;font-variant-numeric:tabular-nums}
 .luxury-collection-nav button[aria-pressed=true]{color:var(--luxury-paper);border-bottom-color:#d2d9c7}
 .luxury-collection-nav button[aria-pressed=true]>span:last-child{color:#bbc6af}
@@ -18,7 +18,7 @@
 .luxury-exhibit--eyewear{grid-column:8/13;margin-top:140px}
 .luxury-exhibit--watches{grid-column:2/6}
 .luxury-exhibit--headwear{grid-column:7/13;margin-top:78px}
-.luxury-exhibit-action{display:block;width:100%;padding:0;border:0;background:transparent;text-align:left;color:var(--luxury-paper)}
+.luxury-exhibit-action{display:block;width:100%;padding:0;border:0;background:transparent;text-align:start;color:var(--luxury-paper)}
 .luxury-exhibit-action:focus-visible{outline:2px solid var(--luxury-paper);outline-offset:7px}
 .luxury-exhibit-photo{display:block;position:relative;aspect-ratio:1.1;overflow:hidden;background:#151a1b;isolation:isolate}
 .luxury-exhibit-photo::after{content:'';position:absolute;inset:0;pointer-events:none;border:1px solid rgba(238,234,225,.1)}
@@ -110,7 +110,7 @@
 .luxury-menu-section-links{display:grid;gap:4px;margin:0 0 32px}
 .luxury-menu-section-links a{display:flex;align-items:center;min-height:58px;padding:6px 0;font:600 43px/1.062 Archivo,'Helvetica Neue',Arial,sans-serif;letter-spacing:-.037em;color:#e7e8dd}
 .luxury-menu-collections{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;padding-bottom:30px;border-bottom:1px solid var(--luxury-rule)}
-.luxury-menu-collections button{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px;padding:12px 0;border:0;border-bottom:1px solid var(--luxury-rule);text-align:left;font-size:14px;color:#becbb2}
+.luxury-menu-collections button{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px;padding:12px 0;border:0;border-bottom:1px solid var(--luxury-rule);text-align:start;font-size:14px;color:#becbb2}
 .luxury-menu-collections button>span:last-child{font-size:12px;color:#8d9e80;font-variant-numeric:tabular-nums}
 .luxury-menu-enquire{display:flex;align-items:center;justify-content:center;min-height:54px;padding:14px 20px;margin-top:28px;background:#e4e6d9;color:#151c16;font-size:14px}
 .luxury-menu-email{display:inline-flex;align-items:center;min-height:44px;margin-top:14px;font-size:12px;color:#9dad91}

@@ -20,7 +20,7 @@
 .salon--cinema .piece-label h2{margin:0;font:600 44px/1.004 Archivo,'Helvetica Neue',Arial,sans-serif;letter-spacing:-.034em;color:#eeeae1}
 .salon--cinema .piece-label .colour{margin:12px 0 0;font-size:14px;line-height:1.6;color:#bebfb3}
 .salon--cinema .gallery-navigation{grid-area:navigation;order:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:end;justify-content:initial;gap:16px;width:520px;max-width:100%;align-self:end}
-.salon--cinema .selection-tab{position:relative;display:flex;align-items:baseline;justify-content:flex-start;gap:8px;min-width:0;min-height:52px;padding:12px 0 15px;text-align:left;color:#879480;transition:color .18s}
+.salon--cinema .selection-tab{position:relative;display:flex;align-items:baseline;justify-content:flex-start;gap:8px;min-width:0;min-height:52px;padding:12px 0 15px;text-align:start;color:#879480;transition:color .18s}
 .salon--cinema .selection-tab::after{content:none}
 .salon--cinema .selection-tab:hover,.salon--cinema .selection-tab[aria-pressed=true]{color:#eeeae1}
 .salon--cinema .selection-tab:focus-visible{outline:2px solid #eeeae1;outline-offset:5px}
@@ -34,7 +34,7 @@
 .salon--cinema .inspect:focus-visible{outline:2px solid #eeeae1;outline-offset:5px}
 .salon--cinema .action-rule{width:24px;opacity:.7}
 .salon--cinema .inspect:hover .action-rule{width:30px}
-.salon--cinema .cinema-motion{grid-area:motion;order:0;display:inline-flex;align-items:center;justify-content:flex-end;justify-self:end;align-self:end;gap:0;min-width:112px;min-height:44px;padding:7px 0;border:0;border-bottom:1px solid transparent;background:none;color:#c5c6b9;font:400 12px/1.6 Archivo,'Helvetica Neue',Arial,sans-serif;letter-spacing:.01em;text-align:right;white-space:nowrap;transition:color .18s,border-color .18s,scale .15s}
+.salon--cinema .cinema-motion{grid-area:motion;order:0;display:inline-flex;align-items:center;justify-content:flex-end;justify-self:end;align-self:end;gap:0;min-width:112px;min-height:44px;padding:7px 0;border:0;border-bottom:1px solid transparent;background:none;color:#c5c6b9;font:400 12px/1.6 Archivo,'Helvetica Neue',Arial,sans-serif;letter-spacing:.01em;text-align:end;white-space:nowrap;transition:color .18s,border-color .18s,scale .15s}
 .salon--cinema .motion-suffix{margin-left:3px}
 .salon--cinema .cinema-motion:hover{color:#eeeae1;border-bottom-color:rgba(238,234,225,.28)}
 .salon--cinema .cinema-motion:focus-visible{outline:2px solid #eeeae1;outline-offset:4px}

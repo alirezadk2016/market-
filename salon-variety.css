@@ -25,8 +25,8 @@
 .az-collection-gallery .collection-gallery-intro > p,
 .az-collection-gallery .collection-gallery-description { max-width: 37ch; justify-self: end; margin: 0 0 3px; color: var(--gallery-muted); font-size: 14px; line-height: 1.85; text-wrap: pretty; }
 .az-collection-gallery .collection-gallery-grid { display: grid; grid-template-columns: minmax(0,1.4fr) repeat(2,minmax(0,.5fr)); grid-template-rows: minmax(0,1.05fr) minmax(0,.95fr); grid-template-areas: 'bags eyewear eyewear' 'bags watches headwear'; gap: 26px 24px; height: clamp(680px,56vw,780px); }
-.az-collection-gallery .collection-gallery-item { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; width: 100%; padding: 0; border: 0; border-radius: 0; background: transparent; color: var(--gallery-paper); text-align: left; isolation: isolate; }
-.az-collection-gallery .collection-gallery-item > button[data-collection] { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; width: 100%; height: 100%; padding: 0; border: 0; border-radius: 0; background: transparent; color: inherit; text-align: left; }
+.az-collection-gallery .collection-gallery-item { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; width: 100%; padding: 0; border: 0; border-radius: 0; background: transparent; color: var(--gallery-paper); text-align:start; isolation: isolate; }
+.az-collection-gallery .collection-gallery-item > button[data-collection] { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; width: 100%; height: 100%; padding: 0; border: 0; border-radius: 0; background: transparent; color: inherit; text-align:start; }
 .az-collection-gallery .collection-gallery-item--bags { grid-area: bags; }
 .az-collection-gallery .collection-gallery-item--eyewear { grid-area: eyewear; }
 .az-collection-gallery .collection-gallery-item--watches { grid-area: watches; }
