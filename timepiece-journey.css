@@ -191,6 +191,10 @@
 .timepiece-journey[data-timepiece-mode=photograph]:not(.is-timepiece-ready) .timepiece-front-position{left:50%}
 .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-fallback .timepiece-original-watch{-webkit-mask-image:none;mask-image:none}
 .timepiece-journey[data-timepiece-mode=photograph] .timepiece-note>span{font-variant-numeric:lining-nums}
+/* Keep the enlarged photograph above the independent navigation and caption. */
+@media(min-width:701px) and (min-height:481px) and (prefers-reduced-motion:no-preference){
+ .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready .timepiece-photo-surface{clip-path:inset(0 0 128px)}
+}
 @media(max-width:700px){
  .timepiece-photo-surface{background:radial-gradient(ellipse at 50% 50%,rgba(103,77,53,.13),transparent 62%)}
  .timepiece-photo-orbit{transform-origin:50% 50%}
