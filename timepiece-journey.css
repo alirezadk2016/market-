@@ -1,4 +1,4 @@
-/* An original mechanical study. Rendering is enhanced; reading remains native. */
+/* A photographic timepiece study. Subtle movement; native reading and scrolling. */
 .timepiece-journey{--timepiece-header:100px;--timepiece-gutter:clamp(24px,5vw,88px);position:relative;isolation:isolate;margin:0;background:#0b1011;color:#eee9df;font-family:Archivo,'Helvetica Neue',Arial,sans-serif}
 .timepiece-viewport{position:relative;display:grid;grid-template-areas:'heading' 'visual' 'narrative' 'console' 'hint' 'note';gap:30px;padding:76px var(--timepiece-gutter) 46px;overflow:hidden}
 .timepiece-heading{grid-area:heading;position:relative;z-index:3;max-width:700px}
@@ -177,3 +177,54 @@
 @media(prefers-reduced-motion:reduce) and (max-width:700px){.timepiece-journey.is-timepiece-ready .timepiece-viewport{gap:24px;padding:54px 24px 34px}.timepiece-journey.is-timepiece-ready #timepieceStage,.timepiece-journey.is-timepiece-ready .timepiece-fallback{width:calc(100% + 48px);height:clamp(260px,90vw,430px);margin-inline:-24px}}
 /* A touch-only phone has no mouse view to toggle or reset, including landscape. */
 @media(any-hover:none){.timepiece-journey #timepieceLook,.timepiece-journey #timepieceReset{display:none}}
+
+/* Original product photographs. The SVG silhouette clips only the studio backdrop. */
+.timepiece-journey[data-timepiece-mode=photograph] #timepieceStage{--timepiece-photo-x:0px;--timepiece-photo-y:0px;--timepiece-photo-tilt:0deg;--timepiece-photo-scale:1;--timepiece-focus-y:0px;--timepiece-wrist-opacity:0;--timepiece-front-opacity:1;opacity:1;visibility:visible;pointer-events:auto;height:clamp(340px,56vw,720px);overflow:hidden;isolation:isolate}
+.timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready #timepieceStage{height:100%}
+.timepiece-photo-surface{position:absolute;inset:0;overflow:hidden;container-type:size;background:radial-gradient(ellipse at 70% 49%,rgba(103,77,53,.14),transparent 47%)}
+.timepiece-photo-orbit{position:absolute;inset:0;transform:translate3d(var(--timepiece-photo-x),var(--timepiece-photo-y),0) perspective(1600px) rotateY(var(--timepiece-photo-tilt));transform-origin:70% 50%;pointer-events:none}
+.timepiece-front-position{position:absolute;left:70%;top:50%;width:min(calc(100cqh - 216px),800px);aspect-ratio:1;opacity:var(--timepiece-front-opacity);transform:translate(-50%,-50%) translateY(var(--timepiece-focus-y)) scale(var(--timepiece-photo-scale));transform-origin:50% 50%}
+.timepiece-original-watch{display:block;width:100%;height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none;-webkit-mask-image:url('assets/watch-photo-mask-v3.svg');mask-image:url('assets/watch-photo-mask-v3.svg');-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.timepiece-wrist-position{position:absolute;left:43%;right:4%;top:17%;bottom:19%;overflow:hidden;opacity:var(--timepiece-wrist-opacity);border:1px solid rgba(238,233,223,.12)}
+.timepiece-wrist-position img{display:block;width:100%;height:100%;object-fit:cover;object-position:72% 74%;transform:translate(-13%,-12%) scale(1.75);transform-origin:72% 74%;user-select:none;-webkit-user-drag:none}
+.timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready .timepiece-viewport::before{background:linear-gradient(90deg,#0b1011,rgba(11,16,17,.96) 30%,rgba(11,16,17,.38) 43%,transparent 53%)}
+.timepiece-journey[data-timepiece-mode=photograph]:not(.is-timepiece-ready) .timepiece-front-position{left:50%}
+.timepiece-journey[data-timepiece-mode=photograph].is-timepiece-fallback .timepiece-original-watch{-webkit-mask-image:none;mask-image:none}
+.timepiece-journey[data-timepiece-mode=photograph] .timepiece-note>span{font-variant-numeric:lining-nums}
+@media(max-width:700px){
+ .timepiece-photo-surface{background:radial-gradient(ellipse at 50% 50%,rgba(103,77,53,.13),transparent 62%)}
+ .timepiece-photo-orbit{transform-origin:50% 50%}
+ .timepiece-front-position{left:50%;top:49%;width:min(114cqh,118cqw)}
+ .timepiece-wrist-position{inset:0;border:0}
+ .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready .timepiece-viewport::before{display:none}
+}
+@media(max-height:480px) and (max-width:1000px){
+ .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready #timepieceStage{height:100%;min-height:260px}
+ .timepiece-front-position{left:50%;width:min(110cqh,125cqw)}
+ .timepiece-wrist-position{inset:0}
+}
+@media(max-height:480px) and (max-width:700px){.timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready #timepieceStage{height:clamp(240px,70vw,320px);min-height:240px}}
+@media(prefers-reduced-motion:reduce){
+ .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready #timepieceStage{height:clamp(340px,56vw,720px)}
+ .timepiece-front-position{left:50%;width:min(90cqh,90cqw)}
+ .timepiece-wrist-position{left:12%;right:12%;top:0;bottom:0}
+}
+@media(prefers-reduced-motion:reduce) and (max-width:700px){.timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready #timepieceStage{height:clamp(260px,90vw,430px)}.timepiece-wrist-position{inset:0}}
+/* A short phone gets a generous photograph in normal flow, rather than a tiny fixed image. */
+@media(max-height:680px) and (max-width:700px) and (prefers-reduced-motion:no-preference){
+ .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready{height:auto;min-height:0;scroll-margin-top:0}
+ .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready .timepiece-viewport{position:relative;top:auto;display:grid;grid-template-areas:'heading' 'visual' 'narrative' 'console' 'note';grid-template-columns:minmax(0,1fr);grid-template-rows:auto;gap:24px;height:auto;min-height:0;padding:30px var(--timepiece-gutter)}
+ .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready .timepiece-heading{position:relative;inset:auto;display:block;width:auto;max-width:none}
+ .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready .timepiece-heading h2{max-width:none;font-size:34px;line-height:1.04}
+ .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready .timepiece-heading>p{max-width:none;margin:0 0 12px;padding:0}
+ .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready #timepieceStage{position:relative;inset:auto;width:100%;height:clamp(260px,90vw,320px);min-height:260px;margin:0}
+ .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready .timepiece-narrative{position:relative;inset:auto;width:auto;max-width:none;min-height:0}
+ .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready .timepiece-chapter{display:block}
+ .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready .timepiece-chapter>span{margin:0 0 8px}
+ .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready .timepiece-chapter h3{font-size:20px}
+ .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready .timepiece-chapter p{margin-top:10px}
+ .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready .timepiece-console{position:relative;inset:auto;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 14px}
+ .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready .timepiece-view-controls{position:relative;inset:auto;gap:0}
+ .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready .timepiece-note{position:relative;inset:auto;max-width:none}
+ .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready .timepiece-hint{display:none}
+}
