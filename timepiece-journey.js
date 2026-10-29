@@ -187,13 +187,13 @@
     const ease = media.matches ? 1 : 1 - Math.exp(-dt * 8);
     progress += (targetProgress - progress) * ease; yaw += (targetYaw - yaw) * ease; pitch += (targetPitch - pitch) * ease;
     requestWrist(targetProgress);
-    const detail = smooth(0, .5, progress), photoScale = 1 + detail * (width <= 700 ? .30 : .55);
+    const detail = smooth(0, .5, progress), photoScale = 1 + detail * (width <= 700 ? .30 : .40);
     const wristOpacity = wristState === 'ready' ? smooth(.68, .92, progress) : 0;
     mount.style.setProperty('--timepiece-photo-x', (yaw / .85 * 14).toFixed(2) + 'px');
     mount.style.setProperty('--timepiece-photo-y', (pitch / .45 * 9).toFixed(2) + 'px');
     mount.style.setProperty('--timepiece-photo-tilt', (yaw / .85 * 1.4).toFixed(3) + 'deg');
     mount.style.setProperty('--timepiece-photo-scale', photoScale.toFixed(4));
-    mount.style.setProperty('--timepiece-focus-y', (detail * (width > 700 ? 20 : Math.min(80, height * .12))).toFixed(2) + 'px');
+    mount.style.setProperty('--timepiece-focus-y', (detail * (width > 700 ? -12 : Math.min(80, height * .12))).toFixed(2) + 'px');
     mount.style.setProperty('--timepiece-wrist-opacity', wristOpacity.toFixed(4));
     mount.style.setProperty('--timepiece-front-opacity', (1 - wristOpacity).toFixed(4));
     publish('timepiecePose', progress.toFixed(4)); publish('timepieceOrbit', [yaw, pitch].map(value => value.toFixed(4)).join(','));
