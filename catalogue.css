@@ -9,7 +9,7 @@
 .collection-toolbar-actions{display:flex;align-items:center;gap:24px}
 #collectionRoom .collection-close{min-width:64px;min-height:44px;position:static;padding:10px 4px;font-size:11px;color:#d0d6c9;border-bottom:1px solid rgba(238,234,225,.3)}
 #collectionRoom .collection-close:hover{color:#fff;border-bottom-color:var(--paper)}
-#collectionRoom .catalogue-back{margin:0;min-height:44px;padding:10px 0;border:0;font-size:12px;color:#d1d7cb;display:inline-flex;align-items:center;text-align:left}
+#collectionRoom .catalogue-back{margin:0;min-height:44px;padding:10px 0;border:0;font-size:12px;color:#d1d7cb;display:inline-flex;align-items:center;text-align:start}
 #collectionRoom .catalogue-back:hover{text-decoration:underline;text-underline-offset:6px}
 #collectionRoom.is-piece .collection-dialog-head,#collectionRoom.is-piece .catalogue-collections{display:none}
 #collectionRoom.is-piece .collection-toolbar{min-height:64px;padding-block:10px}
@@ -49,8 +49,8 @@
 #collectionRoom #collectionRoomCount{margin:0;color:#9eac96;font-size:11px;line-height:1.6;font-variant-numeric:tabular-nums}
 .catalogue-result-bar button{min-height:36px;font-size:11px;color:#b9c4ae;padding:6px 0;text-decoration:underline;text-underline-offset:5px}
 #collectionRoom .catalogue-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:36px 24px}
-#collectionRoom .catalogue-card{min-width:0;width:100%;margin:0;padding:0;border:0;background:transparent;text-align:left}
-.catalogue-card-action{display:block;width:100%;min-width:0;margin:0;padding:0;text-align:left;color:inherit;border:0;background:transparent}
+#collectionRoom .catalogue-card{min-width:0;width:100%;margin:0;padding:0;border:0;background:transparent;text-align:start}
+.catalogue-card-action{display:block;width:100%;min-width:0;margin:0;padding:0;text-align:start;color:inherit;border:0;background:transparent}
 .catalogue-card-action:focus-visible{outline:2px solid #dfe5d6;outline-offset:5px}
 #collectionRoom .catalogue-photo-well{position:relative;display:block;aspect-ratio:1;background:var(--gallery-paper);overflow:hidden;isolation:isolate}
 #collectionRoom .catalogue-photo-well::after{content:'';position:absolute;inset:0;pointer-events:none;border:1px solid rgba(0,0,0,.06)}

@@ -16,10 +16,17 @@
       Array.isArray(variant?.shots) && variant.shots.some(shot => typeof shot === 'string' && shot.trim()))).length;
   };
 
-  document.querySelectorAll('[data-collection-count]').forEach(node => {
-    const count = collectionCount(node.dataset.collectionCount);
-    if (count !== null) node.textContent = count + (count === 1 ? ' piece' : ' pieces');
-  });
+  function writeCounts() {
+    document.querySelectorAll('[data-collection-count]').forEach(node => {
+      const count = collectionCount(node.dataset.collectionCount);
+      if (count === null) return;
+      node.textContent = count + ' ' + (window.AZ ? window.AZ.plural(count) : (count === 1 ? 'piece' : 'pieces'));
+    });
+  }
+  writeCounts();
+  // The counts are written here rather than marked up, so they have to be
+  // rewritten when the language turns like everything else this file owns.
+  document.addEventListener('az:languagechange', writeCounts);
   document.querySelectorAll('[data-collection-nav-count]').forEach(node => {
     const count = collectionCount(node.dataset.collectionNavCount);
     if (count !== null) node.textContent = String(count);

@@ -17,7 +17,7 @@
 .timepiece-chapter p{max-width:34ch;margin:15px 0 0;color:#b8bcb1;font:400 15px/1.85 Archivo,'Helvetica Neue',Arial,sans-serif;text-wrap:pretty}
 .timepiece-console{grid-area:console;position:relative;z-index:4;display:none;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:14px 32px;min-width:0}
 .timepiece-phases{display:flex;align-items:stretch;gap:28px;min-width:0}
-.timepiece-phases button{display:inline-flex;align-items:center;gap:10px;min-width:0;min-height:44px;padding:11px 0;border:0;border-bottom:1px solid #51564b;border-radius:0;background:transparent;color:#9ca594;font:400 12px/1.5 Archivo,'Helvetica Neue',Arial,sans-serif;text-align:left;transition:color .15s,border-color .15s,scale .15s}
+.timepiece-phases button{display:inline-flex;align-items:center;gap:10px;min-width:0;min-height:44px;padding:11px 0;border:0;border-bottom:1px solid #51564b;border-radius:0;background:transparent;color:#9ca594;font:400 12px/1.5 Archivo,'Helvetica Neue',Arial,sans-serif;text-align:start;transition:color .15s,border-color .15s,scale .15s}
 .timepiece-phases button span{color:#a3a18f;font-variant-numeric:tabular-nums}
 .timepiece-phases button strong{font:400 12px/1.5 Archivo,'Helvetica Neue',Arial,sans-serif}
 .timepiece-phases button:hover{color:#e4e3d5;border-bottom-color:#8e947c}
@@ -63,7 +63,7 @@
 .timepiece-journey.is-timepiece-ready .timepiece-console{position:absolute;left:var(--timepiece-gutter);right:var(--timepiece-gutter);bottom:57px}
 .timepiece-journey.is-timepiece-ready .timepiece-meter{display:block}
 .timepiece-journey.is-timepiece-ready .timepiece-hint{position:absolute;left:var(--timepiece-gutter);bottom:136px;display:block}
-.timepiece-journey.is-timepiece-ready .timepiece-note{position:absolute;left:var(--timepiece-gutter);right:var(--timepiece-gutter);bottom:4px;max-width:none;text-align:left}
+.timepiece-journey.is-timepiece-ready .timepiece-note{position:absolute;left:var(--timepiece-gutter);right:var(--timepiece-gutter);bottom:4px;max-width:none;text-align:start}
 .timepiece-journey.is-timepiece-ready .timepiece-browse{position:relative;inset:auto;flex:none;min-height:44px}
 @media(hover:hover) and (pointer:fine){.timepiece-journey.is-timepiece-ready #timepieceStage{cursor:grab}.timepiece-journey.is-timepiece-ready #timepieceStage:active{cursor:grabbing}}
 @media(min-width:1600px){.timepiece-journey.is-timepiece-ready .timepiece-narrative{top:49%}.timepiece-heading h2{font-size:72px}}
@@ -104,7 +104,7 @@
  .timepiece-phases button{gap:7px;align-items:baseline;min-height:47px;padding:12px 0;font-size:12px}
  .timepiece-phases button strong{font-size:12px;line-height:1.5}
  .timepiece-tools,.timepiece-view-controls{justify-self:start;gap:24px}
- .timepiece-note{gap:20px;max-width:none;font-size:12px;line-height:1.7;text-align:left}
+ .timepiece-note{gap:20px;max-width:none;font-size:12px;line-height:1.7;text-align:start}
  .timepiece-note>span{max-width:22ch}
  .timepiece-journey.is-timepiece-ready{height:235vh;height:235svh;scroll-margin-top:-84px}
  .timepiece-journey.is-timepiece-ready .timepiece-viewport{display:grid;grid-template-areas:'heading' 'visual' 'narrative' 'console' 'note';grid-template-rows:auto minmax(0,1fr) auto auto auto;gap:12px;height:100vh;height:100svh;padding:calc(var(--timepiece-header) + 13px) 24px 15px}
@@ -123,7 +123,7 @@
  .timepiece-journey.is-timepiece-ready .timepiece-phases{gap:12px}
  .timepiece-journey.is-timepiece-ready .timepiece-phases button>span{display:none}
  .timepiece-journey.is-timepiece-ready .timepiece-hint{display:none}
- .timepiece-journey.is-timepiece-ready .timepiece-note{position:relative;inset:auto;max-width:none;text-align:left;font-size:12px;line-height:1.6}
+ .timepiece-journey.is-timepiece-ready .timepiece-note{position:relative;inset:auto;max-width:none;text-align:start;font-size:12px;line-height:1.6}
  .timepiece-journey.is-timepiece-ready .timepiece-browse{position:relative;inset:auto;justify-self:start;min-height:44px;margin-top:0}
 }
 @media(max-width:359px){.timepiece-journey{--timepiece-gutter:20px}.timepiece-viewport{padding-inline:20px}.timepiece-heading h2{font-size:38px}.timepiece-phases{gap:12px}.timepiece-phases button{gap:5px}.timepiece-phases button span{display:none}.timepiece-journey.is-timepiece-ready .timepiece-viewport{padding-inline:20px}.timepiece-fallback,#timepieceStage,.timepiece-journey.is-timepiece-ready .timepiece-fallback,.timepiece-journey.is-timepiece-ready #timepieceStage{width:calc(100% + 40px);margin-inline:-20px}}
@@ -153,7 +153,7 @@
  .timepiece-journey.is-timepiece-ready .timepiece-console{position:relative;inset:auto;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 24px}
  .timepiece-journey.is-timepiece-ready .timepiece-view-controls{position:relative;inset:auto;gap:18px}
  .timepiece-journey.is-timepiece-ready .timepiece-hint{display:none}
- .timepiece-journey.is-timepiece-ready .timepiece-note{position:relative;inset:auto;max-width:none;text-align:left}
+ .timepiece-journey.is-timepiece-ready .timepiece-note{position:relative;inset:auto;max-width:none;text-align:start}
 }
 @media(max-height:480px) and (max-width:700px) and (prefers-reduced-motion:no-preference){
  .timepiece-journey.is-timepiece-ready .timepiece-viewport{grid-template-areas:'heading' 'visual' 'narrative' 'console' 'note';grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto auto auto;gap:22px;padding-block:30px}
@@ -171,7 +171,7 @@
  .timepiece-journey.is-timepiece-ready .timepiece-console{position:relative;inset:auto}
  .timepiece-journey.is-timepiece-ready .timepiece-tools,.timepiece-journey.is-timepiece-ready .timepiece-view-controls{position:relative;inset:auto;display:flex}
  .timepiece-journey.is-timepiece-ready .timepiece-meter,.timepiece-journey.is-timepiece-ready .timepiece-hint{display:none}
- .timepiece-journey.is-timepiece-ready .timepiece-note,.timepiece-journey.is-timepiece-ready .timepiece-browse{position:relative;inset:auto;max-width:none;text-align:left}
+ .timepiece-journey.is-timepiece-ready .timepiece-note,.timepiece-journey.is-timepiece-ready .timepiece-browse{position:relative;inset:auto;max-width:none;text-align:start}
  .timepiece-journey .timepiece-chapter,.timepiece-journey .timepiece-fallback,.timepiece-journey #timepieceStage,.timepiece-journey button,.timepiece-journey .timepiece-browse{transition:none;translate:none}
 }
 @media(prefers-reduced-motion:reduce) and (max-width:700px){.timepiece-journey.is-timepiece-ready .timepiece-viewport{gap:24px;padding:54px 24px 34px}.timepiece-journey.is-timepiece-ready #timepieceStage,.timepiece-journey.is-timepiece-ready .timepiece-fallback{width:calc(100% + 48px);height:clamp(260px,90vw,430px);margin-inline:-24px}}
@@ -183,7 +183,7 @@
 .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready #timepieceStage{height:100%}
 .timepiece-photo-surface{position:absolute;inset:0;overflow:hidden;container-type:size;background:radial-gradient(ellipse at 70% 49%,rgba(103,77,53,.14),transparent 47%)}
 .timepiece-photo-orbit{position:absolute;inset:0;transform:translate3d(var(--timepiece-photo-x),var(--timepiece-photo-y),0) perspective(1600px) rotateY(var(--timepiece-photo-tilt));transform-origin:70% 50%;pointer-events:none}
-.timepiece-front-position{position:absolute;left:70%;top:50%;width:min(calc(100cqh - 216px),800px);aspect-ratio:1;opacity:var(--timepiece-front-opacity);transform:translate(-50%,-50%) translateY(var(--timepiece-focus-y)) scale(var(--timepiece-photo-scale));transform-origin:50% 50%}
+.timepiece-front-position{position:absolute;left:70%;top:50%;width:min(calc(100vh - 216px),800px);width:min(calc(100cqh - 216px),800px);aspect-ratio:1;opacity:var(--timepiece-front-opacity);transform:translate(-50%,-50%) translateY(var(--timepiece-focus-y)) scale(var(--timepiece-photo-scale));transform-origin:50% 50%}
 .timepiece-original-watch{display:block;width:100%;height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none;-webkit-mask-image:url('assets/watch-photo-mask-v3.svg');mask-image:url('assets/watch-photo-mask-v3.svg');-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
 .timepiece-wrist-position{position:absolute;left:43%;right:4%;top:17%;bottom:19%;overflow:hidden;opacity:var(--timepiece-wrist-opacity);border:1px solid rgba(238,233,223,.12)}
 .timepiece-wrist-position img{display:block;width:100%;height:100%;object-fit:cover;object-position:72% 74%;transform:translate(-13%,-12%) scale(1.75);transform-origin:72% 74%;user-select:none;-webkit-user-drag:none}
@@ -194,26 +194,26 @@
 @media(max-width:700px){
  .timepiece-photo-surface{background:radial-gradient(ellipse at 50% 50%,rgba(103,77,53,.13),transparent 62%)}
  .timepiece-photo-orbit{transform-origin:50% 50%}
- .timepiece-front-position{left:50%;top:49%;width:min(114cqh,118cqw)}
+ .timepiece-front-position{left:50%;top:49%;width:min(110vw,430px);width:min(114cqh,118cqw)}
  .timepiece-wrist-position{inset:0;border:0}
  .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready .timepiece-viewport::before{display:none}
 }
 @media(max-height:480px) and (max-width:1000px){
  .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready #timepieceStage{height:100%;min-height:260px}
- .timepiece-front-position{left:50%;width:min(110cqh,125cqw)}
+ .timepiece-front-position{left:50%;width:min(90vw,320px);width:min(110cqh,125cqw)}
  .timepiece-wrist-position{inset:0}
 }
 @media(max-height:480px) and (max-width:700px){.timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready #timepieceStage{height:clamp(240px,70vw,320px);min-height:240px}}
 @media(prefers-reduced-motion:reduce){
  .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready #timepieceStage{height:clamp(340px,56vw,720px)}
- .timepiece-front-position{left:50%;width:min(90cqh,90cqw)}
+ .timepiece-front-position{left:50%;width:min(86vw,640px);width:min(90cqh,90cqw)}
  .timepiece-wrist-position{left:12%;right:12%;top:0;bottom:0}
 }
 @media(prefers-reduced-motion:reduce) and (max-width:700px){.timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready #timepieceStage{height:clamp(260px,90vw,430px)}.timepiece-wrist-position{inset:0}}
 /* A short phone gets a generous photograph in normal flow, rather than a tiny fixed image. */
 @media(max-height:680px) and (max-width:700px) and (prefers-reduced-motion:no-preference){
  .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready{height:auto;min-height:0;scroll-margin-top:0}
- .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready .timepiece-viewport{position:relative;top:auto;display:grid;grid-template-areas:'heading' 'visual' 'narrative' 'console' 'note';grid-template-columns:minmax(0,1fr);grid-template-rows:auto;gap:24px;height:auto;min-height:0;padding:30px var(--timepiece-gutter)}
+ .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready .timepiece-viewport{position:relative;top:auto;display:grid;grid-template-areas:'heading' 'visual' 'console' 'narrative' 'note';grid-template-columns:minmax(0,1fr);grid-template-rows:auto;gap:24px;height:auto;min-height:0;padding:30px var(--timepiece-gutter)}
  .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready .timepiece-heading{position:relative;inset:auto;display:block;width:auto;max-width:none}
  .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready .timepiece-heading h2{max-width:none;font-size:34px;line-height:1.04}
  .timepiece-journey[data-timepiece-mode=photograph].is-timepiece-ready .timepiece-heading>p{max-width:none;margin:0 0 12px;padding:0}
