@@ -384,7 +384,7 @@
     try {
       const [threeModule, modelModule] = await Promise.all([
         import('./assets/vendor/three-r180/three.module.min.js'),
-        import('./timepiece-model.js')
+        import('./timepiece-model.js?v=watch-luxury-20261103-2')
       ]);
       THREE = threeModule;
       if (dead) return;
