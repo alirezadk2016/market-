@@ -115,9 +115,17 @@ export function createTimepieceModel(THREE, resources) {
   lugShape.bezierCurveTo(1.30, 2.02, 1.24, 2.27, 1.12, 2.34);
   lugShape.quadraticCurveTo(1.04, 2.36, .99, 2.30); lugShape.quadraticCurveTo(1.07, 1.97, .83, 1.65);
   const lug = extrude(lugShape, .18, .045, 28); lug.translate(0, 0, -.21);
-  const lugs = [];
-  for (const x of [-1, 1]) for (const y of [-1, 1]) lugs.push([0, 0, 0, 0, 0, 0, x, y, 1]);
-  instances(model, lug, rose, lugs, 'case-lug');
+  // Mirroring an individual InstancedMesh matrix reverses triangle winding.
+  // Bake each handed lug instead, preserving outward faces through a full turn.
+  for (const x of [-1, 1]) for (const y of [-1, 1]) {
+    const mirrored = lug.clone(); mirrored.scale(x, y, 1);
+    if (x * y < 0) {
+      const indices = mirrored.index ? Array.from(mirrored.index.array) : Array.from({length:mirrored.attributes.position.count},(_,i)=>i);
+      for (let i=0;i<indices.length;i+=3) {const b=indices[i+1];indices[i+1]=indices[i+2];indices[i+2]=b;}
+      mirrored.setIndex(indices);
+    }
+    mesh(model, geo(mirrored), rose, 'case-lug');
+  }
   instances(model, cylinder(.045, 2.12, 24), rose, [[0, 2.16, -.13, 0, Math.PI / 2, 0], [0, -2.16, -.13, 0, Math.PI / 2, 0]], 'spring-bar');
 
   function bandSection(t, across) {
