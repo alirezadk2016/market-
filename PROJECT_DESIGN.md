@@ -115,3 +115,12 @@ Build an original refined mechanical dress-watch concept: approximately4.12diame
 Separate layers coherently along Z before the camera enters the movement. Show a connected brass wheel train, scalloped bevelled bridges with valid normalized UVs and Geneva finishing, perlage, jeweled pivots, blued slotted screws and a fine balance spring. Keep the reflection studio fixed as the object turns, combine HDR surroundings with controlled light cards, and retain readable shadows and contact depth without a permanent animation loop.
 
 Use generated transparent exterior/exploded photographs as graceful capability/loading fallbacks and a separately generated black alligator material albedo. Runtime rotation and exploded parts remain actual meshes. Accept the result through native full/exploded/deep screenshots, mouse/keyboard rotation and reset, mobile and landscape layouts, catalogue open/close, reduced motion, partial material failures and late readiness. State checks prove lifecycle and geometry; they do not certify photographic realism, physical phones or FPS.
+
+
+## Prestige watch — 5 November 2026
+
+The latest owner direction supersedes the dress-watch/leather concept: a detailed original A.z yellow-gold day/date watch inspired by luxury fluted-bezel styling, deep emerald dial, and a WHITE METAL articulated bracelet. Keep actual mouse orbit and scroll-exploded geometry. Preserve the rest of the approved site.
+
+Use raised gold indices and faceted luminous hands, genuine opaque day/date discs beneath real dial holes, a fitted sapphire date lens, substantial lugs and a finely cut fluted bezel. Bracelet links need rounded volume, equal arc-length spacing, brushed outer sections, polished centres, side fasteners with real slotted heads, and a concealed folding clasp. Avoid negative instance transforms, painted-white metal, floating joints and coarse gear-like fluting.
+
+Use pierced rhodium bridges, brass wheel train/pinions/barrel, seated jewels, recessed slotted screws and supported balance/hairspring. These are original authored proportions and illustrative mechanics, not an authenticated Rolex model or the catalogue quartz movement. Generated exterior/exploded images are capability fallbacks only. Native pixels and behavior must be assessed independently of automated geometry/lifecycle coverage.

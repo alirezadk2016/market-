@@ -18,7 +18,7 @@
   let pointer = null, mouseView = !media.matches && look?.getAttribute('aria-pressed') !== 'false', activePhase = -1;
   let pendingPhase = null, shaderFailed = false, visualUpgradeStarted = false;
   let cancelAnchorAlignment = null;
-  let glass, dial, hands, strap, core, glassMaterial, leatherMaterial, faceLight;
+  let glass, dial, hands, strap, core, glassMaterial, faceLight;
   let wheels = [];
   let layoutPending = false;
   const clamp = (value, min = 0, max = 1) => Math.max(min, Math.min(max, value));
@@ -237,43 +237,10 @@
   function upgradeWatchSurfaces() {
     if (visualUpgradeStarted || dead) return;
     visualUpgradeStarted = true;
-    section.dataset.timepieceMaterials = section.dataset.timepieceEnvironment = 'loading';
-    // The authored geometry and procedural studio render first. Colour/relief
-    // and roughness refine it independently; either failed load keeps its fallback.
-    const loader = new THREE.TextureLoader();
-    const upgradeColour = async () => {
-      const colour = await loader.loadAsync('assets/watch-alligator-colour-v4.webp');
-      if (dead) { colour.dispose(); return; }
-      textures.add(colour);
-      colour.wrapS = colour.wrapT = THREE.RepeatWrapping; colour.repeat.set(1, 1.9);
-      colour.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
-      colour.colorSpace = THREE.SRGBColorSpace;
-      const bump = colour.clone(); textures.add(bump);
-      bump.colorSpace = THREE.NoColorSpace; bump.needsUpdate = true;
-      const previous = new Set([leatherMaterial.map, leatherMaterial.bumpMap]);
-      leatherMaterial.map = colour; leatherMaterial.bumpMap = bump; leatherMaterial.bumpScale = .035;
-      leatherMaterial.needsUpdate = true;
-      previous.forEach(texture => { if (texture && texture !== colour && texture !== bump && textures.delete(texture)) texture.dispose(); });
-      wake(); return true;
-    };
-    const upgradeRoughness = async () => {
-      const roughness = await loader.loadAsync('assets/watch-leather-roughness-v2.webp');
-      if (dead) { roughness.dispose(); return; }
-      textures.add(roughness);
-      roughness.wrapS = roughness.wrapT = THREE.RepeatWrapping; roughness.repeat.set(1.6, 3.5);
-      roughness.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
-      roughness.colorSpace = THREE.NoColorSpace;
-      leatherMaterial.roughnessMap = roughness; leatherMaterial.roughness = 1;
-      leatherMaterial.needsUpdate = true; wake(); return true;
-    };
-    Promise.allSettled([upgradeColour(), upgradeRoughness()]).then(results => {
-      if (dead) return;
-      const succeeded = result => result.status === 'fulfilled' && result.value;
-      leatherMaterial.userData.profile = 'alligator';
-      section.dataset.timepieceLeather = results.some(succeeded) ? 'pbr' : 'authored';
-      section.dataset.timepieceMaterials = results.every(succeeded) ? 'ready' : 'fallback';
-      wake();
-    });
+    section.dataset.timepieceMaterials = 'authored';
+    section.dataset.timepieceBracelet = 'white-metal';
+    section.dataset.timepieceEnvironment = 'loading';
+    // Native finishes are ready immediately; only studio lighting upgrades.
     (async () => {
       const { HDRLoader } = await import('./assets/vendor/three-r180/HDRLoader.js');
       if (dead) return;
@@ -334,7 +301,7 @@
     // visitor rotates the watch and separates its layers.
     scene.environmentRotation.y = .2;
     scene.environmentIntensity = .9;
-    if (faceLight) faceLight.intensity = mix(1.1, 1.5, dive);
+    if (faceLight) faceLight.intensity = mix(.9, 1.05, dive);
     const narrow = width <= 700;
     const lens = 2 * Math.tan(37 * Math.PI / 360);
     const fullDistance = narrow ? Math.max(7.4 / (lens * .86), 4.55 / (lens * (width / height) * .88)) : 14.4;
@@ -384,7 +351,7 @@
     try {
       const [threeModule, modelModule] = await Promise.all([
         import('./assets/vendor/three-r180/three.module.min.js'),
-        import('./timepiece-model.js?v=watch-luxury-20261103-2')
+        import('./timepiece-model.js?v=watch-prestige-20261105')
       ]);
       THREE = threeModule;
       if (dead) return;
@@ -408,7 +375,7 @@
       faceLight.castShadow = true; faceLight.shadow.mapSize.set(1024,1024);
       Object.assign(faceLight.shadow.camera,{left:-2.7,right:2.7,top:2.7,bottom:-2.7,near:.5,far:16});
       faceLight.shadow.camera.updateProjectionMatrix(); faceLight.shadow.bias = -.00015; faceLight.shadow.normalBias = .004;
-      ({ model, glass, dial, hands, strap, core, glassMaterial, leatherMaterial, wheels } =
+      ({ model, glass, dial, hands, strap, core, glassMaterial, wheels } =
         modelModule.createTimepieceModel(THREE, { ownGeometry, ownMaterial, textures, document }));
       scene.add(model); ready = true; phaseState(targetProgress); resize(); wake();
       if ('ResizeObserver' in window) { const observer = new ResizeObserver(resize); observer.observe(mount); observers.push(observer); }
