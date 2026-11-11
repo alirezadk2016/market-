@@ -2,6 +2,8 @@
 (() => {
   'use strict';
   const t = (key, fallback) => (window.AZ ? window.AZ.t(key) : fallback);
+  const phrase = (key, fallback, values) => t(key, fallback).replace(/\{(\w+)\}/g, (token, name) =>
+    Object.prototype.hasOwnProperty.call(values, name) ? String(values[name]) : token);
 
   const collection = document.getElementById('collectionRoom');
   const piece = document.getElementById('cataloguePiece');
@@ -117,7 +119,7 @@
   }
 
   const tools = make('div', 'catalogue-photo-tools');
-  tools.setAttribute('aria-label', 'Photograph controls');
+  tools.setAttribute('aria-label', t('photo.controlsLabel', 'Photograph controls'));
   const counter = make('span', 'catalogue-photo-counter');
   counter.setAttribute('role', 'status');
   counter.setAttribute('aria-live', 'polite');
@@ -147,6 +149,9 @@
   const close = button('catalogue-viewer-close', t('cat.close', 'Close'), t('photo.closeLabel', 'Close full product photograph'));
   viewerHeader.append(viewerTitle, zoom, close);
   const viewport = make('div', 'catalogue-viewer-viewport');
+  // This surface contains the photograph, not a reading-order layout. A fixed
+  // image coordinate system keeps native zoom centring/panning identical in RTL.
+  viewport.dir = 'ltr';
   const canvas = make('div', 'catalogue-viewer-canvas');
   const viewerPhoto = make('img', 'catalogue-viewer-image');
   viewerPhoto.alt = '';
@@ -170,6 +175,31 @@
   let pan = null;
   let refreshQueued = false;
 
+  function updateZoomLabel() {
+    const enabled = viewer.classList.contains('is-zoomed');
+    zoom.textContent = enabled ? t('photo.fit', 'Fit image') : t('photo.zoom', 'Zoom in');
+    zoom.setAttribute('aria-label', enabled ? t('photo.fitLabel', 'Fit product photograph to screen') :
+      t('photo.zoomLabel', 'Zoom product photograph'));
+  }
+  function localizeControls() {
+    const labels = [
+      [previous, 'cat.prev', 'Prev', 'photo.prevLabel', 'Previous product photograph'],
+      [next, 'cat.next', 'Next', 'photo.nextLabel', 'Next product photograph'],
+      [enlarge, 'cat.viewLarger', 'View larger', 'photo.enlargeLabel', 'Open full product photograph'],
+      [close, 'cat.close', 'Close', 'photo.closeLabel', 'Close full product photograph'],
+      [viewerPrevious, 'photo.previous', 'Previous', 'photo.prevFullLabel', 'Previous full product photograph'],
+      [viewerNext, 'cat.next', 'Next', 'photo.nextFullLabel', 'Next full product photograph']
+    ];
+    labels.forEach(([node, textKey, textFallback, labelKey, labelFallback]) => {
+      node.textContent = t(textKey, textFallback); node.setAttribute('aria-label', t(labelKey, labelFallback));
+    });
+    tools.setAttribute('aria-label', t('photo.controlsLabel', 'Photograph controls'));
+    missing.textContent = viewerMissing.textContent = t('photo.missing', 'Photograph unavailable. Choose another view.');
+    // Error prose keeps the document's language direction on the LTR image plane.
+    viewerMissing.dir = window.AZ?.dir?.() || 'ltr';
+    updateZoomLabel();
+  }
+
   function photographState() {
     const buttons = [...thumbnails.querySelectorAll('button')];
     const total = Math.max(1, buttons.length);
@@ -181,7 +211,7 @@
     if (!enabled) stopPan();
     viewer.classList.toggle('is-zoomed', enabled);
     zoom.setAttribute('aria-pressed', String(enabled));
-    zoom.textContent = enabled ? 'Fit image' : 'Zoom in';
+    updateZoomLabel();
     viewport.scrollLeft = enabled ? (viewport.scrollWidth - viewport.clientWidth) / 2 : 0;
     viewport.scrollTop = enabled ? (viewport.scrollHeight - viewport.clientHeight) / 2 : 0;
   }
@@ -203,16 +233,17 @@
     matchSourcePaper(frame, photo);
     const value = String(state.selected + 1).padStart(2, '0') + ' / ' + String(state.total).padStart(2, '0');
     counter.textContent = value;
-    counter.setAttribute('aria-label', 'Photograph ' + (state.selected + 1) + ' of ' + state.total);
+    const counterLabel = phrase('photo.counter', 'Photograph {current} of {total}', { current:state.selected + 1, total:state.total });
+    counter.setAttribute('aria-label', counterLabel);
     viewerCounter.textContent = value;
-    viewerCounter.setAttribute('aria-label', 'Photograph ' + (state.selected + 1) + ' of ' + state.total);
+    viewerCounter.setAttribute('aria-label', counterLabel);
     for (const node of [previous, next, viewerPrevious, viewerNext]) node.hidden = state.total < 2;
     const failed = Boolean(photo.getAttribute('src')) && photo.complete && !photo.naturalWidth;
     frame.classList.toggle('is-photo-unavailable', failed);
     missing.hidden = !failed;
     enlarge.disabled = failed || !photo.getAttribute('src');
-    const title = document.getElementById('cataloguePieceTitle')?.textContent || 'The piece';
-    frame.setAttribute('aria-label', 'Product photograph of ' + title + '. Use left and right arrow keys to browse.');
+    const title = document.getElementById('cataloguePieceTitle')?.textContent || t('cat.thePiece', 'The piece');
+    frame.setAttribute('aria-label', phrase('photo.frameLabel', 'Product photograph of {piece}. Use left and right arrow keys to browse.', { piece:title }));
     viewerTitle.textContent = title;
     if (viewer.open) updateViewerPhoto();
   }
@@ -342,5 +373,23 @@
   }).observe(collection, { attributes: true, attributeFilter: ['open'] });
   photo.addEventListener('load', queueRefresh);
   photo.addEventListener('error', queueRefresh);
+  // The catalogue rebuilds translated thumbnails when language changes. Capture
+  // the real selection first, then restore it after that synchronous rebuild.
+  document.addEventListener('az:languagechange', () => {
+    const selected = photographState().selected, wasZoomed = viewer.classList.contains('is-zoomed');
+    const left = viewport.scrollLeft, top = viewport.scrollTop, focused = document.activeElement;
+    const keepFocus = viewer.open && viewer.contains(focused);
+    clearGesture(); stopPan();
+    queueMicrotask(() => {
+      const state = photographState();
+      if (selected < state.buttons.length && selected !== state.selected) selectPhotograph(selected);
+      localizeControls(); refresh();
+      if (viewer.open && wasZoomed && !zoom.disabled) {
+        setZoom(true); viewport.scrollLeft = left; viewport.scrollTop = top;
+      }
+      if (keepFocus && viewer.open && focused?.isConnected) focused.focus({ preventScroll:true });
+    });
+  }, { capture:true });
+  localizeControls();
   refresh();
 })();

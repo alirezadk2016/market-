@@ -150,7 +150,7 @@
    keep their own direction so punctuation does not jump to the far end. */
 :root[lang="fa"] .salon-contact-address,
 :root[lang="fa"] .luxury-footer-bottom a[href^="mailto"],
-:root[lang="fa"] .luxury-review-meta dd,
+:root[lang="fa"] .luxury-review-meta div:first-child dd,
 :root[lang="fa"] .catalogue-retailer a { direction: ltr; unicode-bidi: isolate; display: inline-block; }
 
 @media (max-width: 700px) {

@@ -453,11 +453,73 @@
     wake();
   }
 
-  // Hold the upgrade until the browser has finished the page it was asked for.
-  // The hero photograph is the LCP element; three.js competing with it for
-  // bandwidth only delays the thing the visitor actually came to look at.
-  function begin() { start().catch(() => fallback('initialisation')); }
-  const queue = () => (window.requestIdleCallback || (fn => setTimeout(fn, 320)))(begin, { timeout: 2500 });
-  if (document.readyState === 'complete') queue();
-  else window.addEventListener('load', queue, { once: true });
+  // A direct collection/watch link must not allocate a second, unseen WebGL
+  // scene or fetch four hero textures. Keep the semantic photograph available;
+  // enhance only near the hero, after page load and an idle opportunity.
+  let upgradeQueued = false, upgradeStarted = false, approach;
+  let initialDestinationHeld = false;
+  const pendingListeners = [];
+  try {
+    const destination = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    const order = destination && hero.compareDocumentPosition?.(destination);
+    initialDestinationHeld = Boolean(order & 4) && !(order & 16);
+  } catch (_) { /* An invalid fragment retains the normal photographic entry. */ }
+  function nearHero() {
+    const bounds = hero.getBoundingClientRect();
+    const height = window.innerHeight || stage.clientHeight;
+    return bounds.width > 0 && bounds.height > 0 && bounds.top < height + 350 && bounds.top + bounds.height > -350;
+  }
+  function pendingListen(target, type, callback, options) {
+    target.addEventListener(type, callback, options);
+    pendingListeners.push(() => target.removeEventListener(type, callback, options));
+  }
+  function clearPending() {
+    approach?.disconnect();
+    pendingListeners.splice(0).forEach(remove => remove());
+  }
+  function begin() {
+    upgradeQueued = false;
+    if (upgradeStarted || destroyed || initialDestinationHeld || pageHidden || document.visibilityState === 'hidden' || !nearHero()) return;
+    upgradeStarted = true;
+    approach?.disconnect();
+    start().catch(() => fallback('initialisation')).finally(clearPending);
+  }
+  function queue() {
+    if (upgradeQueued || upgradeStarted || destroyed || initialDestinationHeld || document.readyState !== 'complete' ||
+      pageHidden || document.visibilityState === 'hidden' || !nearHero()) return;
+    upgradeQueued = true;
+    (window.requestIdleCallback || (fn => setTimeout(fn, 320)))(begin, { timeout: 2500 });
+  }
+  if (initialDestinationHeld) {
+    // Native fragment navigation can move the page after load/idle delivery.
+    // Its transient top-of-page geometry is not an invitation to load the hero.
+    // Real input or subsequent navigation unlocks it; nearHero still decides.
+    const intents = ['pointerdown', 'touchstart', 'wheel', 'keydown'];
+    const release = () => {
+      if (!initialDestinationHeld) return;
+      initialDestinationHeld = false;
+      intents.forEach(type => document.removeEventListener(type, release, true));
+      window.removeEventListener('hashchange', release);
+      queue();
+    };
+    intents.forEach(type => pendingListen(document, type, release, { capture: true, passive: true }));
+    pendingListen(window, 'hashchange', release);
+  }
+  function afterLoad() {
+    if ('IntersectionObserver' in window) {
+      approach = new IntersectionObserver(queue, { rootMargin: '350px 0px' });
+      approach.observe(hero); observers.push(approach);
+    }
+    // Current geometry is authoritative when observer delivery is stale or the
+    // API is unavailable. These lightweight listeners are removed after start.
+    pendingListen(window, 'scroll', queue, { passive: true });
+    pendingListen(window, 'resize', queue, { passive: true });
+    pendingListen(window, 'focus', queue);
+    pendingListen(document, 'visibilitychange', queue);
+    pendingListen(window, 'pagehide', () => { pageHidden = true; });
+    pendingListen(window, 'pageshow', () => { pageHidden = false; queue(); });
+    queue();
+  }
+  if (document.readyState === 'complete') afterLoad();
+  else window.addEventListener('load', afterLoad, { once: true });
 })();

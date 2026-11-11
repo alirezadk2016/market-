@@ -58,18 +58,20 @@
 
 .salon-enquiry.luxury-enquiry{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10vw;max-width:none;margin:0;padding:106px max(5vw,calc((100vw - 1296px)/2));border-top:1px solid var(--luxury-rule);background:var(--luxury-surface)}
 .luxury-enquiry .salon-enquiry-intro{min-width:0}
+.luxury-enquiry h2{font-size:clamp(48px,4.6vw,66px)}
 .luxury-enquiry .salon-enquiry-intro>p:not(.luxury-kicker){margin:28px 0 18px;max-width:34ch;color:var(--luxury-muted);font-size:15px;line-height:1.9}
 .luxury-enquiry .salon-contact-address{min-height:44px;padding-block:8px;border-bottom:1px solid #5c6856;font-size:14px;color:#c9d1c0}
 .luxury-enquiry .salon-enquiry-form{max-width:none;width:100%;min-width:0;justify-self:stretch;padding-top:3px}
 .luxury-enquiry .salon-enquiry-form h3{margin:0 0 35px;font:600 35px/1.062 Archivo,'Helvetica Neue',Arial,sans-serif;letter-spacing:-.032em;color:#e2e3d8}
 .luxury-enquiry .salon-enquiry-form label{margin:26px 0 8px;font-size:12px;color:#c1c9b7}
 .luxury-enquiry .salon-enquiry-form label span{color:#8d9a84}
-.luxury-enquiry .salon-enquiry-form select,.luxury-enquiry .salon-enquiry-form textarea{min-height:50px;padding:12px 0;border:0;border-bottom:1px solid #58634f;background:transparent;color:var(--luxury-paper);font-size:15px;line-height:1.7;box-shadow:none}
-.luxury-enquiry .salon-enquiry-form select{padding-right:24px}
+.luxury-enquiry .salon-enquiry-form select,.luxury-enquiry .salon-enquiry-form textarea{min-height:50px;padding:12px 0;border:0;border-bottom:1px solid #697460;background:transparent;color:var(--luxury-paper);font-size:16px;line-height:1.7;box-shadow:none;transition:border-color .18s,background .18s}
+.luxury-enquiry .salon-enquiry-form select{padding-inline-end:24px}
 .luxury-enquiry .salon-enquiry-form select option{background:#151a1b;color:var(--luxury-paper)}
 .luxury-enquiry .salon-enquiry-form textarea{min-height:128px;resize:vertical}
-.luxury-enquiry .salon-enquiry-form select:focus-visible,.luxury-enquiry .salon-enquiry-form textarea:focus-visible{outline:1px solid #c9d4bd;outline-offset:5px}
-.luxury-enquiry .salon-enquiry-form textarea::placeholder{color:#7f8e75}
+.luxury-enquiry .salon-enquiry-form select:hover,.luxury-enquiry .salon-enquiry-form textarea:hover{border-bottom-color:#a5af9b}
+.luxury-enquiry .salon-enquiry-form select:focus-visible,.luxury-enquiry .salon-enquiry-form textarea:focus-visible{outline:1px solid #c9d4bd;outline-offset:5px;border-bottom-color:#d2dac8;background:#151c1c}
+.luxury-enquiry .salon-enquiry-form textarea::placeholder{color:#9aa591}
 .luxury-draft-actions{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center;margin-top:30px}
 .luxury-enquiry .salon-compose{min-height:54px;width:100%;margin:0;border:1px solid #d9ddce;background:#e5e5da;color:#171c18;box-shadow:none;font-size:12px;letter-spacing:0;transition:background .2s,border-color .2s,scale .15s}
 .luxury-enquiry .salon-compose:hover{background:#f2f1e8;border-color:#f2f1e8}
@@ -84,8 +86,8 @@
 
 .salon-questions.luxury-questions{max-width:1440px;margin:0 auto;padding:94px 5vw 106px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:10vw;border-top:0}
 .luxury-questions h2{margin:0;font:600 clamp(44px,4vw,60px)/.984 Archivo,'Helvetica Neue',Arial,sans-serif;letter-spacing:-.042em;color:var(--luxury-paper)}
-.luxury-questions .salon-question-list summary{min-height:76px;padding:20px 0;font-size:14px;line-height:1.65;color:#d7ded0}
-.luxury-questions .salon-question-list p{max-width:55ch;margin:0;padding:0 30px 25px 0;color:#aab7a0;font-size:14px;line-height:1.9}
+.luxury-questions .salon-question-list summary{min-height:76px;padding:20px 0;font-size:16px;line-height:1.65;color:#dce0d6}
+.luxury-questions .salon-question-list p{max-width:55ch;margin:0;padding-block:0 25px;padding-inline:0 30px;color:#b7beb0;font-size:15px;line-height:1.9}
 .luxury-questions .salon-question-list details{border-color:var(--luxury-rule)}
 .salon-footer.luxury-footer{display:block;max-width:none;margin:0;padding:62px 5vw 26px;background:#0d1112;border-top:1px solid var(--luxury-rule)}
 .luxury-footer-main{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:50px;align-items:center;max-width:1296px;margin:0 auto 58px}
@@ -114,6 +116,17 @@
 .luxury-menu-collections button>span:last-child{font-size:12px;color:#8d9e80;font-variant-numeric:tabular-nums}
 .luxury-menu-enquire{display:flex;align-items:center;justify-content:center;min-height:54px;padding:14px 20px;margin-top:28px;background:#e4e6d9;color:#151c16;font-size:14px}
 .luxury-menu-email{display:inline-flex;align-items:center;min-height:44px;margin-top:14px;font-size:12px;color:#9dad91}
+
+@media(max-height:700px){
+ .luxury-menu-head{min-height:76px;padding-block:8px}
+ .luxury-menu-head img{width:56px;height:56px}
+ .luxury-menu-body{padding-top:22px}
+ .luxury-menu-section-links{margin-bottom:22px}
+ .luxury-menu-section-links a{min-height:48px;font-size:34px}
+ .luxury-menu-collections{padding-bottom:20px}
+ .luxury-menu-collections button{min-height:52px}
+ .luxury-menu-enquire{margin-top:22px}
+}
 
 @media(max-width:1050px){
  .collection-salon.luxury-collections,.luxury-material,.advisory-salon.luxury-advisory,.salon-questions.luxury-questions{padding-inline:4vw}
@@ -188,8 +201,8 @@
  .luxury-enquiry .salon-form-note{max-width:42ch;font-size:12px}
  .salon-questions.luxury-questions{display:block;padding:59px 24px 66px}
  .luxury-questions h2{font-size:45px;line-height:1.02;margin-bottom:31px}
- .luxury-questions .salon-question-list summary{min-height:72px;padding:19px 0;font-size:14px;line-height:1.7;gap:18px}
- .luxury-questions .salon-question-list p{padding-right:8px;font-size:14px;line-height:1.85}
+ .luxury-questions .salon-question-list summary{min-height:72px;padding:19px 0;font-size:15px;line-height:1.7;gap:18px}
+ .luxury-questions .salon-question-list p{padding-inline-end:8px;font-size:15px;line-height:1.85}
  .salon-footer.luxury-footer{padding:45px 24px 22px}
  .luxury-footer-main{display:grid;grid-template-columns:1fr;gap:25px;margin-bottom:38px}
  .luxury-footer .footer-signature,.luxury-footer .footer-signature img{width:76px;height:76px}
@@ -224,7 +237,7 @@
 .luxury-service-steps li>span{padding-top:1px;color:#a5b399;font:600 24px/1.158 Archivo,'Helvetica Neue',Arial,sans-serif;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .luxury-service-steps h3{margin:0 0 11px;color:#d6dece;font:400 17px/1.5 Archivo,'Helvetica Neue',Arial,sans-serif;letter-spacing:-.015em}
 .luxury-service-steps p{margin:0;color:#acb7a2;font-size:14px;line-height:1.9}
-.luxury-enquiry .salon-enquiry-intro>p.luxury-enquiry-expectation{max-width:34ch;margin-top:30px;padding-left:16px;border-left:1px solid #56644d;color:#a9b69e;font-size:14px;line-height:1.85}
+.luxury-enquiry .salon-enquiry-intro>p.luxury-enquiry-expectation{max-width:34ch;margin-top:30px;padding-inline-start:16px;border-inline-start:1px solid #56644d;color:#b5bdae;font-size:14px;line-height:1.85}
 .luxury-review-trigger{display:flex;align-items:center;justify-content:center;min-height:56px;width:100%;margin-top:28px;padding:15px 20px;border:1px solid #d9ddce;background:#e5e5da;color:#171c18;font:400 14px/1.6 Archivo,'Helvetica Neue',Arial,sans-serif;transition:background .2s,scale .15s}
 .luxury-review-trigger:hover{background:#f2f1e8}
 .luxury-review-trigger:active{scale:.96}

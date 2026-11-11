@@ -18,6 +18,7 @@
   let pointer = null, mouseView = !media.matches && look?.getAttribute('aria-pressed') !== 'false', activePhase = -1;
   let pendingPhase = null, shaderFailed = false, visualUpgradeStarted = false;
   let cancelAnchorAlignment = null;
+  let pendingDestination = null;
   let glass, dial, hands, strap, core, glassMaterial, faceLight;
   let wheels = [];
   let layoutPending = false;
@@ -72,6 +73,7 @@
   function fallback(reason) {
     if (dead) return;
     cancelAnchorAlignment?.();
+    cancelPendingDestination();
     dead = true; ready = false; stop(); cancelPointer();
     section.classList.remove('is-timepiece-ready');
     section.classList.add('is-timepiece-fallback');
@@ -113,6 +115,89 @@
       phaseState(targetProgress);
     }
     wake(false);
+  }
+  function cancelPendingDestination() {
+    const pending = pendingDestination; pendingDestination = null;
+    pending?.dispose();
+  }
+  function trackPendingDestination() {
+    cancelPendingDestination();
+    if (media.matches || !location.hash || location.hash === '#timepieceJourney') return;
+    let target;
+    try { target = document.getElementById(decodeURIComponent(location.hash.slice(1))); }
+    catch (_) { return; }
+    const relation = target && section.compareDocumentPosition?.(target);
+    // Only a destination after this section can be displaced by its expansion.
+    // A child of the watch or an earlier collection must never be realigned.
+    if (!(relation & 4) || (relation & 16) || target.getBoundingClientRect().top < -.5) return;
+    const intents = ['wheel', 'touchstart', 'pointerdown', 'keydown'];
+    const cancel = () => cancelPendingDestination();
+    const pending = {
+      hash: location.hash, target, initialNavigation: document.readyState !== 'complete',
+      dispose() {
+        pending.settleDispose?.();
+        window.removeEventListener('hashchange', cancel);
+        intents.forEach(type => document.removeEventListener(type, cancel, true));
+      }
+    };
+    pendingDestination = pending;
+    window.addEventListener('hashchange', cancel);
+    intents.forEach(type => document.addEventListener(type, cancel, { capture: true, passive: true }));
+  }
+  function settleDestinationAfterInitialScroll(pending) {
+    let quietTimer, deadlineTimer, loaded = document.readyState === 'complete';
+    const align = () => {
+      if (!loaded || pendingDestination !== pending) return;
+      const eligible = !dead && !media.matches && pending.hash === location.hash && pageAvailable();
+      const top = eligible ? pending.target.getBoundingClientRect().top : 0;
+      const padding = eligible ? parseFloat(window.getComputedStyle(document.documentElement).scrollPaddingTop) || 0 : 0;
+      const margin = eligible ? parseFloat(window.getComputedStyle(pending.target).scrollMarginTop) || 0 : 0;
+      cancelPendingDestination();
+      if (eligible && Math.abs(top - padding - margin) > .5) {
+        window.scrollTo({ top: Math.max(0, scrollY + top - padding - margin), behavior: 'auto' });
+      }
+    };
+    const defer = () => {
+      if (!loaded || pendingDestination !== pending) return;
+      clearTimeout(quietTimer); quietTimer = setTimeout(align, 180);
+    };
+    const afterLoad = () => {
+      loaded = true;
+      if (!deadlineTimer) deadlineTimer = setTimeout(align, 1600);
+      defer();
+    };
+    pending.settleDispose = () => {
+      clearTimeout(quietTimer); clearTimeout(deadlineTimer);
+      window.removeEventListener('scroll', defer);
+      window.removeEventListener('load', afterLoad);
+      document.removeEventListener('scrollend', align);
+    };
+    window.addEventListener('scroll', defer, { passive: true });
+    document.addEventListener('scrollend', align);
+    if (loaded) afterLoad(); else window.addEventListener('load', afterLoad, { once: true });
+  }
+  function retainDestinationDuringExpansion() {
+    const pending = pendingDestination;
+    if (!pending || pending.hash !== location.hash || !pageAvailable() || media.matches || pendingPhase !== null) { cancelPendingDestination(); return null; }
+    const before = pending.target.getBoundingClientRect().top;
+    const padding = parseFloat(window.getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+    const margin = parseFloat(window.getComputedStyle(pending.target).scrollMarginTop) || 0;
+    // Read immediately around the synchronous CSS change. A completed document
+    // only preserves an aligned destination; an untouched initial fragment may
+    // still be travelling and needs one post-load/scroll-rest correction.
+    if (before < -.5) { cancelPendingDestination(); return null; }
+    const aligned = before <= padding + Math.max(0, margin) + 16;
+    return () => {
+      if (pendingDestination !== pending) return;
+      if (pending.hash !== location.hash || !pageAvailable()) { cancelPendingDestination(); return; }
+      const delta = pending.target.getBoundingClientRect().top - before;
+      if (Math.abs(delta) <= .5) { cancelPendingDestination(); return; }
+      if (aligned) {
+        cancelPendingDestination();
+        window.scrollTo({ top: scrollY + delta, behavior: 'auto' });
+      } else if (pending.initialNavigation) settleDestinationAfterInitialScroll(pending);
+      else cancelPendingDestination();
+    };
   }
   function settleInitialAnchor() {
     cancelAnchorAlignment?.();
@@ -164,6 +249,7 @@
   }
   function choosePhase(index) {
     cancelAnchorAlignment?.();
+    cancelPendingDestination();
     index = clamp(index, 0, 2);
     const value = index / 2;
     if (media.matches || !ready || dead || !scrollDriven()) {
@@ -328,8 +414,10 @@
       if (shaderFailed) { fallback('shader'); return; }
       if (dead) return;
       if (!section.classList.contains('is-timepiece-ready')) {
+        const retainDestination = retainDestinationDuringExpansion();
         section.classList.remove('is-timepiece-fallback'); section.classList.add('is-timepiece-ready');
         section.dataset.timepieceState = 'ready';
+        retainDestination?.();
         upgradeWatchSurfaces();
         layoutPending = true; completeReadyLayout();
       }
@@ -385,14 +473,17 @@
   listen(window, 'resize', resize, { passive: true });
   listen(window, 'focus', () => { completeReadyLayout(); wake(); });
   if (window.visualViewport) listen(window.visualViewport, 'resize', resize, { passive: true });
-  listen(window, 'pagehide', () => { pageHidden = true; cancelAnchorAlignment?.(); cancelPointer(); stop(); });
+  listen(window, 'pagehide', () => { pageHidden = true; cancelAnchorAlignment?.(); cancelPendingDestination(); cancelPointer(); stop(); });
   listen(window, 'pageshow', () => { pageHidden = false; resize(); wake(); });
-  listen(document, 'visibilitychange', () => { if (pageAvailable()) { completeReadyLayout(); wake(); } else { cancelPointer(); stop(); } });
+  listen(document, 'visibilitychange', () => { if (pageAvailable()) { completeReadyLayout(); wake(); } else { cancelPendingDestination(); cancelPointer(); stop(); } });
   listen(document, 'az:languagechange', syncLook);
-  listen(media, 'change', () => { resetOrbit(); if (media.matches) { mouseView = false; syncLook(); targetProgress = progress = activePhase < 0 ? 0 : activePhase / 2; } resize(); wake(); });
-  const modal = new MutationObserver(() => { if (pageAvailable()) { completeReadyLayout(); wake(); } else { cancelPointer(); stop(); } });
+  listen(media, 'change', () => { cancelPendingDestination(); resetOrbit(); if (media.matches) { mouseView = false; syncLook(); targetProgress = progress = activePhase < 0 ? 0 : activePhase / 2; } resize(); wake(); });
+  const modal = new MutationObserver(() => { if (pageAvailable()) { completeReadyLayout(); wake(); } else { cancelPendingDestination(); cancelPointer(); stop(); } });
   modal.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['open'] }); observers.push(modal);
   if (!window.WebGL2RenderingContext || !permittedDevice()) { fallback('capability'); return; }
+  // Capture initial fragment intent before lazy imports or user scrolling can
+  // begin. Starting the renderer later must never recreate cancelled intent.
+  trackPendingDestination();
   section.dataset.timepieceLook = String(mouseView); phaseState(0);
   if ('IntersectionObserver' in window) {
     const approach = new IntersectionObserver(([entry]) => {

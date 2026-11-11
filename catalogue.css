@@ -275,6 +275,15 @@
  .catalogue-viewer-step{font-size:12px;min-width:58px}
 }
 @media(hover:hover){#collectionRoom .catalogue-card-action:hover .catalogue-photo-well{--photo-hover:1.015}}
+
+/* The enquiry is the primary product action; keep its contrast as clear as
+   the letter form while the original photograph remains the visual focus. */
+#collectionRoom #catalogueEnquire{min-height:56px;background:#e5e5da;color:#171c18;border:1px solid #e5e5da;box-shadow:none;font-size:14px;font-weight:500;transition:background .18s,border-color .18s,scale .15s}
+#collectionRoom #catalogueEnquire:hover{background:#f2f1e8;border-color:#f2f1e8}
+#collectionRoom #catalogueEnquire:active{scale:.96}
+#collectionRoom #catalogueEnquire:focus-visible{outline:2px solid #e5e5da;outline-offset:5px}
+#collectionRoom .catalogue-description{font-size:16px;line-height:1.85;max-width:48ch}
+@media(prefers-reduced-motion:reduce){#collectionRoom #catalogueEnquire{transition:none}}
 @media(max-width:375px){.catalogue-viewer-header{padding-inline:16px;gap:12px}.catalogue-viewer-title{font-size:23px}.catalogue-viewer-header button{min-width:48px}.catalogue-viewer-footer{padding-inline:16px}}
 @media(prefers-reduced-motion:reduce){.catalogue-photo-actions button,#catalogueImageViewer *,#collectionRoom .catalogue-thumbnails button{transition:none!important;scroll-behavior:auto!important}}
 

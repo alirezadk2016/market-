@@ -55,7 +55,12 @@
   const usableVariants = item => (Array.isArray(item?.variants) ? item.variants : []).filter(variant =>
     variant && Array.isArray(variant.shots) && variant.shots.some(shot => typeof shot === 'string' && shot.trim()));
   const imagesFor = variant => variant.shots.filter(shot => typeof shot === 'string' && shot.trim());
-  const normalize = value => String(value || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  // Match everyday Persian keyboard forms without changing display copy. Both
+  // query and catalogue text share this fold; Latin accent-insensitive search
+  // remains intact, while optional vowel marks and joining controls disappear.
+  const normalize = value => String(value || '').normalize('NFKD')
+    .replace(/[\u0300-\u036f\u0610-\u061a\u064b-\u065f\u0670\u06d6-\u06ed\u0640\u200c\u200d]/g, '')
+    .replace(/[\u064a\u0649]/g, '\u06cc').replace(/\u0643/g, '\u06a9').toLowerCase();
   const tokensFor = value => normalize(value).match(/[\p{L}\p{N}]+/gu) || [];
   const registryItems = key => Array.isArray(RANGES[key]?.items) ? RANGES[key].items : [];
   const pieceCount = key => registryItems(key).filter(item => usableVariants(item).length).length;
@@ -64,7 +69,7 @@
     return choicesByCollection.get(collectionKey);
   }
   function defaultVariant(item, variants) {
-    if (item.name === 'Armani Exchange' && item.note === 'Sussy Saddle') {
+    if (item.name === 'Armani Exchange' && item.note === 'Susy Saddle') {
       const nero = variants.findIndex(variant => variant.color === 'Nero');
       if (nero >= 0) return nero;
     }
@@ -82,7 +87,7 @@
     const collection = Object.prototype.hasOwnProperty.call(RANGES, key) ? rangeTitle(key) : t('mail.helpChoosing', 'help choosing a piece');
     const body = t('mail.greeting', 'Hello A.z,') + '\n\n' + t('mail.wants', 'I would like advice on') + ' ' + collection + '.' +
       (preferences.value.trim() ? '\n\n' + preferences.value.trim() : '');
-    compose.href = 'mailto:alirezadk2020@gmail.com?subject=' + encodeURIComponent('A.z private enquiry · ' + collection) + '&body=' + encodeURIComponent(body);
+    compose.href = 'mailto:alirezadk2020@gmail.com?subject=' + encodeURIComponent(t('enq.subjectValue', 'A.z private enquiry') + ' · ' + collection) + '&body=' + encodeURIComponent(body);
   }
   enquiryCollection.addEventListener('change', updateDraft);
   preferences.addEventListener('input', updateDraft);
@@ -102,11 +107,12 @@
       button.append(make('span', '', collectionNames[key]), make('span', 'catalogue-collection-count', String(pieceCount(key))));
       button.addEventListener('click', () => openCollection(key, { fromNav: true }));
       button.addEventListener('keydown', event => {
-        if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+        if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
         if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
         event.preventDefault();
+        const step = (event.key === 'ArrowRight' ? 1 : -1) * (document.documentElement.dir === 'rtl' ? -1 : 1);
         const next = event.key === 'Home' ? 0 : event.key === 'End' ? collectionKeys.length - 1 :
-          (index + (event.key === 'ArrowRight' ? 1 : -1) + collectionKeys.length) % collectionKeys.length;
+          (index + step + collectionKeys.length) % collectionKeys.length;
         openCollection(collectionKeys[next], { fromNav: true });
         const target = collectionNav.querySelector('[data-browse-collection="' + collectionKeys[next] + '"]');
         target.focus({ preventScroll: true });

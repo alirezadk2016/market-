@@ -1,13 +1,16 @@
 /* Small editorial enhancements. The collection, form and photographs work without these. */
 (() => {
   'use strict';
-  const t = (key, fallback) => (window.AZ ? window.AZ.t(key) : fallback);
+  const t = (key, fallback) => {
+    const value = window.AZ?.t(key);
+    return value && value !== key ? value : fallback;
+  };
 
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const phone = matchMedia('(max-width: 700px)');
   const collectionLabelKeys = { bags: 'col.bags', eyewear: 'col.eyewear', watches: 'col.watches', headwear: 'col.headwear' };
-  const collectionLabels = new Proxy({}, { get: (_, key) => t(collectionLabelKeys[key], String(key)) });
+  const collectionLabel = key => t(collectionLabelKeys[key], String(key));
   const registry = typeof RANGES === 'undefined' ? null : RANGES;
   const collectionCount = key => {
     const items = registry?.[key]?.items;
@@ -74,12 +77,12 @@
     const menu = document.createElement('dialog');
     if (typeof menu.showModal === 'function') {
       menu.id = 'luxuryNavigation';
-      menu.setAttribute('aria-label', 'A.z navigation');
+      menu.setAttribute('aria-label', t('menu.label', 'A.z navigation'));
       const menuHead = document.createElement('div');
       menuHead.className = 'luxury-menu-head';
       const home = document.createElement('a');
       home.href = '#entrance';
-      home.setAttribute('aria-label', 'Return to the A.z entrance');
+      home.setAttribute('aria-label', t('menu.homeLabel', 'Return to the A.z entrance'));
       const mark = document.createElement('img');
       mark.src = 'assets/logo-silver.png';
       mark.alt = 'A.z';
@@ -89,7 +92,7 @@
       const close = document.createElement('button');
       close.type = 'button';
       close.className = 'luxury-menu-close';
-      close.setAttribute('aria-label', 'Close menu');
+      close.setAttribute('aria-label', t('menu.closeLabel', 'Close menu'));
       close.textContent = t('menu.close', 'Close');
       menuHead.append(home, close);
 
@@ -97,22 +100,28 @@
       menuBody.className = 'luxury-menu-body';
       const links = document.createElement('nav');
       links.className = 'luxury-menu-section-links';
-      links.setAttribute('aria-label', 'Site sections');
-      [['#entrance', 'menu.salon'], ['#collections', 'nav.collections'], ['#advisory', 'nav.advisoryLower'], ['#questions', 'nav.questions']].forEach(([href, key]) => {
-        const label = t(key, key);
+      links.setAttribute('aria-label', t('menu.sectionsLabel', 'Site sections'));
+      const sectionLinks = [];
+      [['#entrance', 'menu.salon', 'The salon'], ['#collections', 'nav.collections', 'Collections'], ['#advisory', 'nav.advisoryLower', 'The advisory'], ['#questions', 'nav.questions', 'Questions']].forEach(([href, key, fallback]) => {
+        const label = t(key, fallback);
         const link = document.createElement('a');
         link.href = href;
         link.textContent = label;
         links.append(link);
+        sectionLinks.push({ link, key, fallback });
       });
       const categories = document.createElement('div');
       categories.className = 'luxury-menu-collections';
       categories.setAttribute('role', 'group');
-      categories.setAttribute('aria-label', 'Open a collection');
-      Object.entries(collectionLabels).forEach(([key, label]) => {
+      categories.setAttribute('aria-label', t('menu.collectionsLabel', 'Open a collection'));
+      const categoryItems = [];
+      // The registry keys are explicit. A getter-only Proxy has no enumerable
+      // entries and previously left the entire phone collection menu empty.
+      Object.keys(collectionLabelKeys).forEach(key => {
+        const label = collectionLabel(key);
         const button = document.createElement('button');
         button.type = 'button';
-        button.setAttribute('aria-label', 'Open the ' + label + ' collection');
+        button.setAttribute('aria-label', t('menu.openCollection', 'Open the {collection} collection').replace('{collection}', label));
         const name = document.createElement('span');
         name.textContent = label;
         const amount = document.createElement('span');
@@ -125,6 +134,7 @@
           else location.href = '?view=collection&c=' + encodeURIComponent(key) + '#collections';
         });
         categories.append(button);
+        categoryItems.push({ key, button, name, amount });
       });
       const enquire = document.createElement('a');
       enquire.className = 'luxury-menu-enquire';
@@ -142,13 +152,35 @@
       toggle.id = 'luxuryMenuToggle';
       toggle.type = 'button';
       toggle.className = 'luxury-menu-toggle';
-      toggle.textContent = 'Menu';
-      toggle.setAttribute('aria-label', 'Open menu');
+      toggle.textContent = t('menu.toggle', 'Menu');
+      toggle.setAttribute('aria-label', t('menu.openLabel', 'Open menu'));
       toggle.setAttribute('aria-controls', menu.id);
       toggle.setAttribute('aria-haspopup', 'dialog');
       toggle.setAttribute('aria-expanded', 'false');
       header.insertBefore(toggle, header.querySelector('.header-enquiry'));
       header.classList.add('has-luxury-menu');
+      function refreshMenuLanguage() {
+        menu.setAttribute('aria-label', t('menu.label', 'A.z navigation'));
+        home.setAttribute('aria-label', t('menu.homeLabel', 'Return to the A.z entrance'));
+        close.setAttribute('aria-label', t('menu.closeLabel', 'Close menu'));
+        close.textContent = t('menu.close', 'Close');
+        links.setAttribute('aria-label', t('menu.sectionsLabel', 'Site sections'));
+        categories.setAttribute('aria-label', t('menu.collectionsLabel', 'Open a collection'));
+        toggle.textContent = t('menu.toggle', 'Menu');
+        toggle.setAttribute('aria-label', t('menu.openLabel', 'Open menu'));
+        enquire.textContent = t('menu.begin', 'Begin a private enquiry');
+        sectionLinks.forEach(({ link, key, fallback }) => { link.textContent = t(key, fallback); });
+        categoryItems.forEach(({ key, button, name, amount }) => {
+          const label = collectionLabel(key), count = collectionCount(key);
+          name.textContent = label;
+          amount.textContent = count === null ? '' : String(count);
+          button.setAttribute('aria-label', t('menu.openCollection', 'Open the {collection} collection').replace('{collection}', label));
+        });
+      }
+      // Update existing nodes in place: an open native dialog keeps its focus
+      // and scroll position when the language changes.
+      document.addEventListener('az:languagechange', refreshMenuLanguage);
+      refreshMenuLanguage();
       toggle.addEventListener('click', () => {
         if (menu.open) return;
         menu.showModal();
@@ -187,7 +219,7 @@
     const collection = (window.AZ ? window.AZ.field(registry?.[key], 'title') : registry?.[key]?.title) ||
       selection?.selectedOptions?.[0]?.textContent.trim() || t('enq.help', 'Help me choose');
     let body = '';
-    let subject = 'A.z private enquiry';
+    let subject = t('enq.subjectValue', 'A.z private enquiry');
     try {
       const draft = new URL(compose.href);
       if (draft.protocol === 'mailto:') {

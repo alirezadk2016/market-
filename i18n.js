@@ -39,6 +39,19 @@
       'nav.enquiry': 'Private enquiry',
       'lang.switch': 'فارسی',
       'lang.label': 'Change language',
+      'menu.label': 'A.z navigation',
+      'menu.homeLabel': 'Return to the A.z entrance',
+      'menu.closeLabel': 'Close menu',
+      'menu.sectionsLabel': 'Site sections',
+      'menu.collectionsLabel': 'Open a collection',
+      'menu.openCollection': 'Open the {collection} collection',
+      'menu.toggle': 'Menu',
+      'menu.openLabel': 'Open menu',
+      'photo.controlsLabel': 'Photograph controls',
+      'photo.fit': 'Fit image',
+      'photo.fitLabel': 'Fit product photograph to screen',
+      'photo.counter': 'Photograph {current} of {total}',
+      'photo.frameLabel': 'Product photograph of {piece}. Use left and right arrow keys to browse.',
 
       /* hero */
       'hero.region': 'Cinematic collection gallery. Move to look, drag to turn, or choose an exhibit. Arrow keys choose collections. Enter opens the collection. Shift and arrow keys turn the view. Escape centres the view.',
@@ -324,6 +337,19 @@
       'nav.enquiry': 'درخواست خصوصی',
       'lang.switch': 'English',
       'lang.label': 'تغییر زبان',
+      'menu.label': 'منوی A.z',
+      'menu.homeLabel': 'بازگشت به ورودی A.z',
+      'menu.closeLabel': 'بستن منو',
+      'menu.sectionsLabel': 'بخش‌های سایت',
+      'menu.collectionsLabel': 'انتخاب کالکشن',
+      'menu.openCollection': 'باز کردن کالکشن {collection}',
+      'menu.toggle': 'منو',
+      'menu.openLabel': 'باز کردن منو',
+      'photo.controlsLabel': 'کنترل عکس‌ها',
+      'photo.fit': 'نمای کامل',
+      'photo.fitLabel': 'نمایش کامل عکس محصول',
+      'photo.counter': 'عکس {current} از {total}',
+      'photo.frameLabel': 'عکس محصول {piece}. برای دیدن عکس‌ها از کلیدهای جهت چپ و راست استفاده کنید.',
 
       /* hero */
       'hero.region': 'گالری سینمایی کالکشن‌ها. برای دیدن حرکت کنید، برای چرخاندن بکشید، یا یک کالکشن را انتخاب کنید. کلیدهای جهت‌دار کالکشن را عوض می‌کنند. Enter کالکشن را باز می‌کند. Shift با کلیدهای جهت‌دار نما را می‌چرخاند. Escape نما را وسط می‌آورد.',
@@ -647,6 +673,13 @@
       toggle.setAttribute('lang', lang === 'fa' ? 'en' : 'fa');
     }
     if (!options.silent) {
+      // A shared or reloaded address must retain the language the visitor chose.
+      // Keep the current catalogue/watch parameters and in-page destination.
+      try {
+        const address = new URL(location.href);
+        address.searchParams.set('lang', lang);
+        history.replaceState(history.state, '', address.pathname + address.search + address.hash);
+      } catch (_) { /* Embedded previews may disallow history writes. */ }
       document.dispatchEvent(new CustomEvent('az:languagechange', { detail: { lang } }));
     }
   }

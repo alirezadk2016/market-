@@ -124,3 +124,10 @@ The latest owner direction supersedes the dress-watch/leather concept: a detaile
 Use raised gold indices and faceted luminous hands, genuine opaque day/date discs beneath real dial holes, a fitted sapphire date lens, substantial lugs and a finely cut fluted bezel. Bracelet links need rounded volume, equal arc-length spacing, brushed outer sections, polished centres, side fasteners with real slotted heads, and a concealed folding clasp. Avoid negative instance transforms, painted-white metal, floating joints and coarse gear-like fluting.
 
 Use pierced rhodium bridges, brass wheel train/pinions/barrel, seated jewels, recessed slotted screws and supported balance/hairspring. These are original authored proportions and illustrative mechanics, not an authenticated Rolex model or the catalogue quartz movement. Generated exterior/exploded images are capability fallbacks only. Native pixels and behavior must be assessed independently of automated geometry/lifecycle coverage.
+
+
+## Full-site refinement · 11 November 2026
+
+The owner now authorizes a whole-site audit with section scores and repeated improvement passes. Preserve the dark cinematic A.z identity, existing grotesk/Persian type system, real catalogue data/photos, linked white-metal 3D watch, existing routes/anchors and removed birthday section. This supersedes the earlier watch-only scope. Use native CSS and the existing vanilla controllers, with design variance7/motion6/density3.
+
+Round1: identify actual navigation, RTL, language, photograph and loading defects before adding decoration. Round2: evolve hierarchy/readability and replace the repetitive advisory columns with ordered editorial rows. Make the product enquiry action clear, retain full truthful product photographs, improve FAQ/form contrast, repair logical spacing and offer a compact complete mobile menu. Round3: verify fresh direct links, both languages, photo zoom/search/return focus, enquiry preparation, responsiveness and offscreen loading. Scores are subjective design/UX judgments with explicit evidence boundaries, not universal benchmarks or a claim of perfection.
