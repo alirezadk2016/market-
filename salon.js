@@ -42,6 +42,7 @@
   document.getElementById('openAdvice')?.addEventListener('click', () => {
     const enquiry = document.getElementById('private-enquiry');
     if (enquiry) {
+      window.dispatchEvent(new CustomEvent('az:sectionnavigate', { detail: { target: enquiry } }));
       enquiry.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
       document.getElementById('salonCollection')?.focus({ preventScroll: true });
       return;

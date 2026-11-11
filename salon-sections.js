@@ -404,10 +404,16 @@
     const sentence = t('mail.considering', 'I am considering') + ' ' + selectedPiece.name + ' ' + field(selectedPiece, 'note') +
       (colourOf(selectedVariant) ? ' ' + t('mail.inColour', 'in') + ' ' + colourOf(selectedVariant) : '') + '.';
     enquiryCollection.value = collectionKey;
-    preferences.value = (preferences.value.includes(sentence) ? preferences.value : sentence + (preferences.value.trim() ? '\n\n' + preferences.value.trim() : '')).slice(0, 1200);
+    // Product context must never discard a question the visitor already wrote.
+    // Keep the normal typing limit, extending it only to fit this local draft.
+    const note = preferences.value.includes(sentence) ? preferences.value : sentence + (preferences.value ? '\n\n' + preferences.value : '');
+    preferences.maxLength = Math.max(1200, preferences.maxLength, note.length);
+    preferences.value = note;
     updateDraft();
     dialog.close();
-    document.getElementById('salonEnquiry').scrollIntoView({ behavior: reduced.matches ? 'auto' : 'smooth', block: 'start' });
+    const enquiry = document.getElementById('salonEnquiry');
+    window.dispatchEvent(new CustomEvent('az:sectionnavigate', { detail: { target: enquiry } }));
+    enquiry.scrollIntoView({ behavior: reduced.matches ? 'auto' : 'smooth', block: 'start' });
     preferences.focus({ preventScroll: true });
   });
   window.openSalonCollection = openCollection;
